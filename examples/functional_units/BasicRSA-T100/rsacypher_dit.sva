@@ -1,0 +1,115 @@
+// @lang=sva @ts=8
+
+module property_checker
+  // Adjust this parameter in the miter before elaboration with
+  // set_elaborate_option -verilog_parameter rsacypher_miter.KEYSIZE=32
+  #(parameter KEYSIZE = 32)
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 8;
+
+  function automatic state_equivalence();
+  state_equivalence = (
+    (C1.count  == C2.count) &&
+    (C1.done   == C2.done) &&
+    (C1.modreg == C2.modreg) &&
+    (C1.multgo == C2.multgo) &&
+    (C1.root   == C2.root) &&
+    (C1.sqrin  == C2.sqrin) &&
+    (C1.tempin == C2.tempin) &&
+    (C1.cypher == C2.cypher) &&
+    (C1.modmultiply.first   == C2.modmultiply.first) &&
+    (C1.modmultiply.mcreg   == C2.modmultiply.mcreg) &&
+    (C1.modmultiply.modreg1 == C2.modmultiply.modreg1) &&
+    (C1.modmultiply.modreg2 == C2.modmultiply.modreg2) &&
+    (C1.modmultiply.mpreg   == C2.modmultiply.mpreg) &&
+    (C1.modmultiply.prodreg == C2.modmultiply.prodreg) &&
+    (C1.modsqr.first   == C2.modsqr.first) &&
+    (C1.modsqr.mcreg   == C2.modsqr.mcreg) &&
+    (C1.modsqr.modreg1 == C2.modsqr.modreg1) &&
+    (C1.modsqr.modreg2 == C2.modsqr.modreg2) &&
+    (C1.modsqr.mpreg   == C2.modsqr.mpreg) &&
+    (C1.modsqr.prodreg == C2.modsqr.prodreg)
+  );
+  endfunction
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (C1.count  ==    0) and
+    t ##0 (C1.done   == 1'b1) and
+    t ##0 (C1.modreg ==    0) and
+    t ##0 (C1.multgo == 1'b0) and
+    t ##0 (C1.root   ==    0) and
+    t ##0 (C1.sqrin  ==    0) and
+    t ##0 (C1.tempin ==    0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // -----------------------------------
+  // - UPEC for Data-Independet Timing -
+  // -----------------------------------
+
+  /*
+  The input text (indata) can influence timing by terminating multiplication early.
+  */
+  property dit_indata_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.inExp == C2.inExp)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.inMod == C2.inMod))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_indata_ready_p_a: assert property (disable iff (rst) dit_indata_ready_p);
+  
+
+  /*
+  The key (inExp) can influence influence timing due to square-and-multiply.
+  */
+  property dit_inexp_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.indata == C2.indata)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.inMod == C2.inMod))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_inexp_ready_p_a: assert property (disable iff (rst) dit_inexp_ready_p);
+
+  
+  /*
+  The given modulo (inMod) can also influence timing, as it influences the operands of subsequent instructions.
+  However, the modulo is usually considered public.
+  */
+  property dit_inmod_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.indata == C2.indata)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.inExp == C2.inExp)) and
+    during_o(t, 1, t, MAX_LATENCY-1, (C1.ds == 1'b0))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_inmod_ready_p_a: assert property (disable iff (rst) dit_inmod_ready_p);
+  
+
+`end_tda
+
+endmodule
+
+bind rsacypher_miter property_checker #(.KEYSIZE(KEYSIZE)) checker_bind(.clk(clk), .rst(rst));
