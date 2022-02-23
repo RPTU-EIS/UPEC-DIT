@@ -1,0 +1,208 @@
+/*
+Discovered timing variations:
+ - Early termination due to division by zero
+ - In signed division, negative operands causes extra execution cycles (1 if both operands are negative, 2 if only one operand is negative)
+*/
+
+
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 50;
+
+  function automatic state_equality();
+    state_equality = (
+      (DIV1.last_bit     == DIV2.last_bit    ) &&
+      (DIV1.pre_sign     == DIV2.pre_sign    ) &&
+      (DIV1.r_bit        == DIV2.r_bit       ) &&
+      (DIV1.r_busy       == DIV2.r_busy      ) &&
+      (DIV1.r_c          == DIV2.r_c         ) &&
+      (DIV1.r_dividend   == DIV2.r_dividend  ) &&
+      (DIV1.r_divisor    == DIV2.r_divisor   ) &&
+      (DIV1.r_sign       == DIV2.r_sign      ) &&
+      (DIV1.r_z          == DIV2.r_z         ) &&
+      (DIV1.zero_divisor == DIV2.zero_divisor)
+    );
+  endfunction
+
+  function automatic ready_state();
+    ready_state = (
+      (DIV1.r_busy  == 0) &&
+      (DIV2.r_busy  == 0) &&
+      (DIV1.r_sign  == 0) &&
+      (DIV2.r_sign  == 0) &&
+      (DIV1.r_bit  == 0) &&
+      (DIV2.r_bit  == 0) &&
+      (DIV1.pre_sign  == 0) &&
+      (DIV2.pre_sign  == 0) &&
+      (DIV1.last_bit  == 0) &&
+      (DIV2.last_bit  == 0) &&
+      (DIV1.o_busy  == 0) &&
+      (DIV2.o_busy  == 0) &&
+      (DIV1.o_valid == 0) &&
+      (DIV2.o_valid == 0)
+    );
+  endfunction
+
+  property control_input_c;
+    (DIV1.i_signed == DIV2.i_signed) &&
+    (DIV1.i_wr     == DIV2.i_wr    );
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+  // No new operation is triggered while the previous one is still running
+  property wait_for_ready_c;
+    !(DIV1.o_busy && DIV1.i_wr) &&
+    !(DIV2.o_busy && DIV2.i_wr);
+  endproperty
+  wait_for_ready_c_a: assume property (wait_for_ready_c);
+
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 ready_state();
+  endproperty
+  reset_p_a: assert property (reset_p);
+/*
+  property unsigned_division_p;
+  reg [31:0] n_val, d_val;
+    t ##0 ready_state() and
+    t ##0 (DIV1.i_wr == 1'b1) and
+    t ##0 ((DIV1.i_signed == 1'b0) || (DIV1.i_numerator[31] == 1'b0 && DIV1.i_denominator[31] == 1'b0)) and
+    t ##0 set_freeze(n_val, DIV1.i_numerator) and
+    t ##0 set_freeze(d_val, DIV1.i_denominator)
+    implies
+    t ##33 (DIV1.o_valid == 1'b1) and
+    t ##33 (DIV1.o_quotient == n_val/d_val);
+  endproperty
+  unsigned_division_p_a: assert property (disable iff (rst) unsigned_division_p);
+
+  // One negative operator
+  property signed_division_1_p;
+    t ##0 ready_state() and
+    t ##0 (DIV1.i_wr == 1'b1) and
+    t ##0 ((DIV1.i_signed == 1'b1) && (DIV1.i_numerator[31] == 1'b1 ^ DIV1.i_denominator[31] == 1'b1))
+    implies
+    t ##35 (DIV1.o_valid == 1'b1);
+  endproperty
+  signed_division_1_p_a: assert property (disable iff (rst) signed_division_1_p);
+
+  // Two negative operators
+  property signed_division_2_p;
+    t ##0 ready_state() and
+    t ##0 (DIV1.i_wr == 1'b1) and
+    t ##0 ((DIV1.i_signed == 1'b1) && (DIV1.i_numerator[31] == 1'b1 && DIV1.i_denominator[31] == 1'b1))
+    implies
+    t ##34 (DIV1.o_valid == 1'b1);
+  endproperty
+  signed_division_2_p_a: assert property (disable iff (rst) signed_division_2_p);
+*/    
+
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  property dit_numerator_busy_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_denominator == DIV2.i_denominator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_busy == DIV2.o_busy));
+  endproperty
+  dit_numerator_busy_p_a: assert property (disable iff (rst) dit_numerator_busy_p);
+
+  property dit_denominator_busy_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_numerator == DIV2.i_numerator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_busy == DIV2.o_busy));
+  endproperty
+  dit_denominator_busy_p_a: assert property (disable iff (rst) dit_denominator_busy_p);
+
+  property dit_numerator_valid_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_denominator == DIV2.i_denominator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_valid == DIV2.o_valid));
+  endproperty
+  dit_numerator_valid_p_a: assert property (disable iff (rst) dit_numerator_valid_p);
+
+  property dit_denominator_valid_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_numerator == DIV2.i_numerator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_valid == DIV2.o_valid));
+  endproperty
+  dit_denominator_valid_p_a: assert property (disable iff (rst) dit_denominator_valid_p);
+
+  property dit_numerator_err_p;
+    t ##0 state_equality() and
+    //t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_denominator == DIV2.i_denominator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_err == DIV2.o_err));
+  endproperty
+  dit_numerator_err_p_a: assert property (disable iff (rst) dit_numerator_err_p);
+
+  property dit_denominator_err_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_numerator == DIV2.i_numerator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_err == DIV2.o_err));
+  endproperty
+  dit_denominator_err_p_a: assert property (disable iff (rst) dit_denominator_err_p);
+
+
+  // Flags are directly dependant on the Inputs
+  // flags[3] - 0
+  // flags[2] - Set if result is negative
+  // flags[1] - Set if result is exact
+  // flags[0] - Set if result is zero
+  property dit_numerator_flags_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_denominator == DIV2.i_denominator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_flags == DIV2.o_flags));
+  endproperty
+  dit_numerator_flags_p_a: assert property (disable iff (rst) dit_numerator_flags_p);
+
+  property dit_denominator_flags_p;
+    t ##0 state_equality() and
+    t ##0 ready_state() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.i_numerator == DIV2.i_numerator))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.o_flags == DIV2.o_flags));
+  endproperty
+  dit_denominator_flags_p_a: assert property (disable iff (rst) dit_denominator_flags_p);
+
+
+
+`end_tda
+
+endmodule
+
+bind div_miter property_checker checker_bind(.clk(clk), .rst(rst));
