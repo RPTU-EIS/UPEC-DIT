@@ -1,0 +1,123 @@
+/*
+
+Discovered timing vulnerabilities:
+ - Fast Path if |opB| > |opA| (3 cycles)
+ - Division time (counter value) is determined by difference in leading zeros of the operands
+
+*/
+module property_checker
+  #(parameter WIDTH = 64)
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 5;
+
+  function automatic state_equality();
+    state_equality = (
+      (DIV1.cnt_q          == DIV2.cnt_q         ) &&
+      (DIV1.comp_inv_q     == DIV2.comp_inv_q    ) &&
+      (DIV1.div_res_zero_q == DIV2.div_res_zero_q) &&
+      (DIV1.id_q           == DIV2.id_q          ) &&
+      (DIV1.op_a_q         == DIV2.op_a_q        ) &&
+      (DIV1.op_b_q         == DIV2.op_b_q        ) &&
+      (DIV1.op_b_zero_q    == DIV2.op_b_zero_q   ) &&
+      (DIV1.rem_sel_q      == DIV2.rem_sel_q     ) &&
+      (DIV1.res_inv_q      == DIV2.res_inv_q     ) &&
+      (DIV1.res_q          == DIV2.res_q         ) &&
+      (DIV1.state_q        == DIV2.state_q       )
+    );
+  endfunction
+
+  property control_input_c;
+    (DIV1.id_i      == DIV2.id_i     ) &&
+    (DIV1.opcode_i  == DIV2.opcode_i ) && // ?
+    (DIV1.in_vld_i  == DIV2.in_vld_i ) &&
+    (DIV1.flush_i   == DIV2.flush_i  ) &&
+    (DIV1.out_rdy_i == DIV2.out_rdy_i);
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+/*
+  property no_flush_c;
+    (DIV1.flush_i == 1'b0) &&
+    (DIV2.flush_i == 1'b0);
+  endproperty
+  no_flush_c_a: assume property (no_flush_c);
+*/
+
+/*
+  property udiv_c;
+    (DIV1.opcode_i == 2'b00) &&
+    (DIV2.opcode_i == 2'b00);
+  endproperty
+  udiv_c_a: assume property (udiv_c);
+*/
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b0);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (DIV1.state_q == 2'b00) and
+    t ##0 (DIV1.op_a_q == 0) and
+    t ##0 (DIV1.op_b_q == 0) and
+    t ##0 (DIV1.res_q == 0) and
+    t ##0 (DIV1.cnt_q == 0) and
+    t ##0 (DIV1.id_q == 0) and
+    t ##0 (DIV1.rem_sel_q == 0) and
+    t ##0 (DIV1.comp_inv_q == 0) and
+    t ##0 (DIV1.res_inv_q == 0) and
+    t ##0 (DIV1.op_b_zero_q == 0) and
+    t ##0 (DIV1.div_res_zero_q == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  property idle_p;
+    t ##0 (DIV1.state_q == 2'b00) and
+    t ##0 (DIV1.in_vld_i == 1'b1) and
+    t ##0 (DIV1.flush_i == 1'b0)
+    implies
+    t ##1 (DIV1.state_q == 2'b01);
+  endproperty
+  idle_p_a: assert property (disable iff (!rst) idle_p);
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+  
+  property dit_op_a_out_vld_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.op_b_i == DIV2.op_b_i))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.out_vld_o == DIV2.out_vld_o));
+  endproperty
+  dit_op_a_out_vld_p_a: assert property (disable iff (!rst) dit_op_a_out_vld_p);
+
+  property dit_op_b_out_vld_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, (DIV1.op_a_i == DIV2.op_a_i))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (DIV1.out_vld_o == DIV2.out_vld_o));
+  endproperty
+  dit_op_b_out_vld_p_a: assert property (disable iff (!rst) dit_op_b_out_vld_p);
+
+
+`end_tda
+
+endmodule
+
+bind serdiv_miter property_checker #(.WIDTH(WIDTH)) checker_bind(.clk(clk), .rst(rst));
