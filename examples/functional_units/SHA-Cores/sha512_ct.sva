@@ -1,0 +1,85 @@
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  function automatic state_equality();
+    state_equality = (
+      (SHA512_1.busy == SHA512_2.busy) &&
+      (SHA512_1.cmd == SHA512_2.cmd) &&
+      (SHA512_1.read_counter == SHA512_2.read_counter) &&
+      (SHA512_1.round == SHA512_2.round) &&
+      (SHA512_1.H0 == SHA512_2.H0) &&
+      (SHA512_1.H1 == SHA512_2.H1) &&
+      (SHA512_1.H2 == SHA512_2.H2) &&
+      (SHA512_1.H3 == SHA512_2.H3) &&
+      (SHA512_1.H4 == SHA512_2.H4) &&
+      (SHA512_1.H5 == SHA512_2.H5) &&
+      (SHA512_1.H6 == SHA512_2.H6) &&
+      (SHA512_1.H7 == SHA512_2.H7) &&
+      (SHA512_1.W0 == SHA512_2.W0) &&
+      (SHA512_1.W1 == SHA512_2.W1) &&
+      (SHA512_1.W2 == SHA512_2.W2) &&
+      (SHA512_1.W3 == SHA512_2.W3) &&
+      (SHA512_1.W4 == SHA512_2.W4) &&
+      (SHA512_1.W5 == SHA512_2.W5) &&
+      (SHA512_1.W6 == SHA512_2.W6) &&
+      (SHA512_1.W7 == SHA512_2.W7) &&
+      (SHA512_1.W8 == SHA512_2.W8) &&
+      (SHA512_1.W9 == SHA512_2.W9) &&
+      (SHA512_1.W10 == SHA512_2.W10) &&
+      (SHA512_1.W11 == SHA512_2.W11) &&
+      (SHA512_1.W12 == SHA512_2.W12) &&
+      (SHA512_1.W13 == SHA512_2.W13) &&
+      (SHA512_1.W14 == SHA512_2.W14) &&
+      (SHA512_1.Wt == SHA512_2.Wt) &&
+      (SHA512_1.Kt == SHA512_2.Kt) &&
+      (SHA512_1.A == SHA512_2.A) &&
+      (SHA512_1.B == SHA512_2.B) &&
+      (SHA512_1.C == SHA512_2.C) &&
+      (SHA512_1.D == SHA512_2.D) &&
+      (SHA512_1.E == SHA512_2.E) &&
+      (SHA512_1.F == SHA512_2.F) &&
+      (SHA512_1.G == SHA512_2.G) &&
+      (SHA512_1.H == SHA512_2.H)
+    );
+  endfunction
+
+  property control_input_c;
+    (SHA512_1.cmd_i   == SHA512_2.cmd_i)  &&
+    (SHA512_1.cmd_w_i == SHA512_2.cmd_w_i);
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (SHA512_1.W0 == 0) and
+    t ##0 (SHA512_1.W1 == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  property dit_text_i_cmd_o_p;
+    t ##0 state_equality()
+    implies
+    during_o(t, 1, t, 129, (SHA512_1.cmd_o == SHA512_2.cmd_o));
+  endproperty
+  dit_text_i_cmd_o_p_a: assert property (disable iff (rst) dit_text_i_cmd_o_p);
+
+`end_tda
+
+endmodule
+
+bind sha512_miter property_checker checker_bind(.clk(clk), .rst(rst));

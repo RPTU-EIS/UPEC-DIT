@@ -1,0 +1,79 @@
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  function automatic state_equality();
+    state_equality = (
+      (SHA1_1.busy == SHA1_2.busy) &&
+      (SHA1_1.cmd == SHA1_2.cmd) &&
+      (SHA1_1.read_counter == SHA1_2.read_counter) &&
+      (SHA1_1.round == SHA1_2.round) &&
+      (SHA1_1.H0 == SHA1_2.H0) &&
+      (SHA1_1.H1 == SHA1_2.H1) &&
+      (SHA1_1.H2 == SHA1_2.H2) &&
+      (SHA1_1.H3 == SHA1_2.H3) &&
+      (SHA1_1.H4 == SHA1_2.H4) &&
+      (SHA1_1.W0 == SHA1_2.W0) &&
+      (SHA1_1.W1 == SHA1_2.W1) &&
+      (SHA1_1.W2 == SHA1_2.W2) &&
+      (SHA1_1.W3 == SHA1_2.W3) &&
+      (SHA1_1.W4 == SHA1_2.W4) &&
+      (SHA1_1.W5 == SHA1_2.W5) &&
+      (SHA1_1.W6 == SHA1_2.W6) &&
+      (SHA1_1.W7 == SHA1_2.W7) &&
+      (SHA1_1.W8 == SHA1_2.W8) &&
+      (SHA1_1.W9 == SHA1_2.W9) &&
+      (SHA1_1.W10 == SHA1_2.W10) &&
+      (SHA1_1.W11 == SHA1_2.W11) &&
+      (SHA1_1.W12 == SHA1_2.W12) &&
+      (SHA1_1.W13 == SHA1_2.W13) &&
+      (SHA1_1.W14 == SHA1_2.W14) &&
+      (SHA1_1.Wt == SHA1_2.Wt) &&
+      (SHA1_1.Kt == SHA1_2.Kt) &&
+      (SHA1_1.A == SHA1_2.A) &&
+      (SHA1_1.B == SHA1_2.B) &&
+      (SHA1_1.C == SHA1_2.C) &&
+      (SHA1_1.D == SHA1_2.D) &&
+      (SHA1_1.E == SHA1_2.E)
+    );
+  endfunction
+
+  property control_input_c;
+    (SHA1_1.cmd_i   == SHA1_2.cmd_i)  &&
+    (SHA1_1.cmd_w_i == SHA1_2.cmd_w_i);
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (SHA1_1.W0 == 0) and
+    t ##0 (SHA1_1.W1 == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  property dit_text_i_cmd_o_p;
+    t ##0 state_equality()
+    implies
+    during_o(t, 1, t, 91, (SHA1_1.cmd_o == SHA1_2.cmd_o));
+  endproperty
+  dit_text_i_cmd_o_p_a: assert property (disable iff (rst) dit_text_i_cmd_o_p);
+
+`end_tda
+
+endmodule
+
+bind sha1_miter property_checker checker_bind(.clk(clk), .rst(rst));
