@@ -1,0 +1,261 @@
+module property_checker
+  // Adjust these parameters in the miter before elaboration with
+  // set_elaborate_option -verilog_parameter fwrisc_mul_div_shift_miter.ENABLE_MUL_DIV=1 etc.
+  #(
+  parameter ENABLE_MUL_DIV=1,
+  parameter ENABLE_MUL=ENABLE_MUL_DIV,
+  parameter ENABLE_DIV=ENABLE_MUL_DIV,
+  parameter SINGLE_CYCLE_SHIFT=0
+  )
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 50;
+
+  function automatic state_equality();
+    state_equality = (
+      (MDS1.div_dividend == MDS2.div_dividend) &&
+      (MDS1.div_divisor  == MDS2.div_divisor ) &&
+      (MDS1.div_msk      == MDS2.div_msk     ) &&
+      (MDS1.div_quotient == MDS2.div_quotient) &&
+      (MDS1.div_sign     == MDS2.div_sign    ) &&
+      (MDS1.mul_res      == MDS2.mul_res     ) &&
+      (MDS1.mul_tmp1     == MDS2.mul_tmp1    ) &&
+      (MDS1.mul_tmp2     == MDS2.mul_tmp2    ) &&
+      (MDS1.op_r         == MDS2.op_r        ) &&
+      (MDS1.shift_amt_r  == MDS2.shift_amt_r ) &&
+      (MDS1.working      == MDS2.working     ) &&
+      (MDS1.out          == MDS2.out         ) &&
+      (MDS1.out_valid    == MDS2.out_valid   )
+    );
+  endfunction
+
+  function automatic shift_operation();
+    shift_operation = (
+      (MDS1.op == 4'b0000) || // SLL
+      (MDS1.op == 4'b0001) || // SRL
+      (MDS1.op == 4'b0010)    // SRA
+    );
+  endfunction
+
+  function automatic mult_operation();
+    mult_operation = (
+      (MDS1.op == 4'b0011) || // MUL
+      (MDS1.op == 4'b0100) || // MULH
+      (MDS1.op == 4'b0101) || // MULS
+      (MDS1.op == 4'b0110)    // MULSH
+    );
+  endfunction
+
+  function automatic div_operation();
+    div_operation = (
+      (MDS1.op == 4'b0111) || // DIV
+      (MDS1.op == 4'b1000)    // REM
+    );
+  endfunction
+
+  function automatic operation_start();
+    operation_start = (
+      (MDS1.working  == 1'b0) &&
+      (MDS1.in_valid == 1'b1)
+    );
+  endfunction
+
+  property control_input_c;
+    (MDS1.op == MDS2.op) &&
+    (MDS1.in_valid == MDS2.in_valid);
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+  property no_interruption_c;
+    (!(MDS1.working && MDS1.in_valid)) &&
+    (!(MDS2.working && MDS2.in_valid));
+  endproperty
+  no_interruption_c_a: assume property (no_interruption_c);
+
+/*
+  property fixed_op_c;
+    (MDS1.op == 4'b0000) || // SLL
+    (MDS1.op == 4'b0001) || // SRL
+    (MDS1.op == 4'b0010) || // SRA
+    (MDS1.op == 4'b0011) || // MUL
+    (MDS1.op == 4'b0100) || // MULH
+    (MDS1.op == 4'b0101) || // MULS
+    (MDS1.op == 4'b0110) || // MULSH
+    (MDS1.op == 4'b0111) || // DIV
+    (MDS1.op == 4'b1000) || // REM
+    (MDS1.op >= 4'b1001);   // NOP
+  endproperty
+  fixed_op_c_a: assume property (fixed_op_c);
+*/
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+  |=>
+    t ##0 (MDS1.out == 0) and
+    t ##0 (MDS1.out_valid == 0) and
+    t ##0 (MDS1.working == 0) and
+    t ##0 (MDS1.op_r == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  sequence t_valid;
+    await(nxt(t, 2), MDS1.out_valid == 1'b1, 33);
+  endsequence
+
+  // SLL takes between 2 and 33 cycles
+  // T = in_b + 2 
+  property sll_p;
+  logic [31:0] a_val;
+  logic [4:0] b_val;
+    t ##0 operation_start() and
+    t ##0 (MDS1.op == 4'b0000) and
+    t ##0 set_freeze(a_val, MDS1.in_a) and
+    t ##0 set_freeze(b_val, MDS1.in_b[4:0])
+    implies
+    t_valid ##0 (MDS1.out_valid == 1'b1) and
+    t_valid ##0 (MDS1.out == (a_val << b_val));
+  endproperty
+  sll_p_a: assert property (disable iff (rst) sll_p);
+
+  // SRL takes between 2 and 33 cycles
+  // T = in_b + 2 
+  property srl_p;
+  logic [31:0] a_val;
+  logic [4:0] b_val;
+    t ##0 operation_start() and
+    t ##0 (MDS1.op == 4'b0001) and
+    t ##0 set_freeze(a_val, MDS1.in_a) and
+    t ##0 set_freeze(b_val, MDS1.in_b[4:0])
+    implies
+    t_valid ##0 (MDS1.out_valid == 1'b1) and
+    t_valid ##0 (MDS1.out == (a_val >> b_val));
+  endproperty
+  srl_p_a: assert property (disable iff (rst) srl_p);
+
+  // SRA takes between 2 and 33 cycles
+  // T = in_b + 2 
+  property sra_p;
+  logic [31:0] a_val;
+  logic [4:0] b_val;
+    t ##0 operation_start() and
+    t ##0 (MDS1.op == 4'b0010) and
+    t ##0 set_freeze(a_val, MDS1.in_a) and
+    t ##0 set_freeze(b_val, MDS1.in_b[4:0])
+    implies
+    t_valid ##0 (MDS1.out_valid == 1'b1) and
+    t_valid ##0 (MDS1.out == (((32'hFFFF_FFFF << (32-b_val)) * a_val[31]) | (a_val >>> b_val))); // Somehow arithmetic shift '>>>' doesn't work here
+  endproperty
+  sra_p_a: assert property (disable iff (rst) sra_p);
+
+  // MUL, MULH, MULS and MULSH are always 33 cycles
+  property mul_p;
+    t ##0 operation_start() and
+    t ##0 ((MDS1.op == 4'b0011) || (MDS1.op == 4'b0100) || (MDS1.op == 4'b0101) || (MDS1.op == 4'b0110))
+    implies
+    t ##33 (MDS1.out_valid == 1'b1);
+  endproperty
+  mul_p_a: assert property (disable iff (rst) mul_p);
+
+  // DIV and REM are always 33 cycles
+  property div_p;
+    t ##0 operation_start() and
+    t ##0 ((MDS1.op == 4'b0111) || (MDS1.op == 4'b0100))
+    implies
+    t ##33 (MDS1.out_valid == 1'b1);
+  endproperty
+  div_p_a: assert property (disable iff (rst) div_p);
+
+  // NOP depends on current shift_amt_r
+  // Normally, this should always be 0 when working is 0
+  // In this case, a NOP takes 2 cycles
+  property nop_p;
+    t ##0 operation_start() and
+    t ##0 (MDS1.op >= 4'b1001) and
+    t ##0 (MDS1.shift_amt_r == 0)
+    implies
+    t ##1 (MDS1.working == 1'b1) and
+    t ##2 (MDS1.working == 1'b0) and
+    t ##2 (MDS1.out_valid == 1'b1);
+  endproperty
+  nop_p_a: assert property (disable iff (rst) nop_p);
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  property dit_shift_in_a_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, shift_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_b == MDS2.in_b))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_shift_in_a_out_valid_p_a: assert property (disable iff (rst) dit_shift_in_a_out_valid_p);
+
+  property dit_shift_in_b_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, shift_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_a == MDS2.in_a))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_shift_in_b_out_valid_p_a: assert property (disable iff (rst) dit_shift_in_b_out_valid_p);
+
+  property dit_mult_in_a_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, mult_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_b == MDS2.in_b))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_mult_in_a_out_valid_p_a: assert property (disable iff (rst) dit_mult_in_a_out_valid_p);
+
+  property dit_mult_in_b_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, mult_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_a == MDS2.in_a))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_mult_in_b_out_valid_p_a: assert property (disable iff (rst) dit_mult_in_b_out_valid_p);
+
+  property dit_div_in_a_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, div_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_b == MDS2.in_b))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_div_in_a_out_valid_p_a: assert property (disable iff (rst) dit_div_in_a_out_valid_p);
+
+  property dit_div_in_b_out_valid_p;
+    t ##0 state_equality() and
+    during_o(t, 0, t, MAX_LATENCY-1, div_operation()) and
+    during_o(t, 0, t, MAX_LATENCY-1, (MDS1.in_a == MDS2.in_a))
+  implies
+    during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
+  endproperty
+  dit_div_in_b_out_valid_p_a: assert property (disable iff (rst) dit_div_in_b_out_valid_p);
+
+`end_tda
+
+endmodule
+
+bind fwrisc_mul_div_shift_miter property_checker #(.ENABLE_MUL_DIV(ENABLE_MUL_DIV), .ENABLE_MUL(ENABLE_MUL), .ENABLE_DIV(ENABLE_DIV), .SINGLE_CYCLE_SHIFT(SINGLE_CYCLE_SHIFT)) checker_bind(.clk(clk), .rst(rst));
