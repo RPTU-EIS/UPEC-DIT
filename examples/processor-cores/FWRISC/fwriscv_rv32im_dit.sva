@@ -1,0 +1,439 @@
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+  `include "state_equivalence.sva"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 10;
+
+  function automatic ready_state();
+    ready_state = (
+      (P1.u_core.soft_reset_count        ==  5'd0) && // No pending reset
+      (P1.u_core.u_fetch.state           ==  3'd0) && // STATE_FETCH1
+      (P1.u_core.u_decode.decode_state   ==  2'd1) && // STATE_DECODE
+      (P1.u_core.u_exec.exec_state       ==  4'd0) && // STATE_EXECUTE
+      (P1.u_core.u_exec.u_mem.mem_state  ==  2'd0) && // STATE_WAIT_REQ
+      (P1.u_core.u_exec.pc[1:0]          ==  2'd0) && // Only aligned accesses
+//      (P1.u_core.u_fetch.instr_c         ==  1'b0) && // No compressed instructions
+      (P1.u_core.u_fetch.fetch_valid_r   ==  1'b0) && // Fetcher ready
+      (P1.u_core.u_decode.decode_valid_r ==  1'b0) && // Decoder ready
+      (P1.u_core.u_regfile.regs[0]       == 32'd0)    // r0 can not be written and should be zero
+    );
+  endfunction
+
+  function automatic r_type_arith_instr();
+    r_type_arith_instr = (
+      (P1.idata[6:0]   == P2.idata[6:0])   && // Same Opcode
+      (P1.idata[14:12] == P2.idata[14:12]) && // Same funct3
+      (P1.idata[31:25] == P2.idata[31:25]) && // Same funct7
+      (P1.idata[6:0]   == 7'b0110011)      &&
+      (
+      ((P1.idata[14:12] == 3'b000) && (P1.idata[31:25] == 7'b0000000)) || // ADD
+      ((P1.idata[14:12] == 3'b000) && (P1.idata[31:25] == 7'b0100000)) || // SUB
+      ((P1.idata[14:12] == 3'b001) && (P1.idata[31:25] == 7'b0000000)) || // SLL
+      ((P1.idata[14:12] == 3'b010) && (P1.idata[31:25] == 7'b0000000)) || // SLT
+      ((P1.idata[14:12] == 3'b011) && (P1.idata[31:25] == 7'b0000000)) || // SLTU
+      ((P1.idata[14:12] == 3'b100) && (P1.idata[31:25] == 7'b0000000)) || // XOR
+      ((P1.idata[14:12] == 3'b101) && (P1.idata[31:25] == 7'b0000000)) || // SRL
+      ((P1.idata[14:12] == 3'b101) && (P1.idata[31:25] == 7'b0100000)) || // SRA
+      ((P1.idata[14:12] == 3'b110) && (P1.idata[31:25] == 7'b0000000)) || // OR
+      ((P1.idata[14:12] == 3'b111) && (P1.idata[31:25] == 7'b0000000))    // AND
+      )
+    );
+  endfunction
+
+  function automatic m_extension_instr();
+    m_extension_instr = (
+      (P1.idata[6:0]   == P2.idata[6:0])   && // Same Opcode
+      (P1.idata[14:12] == P2.idata[14:12]) && // Same funct3
+      (P1.idata[31:25] == P2.idata[31:25]) && // Same funct7
+      (P1.idata[6:0]   == 7'b0110011)      &&
+      (P1.idata[31:25] == 7'b0000001)      &&
+      (
+      (P1.idata[14:12] == 3'b000) || // MUL
+      (P1.idata[14:12] == 3'b001) || // MULH
+      (P1.idata[14:12] == 3'b010) || // MULHSU
+      (P1.idata[14:12] == 3'b011) || // MULHU
+      (P1.idata[14:12] == 3'b100) || // DIV
+      (P1.idata[14:12] == 3'b101) || // DIVU
+      (P1.idata[14:12] == 3'b110) || // REM
+      (P1.idata[14:12] == 3'b111)    // REMU
+      )
+    );
+  endfunction
+
+
+  /*
+  Many instruction types already fail when only looking at the ivalid signal.
+  Hence, we only use (and adjusted) below macro for all other (data-oblivious) instructions.
+  */
+  function automatic no_control_discrepancy();
+    no_control_discrepancy = (
+      (P1.ivalid == P2.ivalid) &&
+      (P1.dvalid == P2.dvalid) &&
+      (P1.dwstb  == P2.dwstb ) &&
+      (P1.dwrite == P2.dwrite) &&
+
+      (P1.u_core.soft_reset_count == P2.u_core.soft_reset_count) &&
+      (P1.u_core.tracer_pc == P2.u_core.tracer_pc) &&
+      (P1.u_core.u_decode.decode_state == P2.u_core.u_decode.decode_state) &&
+      (P1.u_core.u_decode.decode_valid_r == P2.u_core.u_decode.decode_valid_r) &&
+      (P1.u_core.u_decode.op_type == P2.u_core.u_decode.op_type) &&
+      (P1.u_core.u_exec.exec_state == P2.u_core.u_exec.exec_state) &&
+      (P1.u_core.u_exec.mcause == P2.u_core.u_exec.mcause) &&
+      (P1.u_core.u_exec.mcause_int == P2.u_core.u_exec.mcause_int) &&
+//      (P1.u_core.u_exec.mtval == P2.u_core.u_exec.mtval) &&
+      (P1.u_core.u_exec.instr_complete == P2.u_core.u_exec.instr_complete) &&
+//      (P1.u_core.u_exec.pc == P2.u_core.u_exec.pc) &&
+      (P1.u_core.u_exec.pc_seq == P2.u_core.u_exec.pc_seq) &&
+      (P1.u_core.u_exec.trap == P2.u_core.u_exec.trap) &&
+      (P1.u_core.u_exec.tret == P2.u_core.u_exec.tret) &&
+      (P1.u_core.u_exec.u_mds.div_dividend == P2.u_core.u_exec.u_mds.div_dividend) &&
+      (P1.u_core.u_exec.u_mds.div_divisor == P2.u_core.u_exec.u_mds.div_divisor) &&
+      (P1.u_core.u_exec.u_mds.div_msk == P2.u_core.u_exec.u_mds.div_msk) &&
+      (P1.u_core.u_exec.u_mds.div_quotient == P2.u_core.u_exec.u_mds.div_quotient) &&
+      (P1.u_core.u_exec.u_mds.mul_res == P2.u_core.u_exec.u_mds.mul_res) &&
+      (P1.u_core.u_exec.u_mds.mul_tmp1 == P2.u_core.u_exec.u_mds.mul_tmp1) &&
+      (P1.u_core.u_exec.u_mds.mul_tmp2 == P2.u_core.u_exec.u_mds.mul_tmp2) &&
+      (P1.u_core.u_exec.u_mds.op_r == P2.u_core.u_exec.u_mds.op_r) &&
+      (P1.u_core.u_exec.u_mds.shift_amt_r == P2.u_core.u_exec.u_mds.shift_amt_r) &&
+      (P1.u_core.u_exec.u_mds.working == P2.u_core.u_exec.u_mds.working) &&
+      (P1.u_core.u_exec.u_mds.out_valid == P2.u_core.u_exec.u_mds.out_valid) &&
+      (P1.u_core.u_exec.u_mem.mem_state == P2.u_core.u_exec.u_mem.mem_state) &&
+      (P1.u_core.u_exec.u_mem.ack_data == P2.u_core.u_exec.u_mem.ack_data) &&
+      (P1.u_core.u_exec.u_mem.ack_valid == P2.u_core.u_exec.u_mem.ack_valid) &&
+      (P1.u_core.u_exec.u_mem.daddr == P2.u_core.u_exec.u_mem.daddr) &&
+      (P1.u_core.u_exec.u_mem.dvalid == P2.u_core.u_exec.u_mem.dvalid) &&
+      (P1.u_core.u_exec.u_mem.dwrite == P2.u_core.u_exec.u_mem.dwrite) &&
+      (P1.u_core.u_exec.u_mem.dwstb == P2.u_core.u_exec.u_mem.dwstb) &&
+      (P1.u_core.u_fetch.fetch_valid_r == P2.u_core.u_fetch.fetch_valid_r) &&
+      (P1.u_core.u_fetch.instr_cache == P2.u_core.u_fetch.instr_cache) &&
+      (P1.u_core.u_fetch.instr_cache_valid == P2.u_core.u_fetch.instr_cache_valid) &&
+      (P1.u_core.u_fetch.ivalid_r == P2.u_core.u_fetch.ivalid_r) &&
+      (P1.u_core.u_fetch.state == P2.u_core.u_fetch.state) &&
+//      (P1.u_core.u_fetch.iaddr == P2.u_core.u_fetch.iaddr) &&
+      (P1.u_core.u_fetch.instr_c == P2.u_core.u_fetch.instr_c) &&
+      (P1.u_core.u_regfile.cycle_count == P2.u_core.u_regfile.cycle_count) &&
+      (P1.u_core.u_regfile.dep_hi_r == P2.u_core.u_regfile.dep_hi_r) &&
+      (P1.u_core.u_regfile.dep_lo_r == P2.u_core.u_regfile.dep_lo_r) &&
+      (P1.u_core.u_regfile.instr_count == P2.u_core.u_regfile.instr_count) &&
+      (P1.u_core.u_regfile.mpie == P2.u_core.u_regfile.mpie) &&
+      (P1.u_core.u_regfile.mscratch == P2.u_core.u_regfile.mscratch) &&
+      (P1.u_core.u_regfile.mtvec_r == P2.u_core.u_regfile.mtvec_r) &&
+      (P1.u_core.u_regfile.meie == P2.u_core.u_regfile.meie) &&
+      (P1.u_core.u_regfile.mie == P2.u_core.u_regfile.mie)
+    );
+  endfunction
+
+
+
+  property input_c;
+    //(P1.idata  == P2.idata ) &&
+    (P1.iready == P2.iready) &&
+    (P1.drdata == P2.drdata) &&
+    (P1.dready == P2.dready);
+  endproperty
+  input_c_a: assume property (input_c);
+
+  property no_compressed_instr_c;
+    (P1.idata[1:0] == 2'b11) &&
+    (P2.idata[1:0] == 2'b11);
+  endproperty
+  no_compressed_instr_c_a: assume property (no_compressed_instr_c);
+
+ property opcode_c;
+    ((P1.idata[6:0] == 7'b0010011) && (P2.idata[6:0] == 7'b0010011)) || // I-Type Arithmetic (ADDI, SLTI, ANDI...)
+    ((P1.idata[6:0] == 7'b0110011) && (P2.idata[6:0] == 7'b0110011)) || // R-Type Arithmetic (ADD, SLL, XOR...)
+    ((P1.idata[6:0] == 7'b1100011) && (P2.idata[6:0] == 7'b1100011)) || // Conditional Branches (BEQ, BNE...)
+    ((P1.idata[6:0] == 7'b0110111) && (P2.idata[6:0] == 7'b0110111)) || // LUI 
+    ((P1.idata[6:0] == 7'b0010111) && (P2.idata[6:0] == 7'b0010111)) || // AUIPC
+    ((P1.idata[6:0] == 7'b1101111) && (P2.idata[6:0] == 7'b1101111)) || // JAL
+    ((P1.idata[6:0] == 7'b1100111) && (P2.idata[6:0] == 7'b1100111)) || // JALR
+    ((P1.idata[6:0] == 7'b0000011) && (P2.idata[6:0] == 7'b0000011)) || // Load
+    ((P1.idata[6:0] == 7'b0100011) && (P2.idata[6:0] == 7'b0100011)) || // Store
+    ((P1.idata[6:0] == 7'b0110011) && (P2.idata[6:0] == 7'b0110011));   // M-Extension (MUL, DIV, REM...)
+  endproperty
+  opcode_c_a: assume property (opcode_c);
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (P1.u_core.soft_reset_count == 0) and
+    t ##0 (P1.u_core.tracer_pc == 0) and
+    t ##0 (P1.u_core.tracer_instr == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+/*
+  property fetch_p;
+    t ##0 ready_state() and
+    t ##0 (P1.ivalid == 1'b1) and
+    t ##0 (P1.iready == 1'b1)
+    implies
+    t ##1 (P1.u_core.u_fetch.fetch_valid_r == 1'b1);
+  endproperty
+  fetch_p_a: assert property (disable iff (rst) fetch_p);
+*/
+
+/*
+  property ADDI_p;
+  logic [31:0] instr_f;
+  logic [31:0][31:0] regs_f;
+    t ##0 ready_state() and
+    t ##0 (P1.ivalid == 1'b1) and
+    t ##0 (P1.iready == 1'b1) and
+    t ##0 (P1.idata[6:0] == 7'b0010011) and
+    t ##0 (P1.idata[14:12] == 3'b000) and
+    t ##0 set_freeze(instr_f, P1.idata) and
+    t ##0 set_freeze(regs_f, P1.u_core.u_regfile.regs[31:0])
+    implies
+    t ##1 (P1.u_core.u_fetch.fetch_valid_r == 1'b1) and
+    t ##1 (P1.u_core.u_fetch.instr == instr_f) and
+
+    t ##1 (P1.u_core.u_decode.ra_raddr == {1'b0, instr_f[19:15]}) and
+    t ##2 (P1.u_core.u_decode.decode_valid == 1'b1) and
+    t ##2 (P1.u_core.u_decode.op_type == 5'b00000) and // Arithmetic Instruction
+    t ##2 (P1.u_core.u_decode.op == 4'b0000) and // ALU ADD
+    t ##2 (P1.u_core.u_decode.op_a == regs_f[instr_f[19:15]]) and
+    t ##2 (P1.u_core.u_decode.op_b == 32'(signed'(instr_f[31:20]))) and
+
+    t ##2 (P1.u_core.u_exec.exec_state == 4'b0000) and
+    t ##3 (P1.u_core.u_exec.instr_complete == 1'b1) and
+    t ##3 (P1.u_core.u_exec.u_alu.out == regs_f[instr_f[19:15]] + 32'(signed'(instr_f[31:20]))) and
+
+    t ##1 (P1.ivalid == 1'b0) and
+    t ##2 (P1.ivalid == 1'b0) and
+    t ##3 (P1.ivalid == 1'b0) and
+    t ##4 (P1.ivalid == 1'b0) and
+    t ##5 (P1.ivalid == 1'b1);
+  endproperty
+  ADDI_p_a: assert property (disable iff (rst) ADDI_p);
+*/
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  sequence t_done;
+    await(nxt(t, 1), P1.ivalid == 1'b1, MAX_LATENCY);
+  endsequence
+
+  /*
+  Covers the following Instructions:
+  ADDI, SLTI, SLTIU, XORI, ORI, ANDI, SLLI, SRLI, SRAI
+
+  Since funct3 is not fixed, all of the proven instructions have the same timing behavior
+  */
+  property i_type_arith_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b0010011) && (P2.idata[6:0] == 7'b0010011)) and
+    t ##0 (P1.idata[14:12] == P2.idata[14:12]) and // Fixed funct3
+    t ##0 (P1.idata[31:20] == P2.idata[31:20])     // Fixed Immediate
+    implies
+    during_o(t, 1, t_done, 0, no_control_discrepancy());
+  endproperty
+  i_type_arith_dit_p_a: assert property (disable iff (rst) i_type_arith_dit_p);
+
+  /*
+  Covers the following Instructions:
+  ADD, SUB, SLT, SLTU, XOR, OR, AND
+
+  Not constant-time:
+  SLL, SRL, SRA
+  */
+  property r_type_arith_dit_rs1_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 (P1.idata[24:20] == P2.idata[24:20]) and // Fixed rs2
+    t ##0 r_type_arith_instr()
+    implies
+    during_o(t, 1, t_done, 0, no_control_discrepancy());
+  endproperty
+  r_type_arith_dit_rs1_p_a: assert property (disable iff (rst) r_type_arith_dit_rs1_p);    
+
+  /*
+  Covers the following Instructions:
+  ADD, SUB, SLT, SLTU, XOR, OR, AND
+
+  Not constant-time:
+  SLL, SRL, SRA
+  */
+  property r_type_arith_dit_rs2_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 (P1.idata[19:15] == P2.idata[19:15]) and // Fixed rs1
+    t ##0 r_type_arith_instr()
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  r_type_arith_dit_rs2_p_a: assert property (disable iff (rst) r_type_arith_dit_rs2_p);    
+
+  /*
+  Covers the following Instructions:
+  MUL, MULH, MULHSU, MULHU, DIV, DIVU, REM, REMU
+
+  Fails because these instructions are not yet implemented in the core.
+  The MDS unit is able to perform most of them, but the decoder does not cover them.
+  The decoding is defaulting to shift instructions for all of them.
+  */
+  property m_extension_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 m_extension_instr()
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  m_extension_dit_p_a: assert property (disable iff (rst) m_extension_dit_p);    
+
+  /*
+  Covers the following Instructions:
+  BEQ, BNE, BLT, BGE, BLTU, BGEU
+
+  Instructions take longer if the branch is taken
+  */
+  property cond_branch_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b1100011) && (P2.idata[6:0] == 7'b1100011)) and
+    t ##0 (P1.idata[14:12] == P2.idata[14:12]) // Fixed funct3
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  cond_branch_dit_p_a: assert property (disable iff (rst) cond_branch_dit_p);
+
+  /*
+  Covers the following Instruction:
+  JAL
+
+  Imm[1] (Instr[21]) causes an Instruction address misaligned exception
+  */
+  property jal_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b1101111) && (P2.idata[6:0] == 7'b1101111)) and
+  //  t ##0 ((P1.idata[21] == 1'b0) && (P2.idata[21] == 1'b0))
+    t ##0 (P1.idata[31:20] == P2.idata[31:20])     // Fixed Immediate
+    implies
+    during_o(t, 1, t_done, 0, no_control_discrepancy());
+  endproperty
+  jal_dit_p_a: assert property (disable iff (rst) jal_dit_p);
+
+  /*
+  Covers the following Instruction:
+  JALR
+
+  Address rs1+Imm can cause Instruction address misaligned
+  */
+  property jalr_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b1100111) && (P2.idata[6:0] == 7'b1100111)) and
+    t ##0 ((P1.idata[14:12] == 7'b000) && (P2.idata[14:12] == 3'b000)) and
+    t ##0 (P1.idata[31:20] == P2.idata[31:20])     // Fixed Immediate
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  jalr_dit_p_a: assert property (disable iff (rst) jalr_dit_p);
+
+  /*
+  Covers the following Instructions:
+  LB, LH, LW, LBU, LHU
+
+  Not constant time if address is unaligned (-> Exception)
+  Holds for LB and LBU
+  */
+  property load_dit_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b0000011) && (P2.idata[6:0] == 7'b0000011)) and
+    t ##0 (P1.idata[14:12] == P2.idata[14:12]) and // Fixed funct3
+    t ##0 (P1.idata[14:12] <= 3'b101) 
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  load_dit_p_a: assert property (disable iff (rst) load_dit_p);
+
+  /*
+  Covers the following Instructions:
+  SB, SH, SW
+
+  Not constant time if address is unaligned (-> Exception)
+  Holds for SB
+  */
+  property store_dit_rs1_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b0100011) && (P2.idata[6:0] == 7'b0100011)) and
+    t ##0 (P1.idata[14:12] == P2.idata[14:12]) and // Fixed funct3
+    t ##0 (P1.idata[11:7] == P2.idata[11:7])   and // Fixed Imm[4:0]
+    t ##0 (P1.idata[31:25] == P2.idata[31:25]) and // Fixed Imm[11:5]
+    t ##0 (P1.idata[24:20] == P2.idata[24:20]) and // Fixed rs2
+    t ##0 (P1.idata[14:12] <= 3'b010) 
+    implies
+    during_o(t, 1, t_done, 0, P1.ivalid == P2.ivalid);
+  endproperty
+  store_dit_rs1_p_a: assert property (disable iff (rst) store_dit_rs1_p);
+
+  /*
+  Covers the following Instructions:
+  SB, SH, SW
+
+  Not constant time if address is unaligned (-> Exception)
+  Holds for SB
+  */
+  property store_dit_rs2_p;
+    t ##0 state_equivalence() and
+    t ##0 ready_state() and
+    t ##0 ((P1.ivalid == 1'b1) && (P2.ivalid == 1'b1)) and
+    t ##0 ((P1.iready == 1'b1) && (P2.iready == 1'b1)) and
+    t ##0 ((P1.idata[6:0] == 7'b0100011) && (P2.idata[6:0] == 7'b0100011)) and
+    t ##0 (P1.idata[14:12] == P2.idata[14:12]) and // Fixed funct3
+    t ##0 (P1.idata[11:7] == P2.idata[11:7])   and // Fixed Imm[4:0]
+    t ##0 (P1.idata[31:25] == P2.idata[31:25]) and // Fixed Imm[11:5]
+    t ##0 (P1.idata[19:15] == P2.idata[19:15]) and // Fixed rs1
+    t ##0 (P1.idata[14:12] <= 3'b010) 
+    implies
+    during_o(t, 1, t_done, 0, no_control_discrepancy());
+  endproperty
+  store_dit_rs2_p_a: assert property (disable iff (rst) store_dit_rs2_p);
+
+`end_tda
+
+endmodule
+
+bind fwriscv_rv32im_miter property_checker checker_bind(.clk(clk), .rst(rst));

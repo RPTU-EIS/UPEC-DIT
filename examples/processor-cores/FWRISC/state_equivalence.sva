@@ -1,0 +1,62 @@
+function automatic state_equivalence();
+state_equivalence = (
+  (P1.u_core.soft_reset_count == P2.u_core.soft_reset_count) &&
+  (P1.u_core.tracer_instr == P2.u_core.tracer_instr) &&
+  (P1.u_core.tracer_pc == P2.u_core.tracer_pc) &&
+  (P1.u_core.u_decode.decode_state == P2.u_core.u_decode.decode_state) &&
+  (P1.u_core.u_decode.decode_valid_r == P2.u_core.u_decode.decode_valid_r) &&
+  (P1.u_core.u_decode.imm_lui == P2.u_core.u_decode.imm_lui) &&
+  (P1.u_core.u_decode.op_type == P2.u_core.u_decode.op_type) &&
+  (P1.u_core.u_decode.rd_raddr == P2.u_core.u_decode.rd_raddr) &&
+  (P1.u_core.u_exec.exec_state == P2.u_core.u_exec.exec_state) &&
+  (P1.u_core.u_exec.mcause == P2.u_core.u_exec.mcause) &&
+  (P1.u_core.u_exec.mcause_int == P2.u_core.u_exec.mcause_int) &&
+  (P1.u_core.u_exec.mtval == P2.u_core.u_exec.mtval) &&
+  (P1.u_core.u_exec.instr_complete == P2.u_core.u_exec.instr_complete) &&
+  (P1.u_core.u_exec.pc == P2.u_core.u_exec.pc) &&
+  (P1.u_core.u_exec.pc_seq == P2.u_core.u_exec.pc_seq) &&
+  (P1.u_core.u_exec.trap == P2.u_core.u_exec.trap) &&
+  (P1.u_core.u_exec.tret == P2.u_core.u_exec.tret) &&
+  (P1.u_core.u_exec.u_mds.div_dividend == P2.u_core.u_exec.u_mds.div_dividend) &&
+  (P1.u_core.u_exec.u_mds.div_divisor == P2.u_core.u_exec.u_mds.div_divisor) &&
+  (P1.u_core.u_exec.u_mds.div_msk == P2.u_core.u_exec.u_mds.div_msk) &&
+  (P1.u_core.u_exec.u_mds.div_quotient == P2.u_core.u_exec.u_mds.div_quotient) &&
+  (P1.u_core.u_exec.u_mds.div_sign == P2.u_core.u_exec.u_mds.div_sign) &&
+  (P1.u_core.u_exec.u_mds.mul_res == P2.u_core.u_exec.u_mds.mul_res) &&
+  (P1.u_core.u_exec.u_mds.mul_tmp1 == P2.u_core.u_exec.u_mds.mul_tmp1) &&
+  (P1.u_core.u_exec.u_mds.mul_tmp2 == P2.u_core.u_exec.u_mds.mul_tmp2) &&
+  (P1.u_core.u_exec.u_mds.op_r == P2.u_core.u_exec.u_mds.op_r) &&
+  (P1.u_core.u_exec.u_mds.shift_amt_r == P2.u_core.u_exec.u_mds.shift_amt_r) &&
+  (P1.u_core.u_exec.u_mds.working == P2.u_core.u_exec.u_mds.working) &&
+  (P1.u_core.u_exec.u_mds.out == P2.u_core.u_exec.u_mds.out) &&
+  (P1.u_core.u_exec.u_mds.out_valid == P2.u_core.u_exec.u_mds.out_valid) &&
+  (P1.u_core.u_exec.u_mem.mem_state == P2.u_core.u_exec.u_mem.mem_state) &&
+  (P1.u_core.u_exec.u_mem.ack_data == P2.u_core.u_exec.u_mem.ack_data) &&
+  (P1.u_core.u_exec.u_mem.ack_valid == P2.u_core.u_exec.u_mem.ack_valid) &&
+  (P1.u_core.u_exec.u_mem.daddr == P2.u_core.u_exec.u_mem.daddr) &&
+  (P1.u_core.u_exec.u_mem.dvalid == P2.u_core.u_exec.u_mem.dvalid) &&
+  (P1.u_core.u_exec.u_mem.dwdata == P2.u_core.u_exec.u_mem.dwdata) &&
+  (P1.u_core.u_exec.u_mem.dwrite == P2.u_core.u_exec.u_mem.dwrite) &&
+  (P1.u_core.u_exec.u_mem.dwstb == P2.u_core.u_exec.u_mem.dwstb) &&
+  (P1.u_core.u_fetch.fetch_valid_r == P2.u_core.u_fetch.fetch_valid_r) &&
+  (P1.u_core.u_fetch.instr_cache == P2.u_core.u_fetch.instr_cache) &&
+  (P1.u_core.u_fetch.instr_cache_valid == P2.u_core.u_fetch.instr_cache_valid) &&
+  (P1.u_core.u_fetch.ivalid_r == P2.u_core.u_fetch.ivalid_r) &&
+  (P1.u_core.u_fetch.state == P2.u_core.u_fetch.state) &&
+  (P1.u_core.u_fetch.iaddr == P2.u_core.u_fetch.iaddr) &&
+  (P1.u_core.u_fetch.instr == P2.u_core.u_fetch.instr) &&
+  (P1.u_core.u_fetch.instr_c == P2.u_core.u_fetch.instr_c) &&
+  (P1.u_core.u_regfile.cycle_count == P2.u_core.u_regfile.cycle_count) &&
+  (P1.u_core.u_regfile.dep_hi_r == P2.u_core.u_regfile.dep_hi_r) &&
+  (P1.u_core.u_regfile.dep_lo_r == P2.u_core.u_regfile.dep_lo_r) &&
+  (P1.u_core.u_regfile.instr_count == P2.u_core.u_regfile.instr_count) &&
+  (P1.u_core.u_regfile.mpie == P2.u_core.u_regfile.mpie) &&
+  (P1.u_core.u_regfile.mscratch == P2.u_core.u_regfile.mscratch) &&
+  (P1.u_core.u_regfile.mtvec_r == P2.u_core.u_regfile.mtvec_r) &&
+  (P1.u_core.u_regfile.regs == P2.u_core.u_regfile.regs) &&
+  (P1.u_core.u_regfile.meie == P2.u_core.u_regfile.meie) &&
+  (P1.u_core.u_regfile.mie == P2.u_core.u_regfile.mie) &&
+  (P1.u_core.u_regfile.ra_rdata == P2.u_core.u_regfile.ra_rdata) &&
+  (P1.u_core.u_regfile.rb_rdata == P2.u_core.u_regfile.rb_rdata)
+);
+endfunction
