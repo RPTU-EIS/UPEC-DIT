@@ -1,0 +1,429 @@
+`include "rtl/ibex_pkg.sv"
+
+module property_checker import ibex_pkg::*; #(
+  // Adjust this parameter in the miter before elaboration with
+  // set_elaborate_option -verilog_parameter
+  parameter bit                 PMPEnable        = 1'b0,
+  parameter int unsigned        PMPGranularity   = 0,
+  parameter int unsigned        PMPNumRegions    = 4,
+  parameter int unsigned        MHPMCounterNum   = 0,
+  parameter int unsigned        MHPMCounterWidth = 40,
+  parameter bit                 RV32E            = 1'b0,
+  parameter ibex_pkg::rv32m_e   RV32M            = ibex_pkg::RV32MFast,
+  parameter ibex_pkg::rv32b_e   RV32B            = ibex_pkg::RV32BNone,
+//  parameter ibex_pkg::regfile_e RegFile          = ibex_pkg::RegFileFF,
+  parameter bit                 BranchTargetALU  = 1'b0,
+  parameter bit                 WritebackStage   = 1'b0,
+  parameter bit                 ICache           = 1'b0,
+  parameter bit                 ICacheECC        = 1'b0,
+  parameter bit                 BranchPredictor  = 1'b0,
+  parameter bit                 DbgTriggerEn     = 1'b0,
+  parameter int unsigned        DbgHwBreakNum    = 1,
+  parameter bit                 SecureIbex       = 1'b0,
+  parameter int unsigned        DmHaltAddr       = 32'h1A110800,
+  parameter int unsigned        DmExceptionAddr  = 32'h1A110808
+) (
+  input clk,
+  input rst
+);
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+  // TODO: Find a way to fix the dependence Issue
+  //`include "ibex_state_equivalence.sva"
+  //`include "ibex_secure_state_equivalence.sva"
+  `include "ibex_slow_state_equivalence.sva"
+  //`include "ibex_secure_slow_state_equivalence.sva"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 20;
+
+  // TODO: Find a way to fix the dependence Issue
+  function automatic State_Equivalence();
+  State_Equivalence = (
+    //secure_state_equivalence()
+    slow_state_equivalence()
+    //secure_slow_state_equivalence()
+    //(SecureIbex == 1'b0) ? ((RV32M == 1) ? slow_state_equivalence() : default_state_equivalence()) : secure_state_equivalence()
+  );
+  endfunction;
+
+  function automatic Data_Independent_Timing();
+  Data_Independent_Timing = (
+    (SecureIbex == 1'b0) ? 1 : (P1.cs_registers_i.cpuctrl_q.data_ind_timing == 1'b1)
+  );
+  endfunction;
+
+  function automatic New_Instruction_Ready();
+  New_Instruction_Ready = (
+    (P1.if_stage_i.instr_valid_id_q == 1'b1) &&
+    (P1.if_stage_i.instr_new_id_q   == 1'b1)
+  );
+  endfunction;
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+    // Internal Signals
+    (P1.id_stage_i.id_in_ready_o == P2.id_stage_i.id_in_ready_o) &&
+    (P1.id_stage_i.id_fsm_q == P2.id_stage_i.id_fsm_q) &&
+    (P1.id_stage_i.controller_i.ctrl_fsm_cs == P2.id_stage_i.controller_i.ctrl_fsm_cs) &&
+    (P1.id_stage_i.controller_i.exception_req_accepted == P2.id_stage_i.controller_i.exception_req_accepted) &&
+    (P1.id_stage_i.controller_i.exception_req_pending == P2.id_stage_i.controller_i.exception_req_pending) &&
+    (P1.id_stage_i.controller_i.expect_exception_pc_set == P2.id_stage_i.controller_i.expect_exception_pc_set) &&
+    (P1.id_stage_i.controller_i.seen_exception_pc_set == P2.id_stage_i.controller_i.seen_exception_pc_set) &&
+    (P1.id_stage_i.controller_i.store_err_q == P2.id_stage_i.controller_i.store_err_q) &&
+    (P1.if_stage_i.instr_valid_id_q == P2.if_stage_i.instr_valid_id_q) &&
+    (P1.load_store_unit_i.handle_misaligned_q == P2.load_store_unit_i.handle_misaligned_q) &&
+    (P1.load_store_unit_i.ls_fsm_cs == P2.load_store_unit_i.ls_fsm_cs) &&
+    (P1.load_store_unit_i.lsu_err_q == P2.load_store_unit_i.lsu_err_q) &&
+    (P1.load_store_unit_i.pmp_err_q == P2.load_store_unit_i.pmp_err_q) &&
+
+    // Core Outputs
+    (P1.instr_req_o              == P2.instr_req_o             ) &&
+    //(P1.instr_addr_o             == P2.instr_addr_o            ) &&
+    (P1.data_req_o               == P2.data_req_o              ) &&
+    (P1.data_we_o                == P2.data_we_o               ) &&
+    (P1.rf_raddr_a_o             == P2.rf_raddr_a_o            ) &&
+    (P1.rf_raddr_b_o             == P2.rf_raddr_b_o            ) &&
+    (P1.rf_waddr_wb_o            == P2.rf_waddr_wb_o           ) &&
+    (P1.rf_we_wb_o               == P2.rf_we_wb_o              )
+  );
+  endfunction;
+
+  function automatic R_Type_Arithmetic_Instruction();
+  R_Type_Arithmetic_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // ADD
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0100000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SUB
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SLL
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SLT
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b011) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SLTU
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b100) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // XOR
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SRL
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0100000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // SRA
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b110) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // OR
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b111) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011))    // AND
+  );
+  endfunction;
+
+  function automatic I_Type_Arithmetic_Instruction();
+  I_Type_Arithmetic_Instruction = (
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // ADDI
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // SLTI
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b011) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // SLTIU
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b100) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // XORI
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b110) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // ORI
+    (                                                         (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b111) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // ANDI
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // SLLI
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011)) || // SRLI
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0100000) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0010011))    // SRAI
+  );
+  endfunction;
+
+  function automatic Load_Instruction();
+  Load_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0000011)) || // LB
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0000011)) || // LH
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0000011)) || // LW
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b100) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0000011)) || // LBU
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0000011))    // LHU
+  );
+  endfunction;
+
+  function automatic Store_Instruction();
+  Store_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0100011)) || // SB
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0100011)) || // SH
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0100011))    // SW
+  );
+  endfunction;
+
+  function automatic Branch_Instruction();
+  Branch_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011)) || // BEQ
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011)) || // BNE
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b100) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011)) || // BLT
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011)) || // BGE
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b110) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011)) || // BLTU
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b111) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100011))    // BGEU
+  );
+  endfunction;
+
+  function automatic Jump_Instruction();
+  Jump_Instruction = (
+    (                                                     (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1101111)) || // JAL
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1100111))    // JALR
+  );
+  endfunction;
+
+  function automatic Mult_Instruction();
+  Mult_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b000) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // MUL
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // MULH
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // MULHSU
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b011) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011))    // MULHU
+  );
+  endfunction;
+
+  function automatic Div_Instruction();
+  Div_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b100) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // DIV
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // DIVU
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b110) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011)) || // REM
+    ((P1.if_stage_i.instr_rdata_id_o[31:25] == 7'b0000001) && (P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b111) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b0110011))    // REMU
+  );
+  endfunction;
+
+  function automatic CSR_Access_Instruction();
+  CSR_Access_Instruction = (
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b001) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011)) || // CSRRW
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b010) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011)) || // CSRRS
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b011) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011)) || // CSRRC
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b101) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011)) || // CSRRWI
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b110) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011)) || // CSRRSI
+    ((P1.if_stage_i.instr_rdata_id_o[14:12] == 3'b111) && (P1.if_stage_i.instr_rdata_id_o[6:0] == 7'b1110011))    // CSRRCI
+  );
+  endfunction;
+
+  // ---------------
+  // - Constraints -
+  // ---------------
+
+  property input_c;
+//    (P1.rf_rdata_a_ecc_i == P2.rf_rdata_a_ecc_i) &&
+//    (P1.rf_rdata_b_ecc_i == P2.rf_rdata_b_ecc_i) &&
+//    (P1.data_rdata_i     == P2.data_rdata_i    ) &&
+    (P1.instr_rdata_i    == P2.instr_rdata_i);
+  endproperty
+  input_c_a: assume property (input_c);
+
+  property r0_c;
+    ((P1.rf_raddr_a_o != '0) || (P1.rf_rdata_a_ecc_i == '0)) &&
+    ((P1.rf_raddr_b_o != '0) || (P1.rf_rdata_b_ecc_i == '0)) &&
+    ((P2.rf_raddr_a_o != '0) || (P2.rf_rdata_a_ecc_i == '0)) &&
+    ((P2.rf_raddr_b_o != '0) || (P2.rf_rdata_b_ecc_i == '0));
+  endproperty
+  r0_c_a: assume property (r0_c);
+  
+  /*
+  property no_compressed_instr_c;
+    (P1.instr_rdata_i[1:0] == 2'b11) &&
+    (P2.instr_rdata_i[1:0] == 2'b11);
+  endproperty
+  no_compressed_instr_c_a: assume property (no_compressed_instr_c);
+  */
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (P1.if_stage_i.instr_valid_id_q       == 1'b0) and
+    t ##0 (P1.if_stage_i.instr_new_id_q         == 1'b0) and
+    t ##0 (P1.id_stage_i.imd_val_q              ==   '0) and
+    t ##0 (P1.id_stage_i.id_fsm_q               == 1'b0) and
+    t ##0 (P1.id_stage_i.branch_jump_set_done_q == 1'b0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  sequence t_done;
+    await(t, P1.id_stage_i.id_in_ready_o == 1'b1, MAX_LATENCY);
+  endsequence
+
+  property dit_r_type_arith_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 R_Type_Arithmetic_Instruction()
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_r_type_arith_p_a: assert property (disable iff (rst) dit_r_type_arith_p);
+
+  property dit_i_type_arith_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 I_Type_Arithmetic_Instruction()
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_i_type_arith_p_a: assert property (disable iff (rst) dit_i_type_arith_p);
+
+  /*
+  IBEX resolves misaligned addresses by performing two memory accesses.
+  Therefore, Loads are not oblivious if data causes a misaligned access.
+  LB and LBU are oblivious (assuming an oblivious memory subsystem).
+
+  Also the case in presence of the data_ind_timing bit.
+  */
+  property dit_load_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Load_Instruction() and
+    t ##0 (P1.instr_rvalid_i == 1'b1) and
+    t ##0 (P1.if_stage_i.instr_rdata_id_o[19:15] == 3'b001)
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_load_p_a: assert property (disable iff (rst) dit_load_p);
+
+  /*
+  IBEX resolves misaligned addresses by performing two memory accesses.
+  Therefore, Stores are not oblivious if data causes a misaligned access.
+  SB is oblivious (assuming an oblivious memory subsystem).
+
+  Also the case in presence of the data_ind_timing bit.
+  */
+  property dit_store_rs1_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Store_Instruction() and
+    during(t, t_done, (P1.rf_rdata_b_ecc_i == P2.rf_rdata_b_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs1_p_a: assert property (disable iff (rst) dit_store_rs1_p);
+
+  property dit_store_rs2_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Store_Instruction() and
+    during(t, t_done, (P1.rf_rdata_a_ecc_i == P2.rf_rdata_a_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs2_p_a: assert property (disable iff (rst) dit_store_rs2_p);
+
+  /*
+  Branches take longer if the branch is taken.
+  
+  This vulnerability is addressed by setting the data_ind_timing bit.
+  */
+  property dit_branch_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Branch_Instruction()
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_branch_p_a: assert property (disable iff (rst) dit_branch_p);
+
+  /*
+  JAL and JALR are executed in oblivious.
+  However, for JALR the target PC depends on data.
+  */
+  property dit_jump_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Jump_Instruction()
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_jump_p_a: assert property (disable iff (rst) dit_jump_p);
+
+  /*
+  Data Oblivious for the Fast Multiplier.
+  The Slow multiplier has a Zero Fast-Path for rs2.
+  */
+  property dit_mult_rs1_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Mult_Instruction() and
+    during(t, t_done, (P1.rf_rdata_b_ecc_i == P2.rf_rdata_b_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_mult_rs1_p_a: assert property (disable iff (rst) dit_mult_rs1_p);
+
+  property dit_mult_rs2_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Mult_Instruction() and
+    during(t, t_done, (P1.rf_rdata_a_ecc_i == P2.rf_rdata_a_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_mult_rs2_p_a: assert property (disable iff (rst) dit_mult_rs2_p);
+
+  /*
+  Data-Independent Timing violation due to fast path if division by zero is triggered.
+
+  This vulnerability is fixed by setting the data_ind_timing bit.
+  */
+  property dit_div_rs1_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Div_Instruction() and
+    during(t, t_done, (P1.rf_rdata_b_ecc_i == P2.rf_rdata_b_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_div_rs1_p_a: assert property (disable iff (rst) dit_div_rs1_p);
+
+  property dit_div_rs2_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 Div_Instruction() and
+    during(t, t_done, (P1.rf_rdata_a_ecc_i == P2.rf_rdata_a_ecc_i))
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_div_rs2_p_a: assert property (disable iff (rst) dit_div_rs2_p);
+
+  property dit_csr_access_p;
+    t ##0 State_Equivalence() and
+    t ##0 Data_Independent_Timing() and
+    t ##0 New_Instruction_Ready() and
+    t ##0 CSR_Access_Instruction()
+  implies
+    during_o(t, 0, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_csr_access_p_a: assert property (disable iff (rst) dit_csr_access_p);
+
+`end_tda
+
+endmodule
+
+bind ibex_miter property_checker #(
+  .PMPEnable(PMPEnable),
+  .PMPGranularity(PMPGranularity),
+  .PMPNumRegions(PMPNumRegions),
+  .MHPMCounterNum(MHPMCounterNum),
+  .MHPMCounterWidth(MHPMCounterWidth),
+  .RV32E(RV32E),
+  .RV32M(RV32M),
+  .RV32B(RV32B),
+  .BranchTargetALU(BranchTargetALU),
+  .WritebackStage(WritebackStage),
+  .ICache(ICache),
+  .ICacheECC(ICacheECC),
+  .BranchPredictor(BranchPredictor),
+  .DbgTriggerEn(DbgTriggerEn),
+  .DbgHwBreakNum(DbgHwBreakNum),
+  .SecureIbex(SecureIbex),
+  .DmHaltAddr(DmHaltAddr),
+  .DmExceptionAddr(DmExceptionAddr)
+) checker_bind(.clk(clk), .rst(rst));
