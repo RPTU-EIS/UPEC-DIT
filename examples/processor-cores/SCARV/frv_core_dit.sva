@@ -1,0 +1,596 @@
+// @lang=sva @ts=8
+
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+  `include "state_equivalence.sva"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 5;
+  localparam IUV_PC = 32'h8000_0000;
+
+  function logic [6:0] Opcode();
+  Opcode = (
+    P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[6:0]
+  );
+  endfunction;
+
+  function logic [2:0] Funct3();
+  Funct3 = (
+    P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[14:12]
+  );
+  endfunction;
+
+  function logic [4:0] Funct5();
+  Funct5 = (
+    P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[24:20]
+  );
+  endfunction;
+
+  function logic [6:0] Funct7();
+  Funct7 = (
+    P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:25]
+  );
+  endfunction;
+
+  function automatic R_Type_Arithmetic_Instruction();
+  R_Type_Arithmetic_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // ADD
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // SUB
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b001) && (Opcode() == 7'b0110011)) || // SLL
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b010) && (Opcode() == 7'b0110011)) || // SLT
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b011) && (Opcode() == 7'b0110011)) || // SLTU
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b100) && (Opcode() == 7'b0110011)) || // XOR
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // SRL
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // SRA
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b110) && (Opcode() == 7'b0110011)) || // OR
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b111) && (Opcode() == 7'b0110011))    // AND
+  );
+  endfunction;
+
+  function automatic ADD_Instruction();
+  ADD_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SUB_Instruction();
+  SUB_Instruction = (
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SLL_Instruction();
+  SLL_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b001) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SLT_Instruction();
+  SLT_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b010) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SLTU_Instruction();
+  SLTU_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b011) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic XOR_Instruction();
+  XOR_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b100) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SRL_Instruction();
+  SRL_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic SRA_Instruction();
+  SRA_Instruction = (
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic OR_Instruction();
+  OR_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b110) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+  function automatic AND_Instruction();
+  AND_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b111) && (Opcode() == 7'b0110011))
+  );
+  endfunction;
+
+
+  function automatic I_Type_Arithmetic_Instruction();
+  I_Type_Arithmetic_Instruction = (
+    (                            (Funct3() == 3'b000) && (Opcode() == 7'b0010011)) || // ADDI
+    (                            (Funct3() == 3'b010) && (Opcode() == 7'b0010011)) || // SLTI
+    (                            (Funct3() == 3'b011) && (Opcode() == 7'b0010011)) || // SLTIU
+    (                            (Funct3() == 3'b100) && (Opcode() == 7'b0010011)) || // XORI
+    (                            (Funct3() == 3'b110) && (Opcode() == 7'b0010011)) || // ORI
+    (                            (Funct3() == 3'b111) && (Opcode() == 7'b0010011)) || // ANDI
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b001) && (Opcode() == 7'b0010011)) || // SLLI
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b101) && (Opcode() == 7'b0010011)) || // SRLI
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b101) && (Opcode() == 7'b0010011))    // SRAI
+  );
+  endfunction;
+
+  function automatic Load_Instruction();
+  Load_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b0000011)) || // LB
+    ((Funct3() == 3'b001) && (Opcode() == 7'b0000011)) || // LH
+    ((Funct3() == 3'b010) && (Opcode() == 7'b0000011)) || // LW
+    ((Funct3() == 3'b100) && (Opcode() == 7'b0000011)) || // LBU
+    ((Funct3() == 3'b101) && (Opcode() == 7'b0000011))    // LHU
+  );
+  endfunction;
+
+  function automatic Store_Instruction();
+  Store_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b0100011)) || // SB
+    ((Funct3() == 3'b001) && (Opcode() == 7'b0100011)) || // SH
+    ((Funct3() == 3'b010) && (Opcode() == 7'b0100011))    // SW
+  );
+  endfunction;
+
+  function automatic Branch_Instruction();
+  Branch_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b1100011)) || // BEQ
+    ((Funct3() == 3'b001) && (Opcode() == 7'b1100011)) || // BNE
+    ((Funct3() == 3'b100) && (Opcode() == 7'b1100011)) || // BLT
+    ((Funct3() == 3'b101) && (Opcode() == 7'b1100011)) || // BGE
+    ((Funct3() == 3'b110) && (Opcode() == 7'b1100011)) || // BLTU
+    ((Funct3() == 3'b111) && (Opcode() == 7'b1100011))    // BGEU
+  );
+  endfunction;
+
+  function automatic Jump_Instruction();
+  Jump_Instruction = (
+    (                        (Opcode() == 7'b1101111)) || // JAL
+    ((Funct3() == 3'b000) && (Opcode() == 7'b1100111))    // JALR
+  );
+  endfunction;
+
+  function automatic Mult_Instruction();
+  Mult_Instruction = (
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // MUL
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b001) && (Opcode() == 7'b0110011)) || // MULH
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b010) && (Opcode() == 7'b0110011)) || // MULHSU
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b011) && (Opcode() == 7'b0110011))    // MULHU
+  );
+  endfunction;
+
+  function automatic Div_Instruction();
+  Div_Instruction = (
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b100) && (Opcode() == 7'b0110011)) || // DIV
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // DIVU
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b110) && (Opcode() == 7'b0110011)) || // REM
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b111) && (Opcode() == 7'b0110011))    // REMU
+  );
+  endfunction;
+
+  function automatic CSR_Access_Instruction();
+  CSR_Access_Instruction = (
+    ((Funct3() == 3'b001) && (Opcode() == 7'b1110011)) || // CSRRW
+    ((Funct3() == 3'b010) && (Opcode() == 7'b1110011)) || // CSRRS
+    ((Funct3() == 3'b011) && (Opcode() == 7'b1110011)) || // CSRRC
+    ((Funct3() == 3'b101) && (Opcode() == 7'b1110011)) || // CSRRWI
+    ((Funct3() == 3'b110) && (Opcode() == 7'b1110011)) || // CSRRSI
+    ((Funct3() == 3'b111) && (Opcode() == 7'b1110011))    // CSRRCI
+  );
+  endfunction;
+
+  function automatic XCrypto_Instruction();
+  XCrypto_Instruction = (
+    ((Funct7() == 7'b0001101) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESSUB.ENC
+    ((Funct7() == 7'b0001110) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESSUB.ENCROT
+    ((Funct7() == 7'b0001111) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESSUB.DEC
+    ((Funct7() == 7'b0010000) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESSUB.DECROT
+    ((Funct7() == 7'b0010001) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESMIX.ENC
+    ((Funct7() == 7'b0010010) &&                           (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.AESMIX.DEC
+    ((Funct7() == 7'b0000111) && (Funct5() == 5'b00000) && (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.SHA256.S0
+    ((Funct7() == 7'b0000111) && (Funct5() == 5'b00001) && (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.SHA256.S1
+    ((Funct7() == 7'b0000111) && (Funct5() == 5'b00010) && (Funct3() == 3'b111) && (Opcode() == 7'b0000011)) || // XC.SHA256.S2
+    ((Funct7() == 7'b0000111) && (Funct5() == 5'b00011) && (Funct3() == 3'b111) && (Opcode() == 7'b0000011))    // XC.SHA256.S3
+  );
+  endfunction;
+
+  function automatic Equal_Forwarding();
+  Equal_Forwarding = (
+    (P1.i_pipeline.fwd_rs1_rdata == P2.i_pipeline.fwd_rs1_rdata) &&
+    (P1.i_pipeline.fwd_rs2_rdata == P2.i_pipeline.fwd_rs2_rdata) &&
+    (P1.i_pipeline.fwd_rs3_rdata == P2.i_pipeline.fwd_rs3_rdata)
+  );
+  endfunction;
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+    (P1.imem_req        == P2.imem_req        ) &&
+    (P1.imem_wen        == P2.imem_wen        ) &&
+    (P1.imem_strb       == P2.imem_strb       ) &&
+    (P1.imem_ack        == P2.imem_ack        ) &&
+    (P1.dmem_req        == P2.dmem_req        ) &&
+    (P1.dmem_ack        == P2.dmem_ack        ) &&
+    (P1.int_mtime       == P2.int_mtime       ) &&
+    (P1.rng_req_valid   == P2.rng_req_valid   ) &&
+    (P1.rng_rsp_ready   == P2.rng_rsp_ready   ) &&
+    (P1.rng_req_op      == P2.rng_req_op      ) &&
+    (P1.leak_fence_unc0 == P2.leak_fence_unc0 ) &&
+    (P1.leak_fence_unc1 == P2.leak_fence_unc1 ) &&
+    (P1.leak_fence_unc2 == P2.leak_fence_unc2 ) &&
+    (P1.trs_valid       == P2.trs_valid       ) &&
+    (P1.i_pipeline.s2_valid == P2.i_pipeline.s2_valid) &&
+    (P1.i_pipeline.s2_busy  == P2.i_pipeline.s2_busy ) &&
+    (P1.i_pipeline.s2_trap  == P2.i_pipeline.s2_trap ) &&
+    (P1.i_pipeline.s3_valid == P2.i_pipeline.s3_valid) &&
+    (P1.i_pipeline.s3_busy  == P2.i_pipeline.s3_busy ) &&
+    (P1.i_pipeline.s3_trap  == P2.i_pipeline.s3_trap ) &&
+    (P1.i_pipeline.s4_valid == P2.i_pipeline.s4_valid) &&
+    (P1.i_pipeline.s4_busy  == P2.i_pipeline.s4_busy ) &&
+    (P1.i_pipeline.s4_trap  == P2.i_pipeline.s4_trap )// &&
+   // (P1.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_a_error == P2.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_a_error)
+  );
+  endfunction;
+
+  property input_c;
+    (P1.rng_rsp_data               == P2.rng_rsp_data) &&
+    (P1.imem_rdata                 == P2.imem_rdata) &&
+    (P1.dmem_rdata                 == P2.dmem_rdata); //&&
+    //(P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data) &&
+    //(P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data) &&
+    //(P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data);
+  endproperty
+  input_c_a: assume property (input_c);
+
+/*
+  // Ensure memory is only provided after a request and no memory error occurs
+  property memory_c;
+    ((P1.imem_req == 1'b1) || (P1.imem_recv == 1'b0)) &&
+    ((P2.imem_req == 1'b1) || (P2.imem_recv == 1'b0)) &&
+    (!(P1.imem_gnt ^ P1.imem_recv)) &&
+    (!(P2.imem_gnt ^ P2.imem_recv)) &&
+    ((P1.imem_error == 1'b0) && (P2.imem_error == 1'b0)) &&
+    ((P1.dmem_error == 1'b0) && (P2.dmem_error == 1'b0));
+  endproperty
+  memory_c_a: assume property (memory_c);
+*/
+
+/*
+  property no_mmio_access_c;
+    ((P1.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_mmio == 0) && (P2.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_mmio == 0));
+  endproperty
+  no_mmio_access_c_a: assume property (no_mmio_access_c);
+*/
+
+/*
+  property no_address_error_c;
+    ((P1.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_a_error == 0) && (P2.i_pipeline.i_pipeline_s3_memory.i_lsu.lsu_a_error == 0));
+  endproperty
+  no_address_error_c_a: assume property (no_address_error_c);
+*/
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (P1.i_counters.mapped_mtime == 0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+
+  // ----------------------------
+  // - Constant-Time Properties -
+  // ----------------------------
+
+  /*
+   * This would be the proper way to do it, but Tidal does not allow this syntax
+   */
+  //sequence t_done(logic [31:0] instr);
+  //  await(nxt(t,1), ((P1.i_pipeline.s4_instr == instr) || (P1.i_pipeline.s4_instr == instr)), MAX_LATENCY);
+  //endsequence
+
+  sequence t_done;
+    await(nxt(t,1), ((P1.i_pipeline.s4_instr == IUV_PC) || (P1.i_pipeline.s4_instr == IUV_PC)), MAX_LATENCY);
+  endsequence
+
+  property dit_i_type_arith_p;
+    t ##0 state_equivalence() and
+    t ##0 I_Type_Arithmetic_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_i_type_arith_p_a: assert property (disable iff (rst) dit_i_type_arith_p);
+
+  property dit_r_type_arith_p;
+    t ##0 state_equivalence() and
+    t ##0 R_Type_Arithmetic_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_r_type_arith_p_a: assert property (disable iff (rst) dit_r_type_arith_p);
+
+  property dit_load_p;
+    t ##0 state_equivalence() and
+    t ##0 Load_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_load_p_a: assert property (disable iff (rst) dit_load_p);
+
+  property dit_store_rs1_p;
+    t ##0 state_equivalence() and
+    t ##0 Store_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 0, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs1_p_a: assert property (disable iff (rst) dit_store_rs1_p);
+
+  /*
+   * Can cause a Machine Timer interrupt
+   */
+  property dit_store_rs2_p;
+    t ##0 state_equivalence() and
+    t ##0 Store_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 0, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs2_p_a: assert property (disable iff (rst) dit_store_rs2_p);
+
+  property dit_branch_p;
+    t ##0 state_equivalence() and
+    t ##0 Branch_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_branch_p_a: assert property (disable iff (rst) dit_branch_p);
+
+  property dit_jump_p;
+    t ##0 state_equivalence() and
+    t ##0 Jump_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_jump_p_a: assert property (disable iff (rst) dit_jump_p);
+
+  property dit_mult_p;
+    t ##0 state_equivalence() and
+    t ##0 Mult_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_mult_p_a: assert property (disable iff (rst) dit_mult_p);
+
+  property dit_div_p;
+    t ##0 state_equivalence() and
+    t ##0 Div_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    during_o(t, 0, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_div_p_a: assert property (disable iff (rst) dit_div_p);
+
+  property dit_csr_access_p;
+    t ##0 state_equivalence() and
+    t ##0 CSR_Access_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_csr_access_p_a: assert property (disable iff (rst) dit_csr_access_p);
+
+  property dit_xcrypto_p;
+    t ##0 state_equivalence() and
+    t ##0 XCrypto_Instruction() and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs1_data == P2.i_pipeline.i_gprs.rs1_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs2_data == P2.i_pipeline.i_gprs.rs2_data)) and
+    during_o(t, 1, t, MAX_LATENCY, (P1.i_pipeline.i_gprs.rs3_data == P2.i_pipeline.i_gprs.rs3_data)) and
+    during_o(t, 1, t, MAX_LATENCY, Equal_Forwarding())
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_xcrypto_p_a: assert property (disable iff (rst) dit_xcrypto_p);
+
+  // ---------- Fine grained (Outdated) ----------
+/*
+  property dit_add_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 ADD_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_add_p_a: assert property (disable iff (rst) dit_add_p);
+
+  property dit_sub_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SUB_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_sub_p_a: assert property (disable iff (rst) dit_sub_p);
+
+  property dit_sll_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SLL_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_sll_p_a: assert property (disable iff (rst) dit_sll_p);
+
+  property dit_slt_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SLT_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_slt_p_a: assert property (disable iff (rst) dit_slt_p);
+
+  property dit_sltu_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SLTU_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_sltu_p_a: assert property (disable iff (rst) dit_sltu_p);
+
+  property dit_xor_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 XOR_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_xor_p_a: assert property (disable iff (rst) dit_xor_p);
+
+  property dit_srl_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SRL_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_srl_p_a: assert property (disable iff (rst) dit_srl_p);
+
+  property dit_sra_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 SRA_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_sra_p_a: assert property (disable iff (rst) dit_sra_p);
+
+  property dit_or_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 OR_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_or_p_a: assert property (disable iff (rst) dit_or_p);
+
+  property dit_and_p;
+    logic [31:0] instr;
+    t ##0 state_equivalence() and
+    t ##0 AND_Instruction() and
+    t ##0 set_freeze(instr, P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out[31:0]) and
+    during_o(t, 0, t_done, -1, ((P1.i_pipeline.cf_req == 0) && (P2.i_pipeline.cf_req == 0))) and
+    t ##0 (P1.i_pipeline.i_pipeline_s0_fetch.i_core_fetch_buffer.buf_out_4 == 1'b1)
+    implies
+    t_done ##0 No_Control_Discrepancy();
+  endproperty
+  dit_and_p_a: assert property (disable iff (rst) dit_and_p);
+*/
+
+
+
+
+
+`end_tda
+
+endmodule
+
+bind frv_core_miter property_checker checker_bind(.clk(clk), .rst(rst));
