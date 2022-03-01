@@ -16,3 +16,12 @@ The following timing variations have been found:
  * Invalid OP types are constant-time in normal operation (2 cycles)
 
 In total, the design is timing-independent of operand a, but dependent on b.
+
+## Formal Verification with SymbiYosys (Open Source)
+
+As a proof-of-concept, we data-independet timing with an open source verification tool, i.e., SymbiYosys (https://github.com/YosysHQ/sby).
+Unfortunately, the non-commercial version does only provide very rudimentary SystemVerilog Assertion (SVA) support.
+We split the prove for both operands a and b and integrated the assertion into the miter circuit ("miter_tb_a/b.sv").
+To run the proofs, execute the corresponding .sby file in the sby/ directory with SymbiYosys.
+For operand a, the proof holds as the design timing does not depend on it.
+For operand b, the proof fails and produces a counterexample, exposing variable timing of the shift operation.

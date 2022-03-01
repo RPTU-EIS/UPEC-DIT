@@ -1,0 +1,13 @@
+[options]
+mode bmc
+depth 50
+
+[engines]
+smtbmc
+
+[script]
+read -formal miter_tb_b.sv
+prep -top tb_b
+
+[files]
+miter_tb_b.sv
