@@ -1,0 +1,450 @@
+// @lang=sva @ts=8
+
+module property_checker import ariane_pkg::*; (
+  input clk,
+  input rst
+);
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+  `include "state_equivalence.sva"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 3;
+  localparam IUV_PC = 64'h8000_0000_0000_0000;
+
+  function logic [6:0] Opcode();
+  Opcode = (
+    P1.id_stage_i.fetch_entry_i.instruction[6:0]
+  );
+  endfunction;
+
+  function logic [2:0] Funct3();
+  Funct3 = (
+    P1.id_stage_i.fetch_entry_i.instruction[14:12]
+  );
+  endfunction;
+
+  function logic [6:0] Funct7();
+  Funct7 = (
+    P1.id_stage_i.fetch_entry_i.instruction[31:25]
+  );
+  endfunction;
+
+  function automatic R_Type_Arithmetic_Instruction();
+  R_Type_Arithmetic_Instruction = (
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // ADD
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // SUB
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b001) && (Opcode() == 7'b0110011)) || // SLL
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b010) && (Opcode() == 7'b0110011)) || // SLT
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b011) && (Opcode() == 7'b0110011)) || // SLTU
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b100) && (Opcode() == 7'b0110011)) || // XOR
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // SRL
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // SRA
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b110) && (Opcode() == 7'b0110011)) || // OR
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b111) && (Opcode() == 7'b0110011))    // AND
+  );
+  endfunction;
+
+  function automatic I_Type_Arithmetic_Instruction();
+  I_Type_Arithmetic_Instruction = (
+    (                            (Funct3() == 3'b000) && (Opcode() == 7'b0010011)) || // ADDI
+    (                            (Funct3() == 3'b010) && (Opcode() == 7'b0010011)) || // SLTI
+    (                            (Funct3() == 3'b011) && (Opcode() == 7'b0010011)) || // SLTIU
+    (                            (Funct3() == 3'b100) && (Opcode() == 7'b0010011)) || // XORI
+    (                            (Funct3() == 3'b110) && (Opcode() == 7'b0010011)) || // ORI
+    (                            (Funct3() == 3'b111) && (Opcode() == 7'b0010011)) || // ANDI
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b001) && (Opcode() == 7'b0010011)) || // SLLI
+    ((Funct7() == 7'b0000000) && (Funct3() == 3'b101) && (Opcode() == 7'b0010011)) || // SRLI
+    ((Funct7() == 7'b0100000) && (Funct3() == 3'b101) && (Opcode() == 7'b0010011))    // SRAI
+  );
+  endfunction;
+
+  function automatic Load_Instruction();
+  Load_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b0000011)) || // LB
+    ((Funct3() == 3'b001) && (Opcode() == 7'b0000011)) || // LH
+    ((Funct3() == 3'b010) && (Opcode() == 7'b0000011)) || // LW
+    ((Funct3() == 3'b100) && (Opcode() == 7'b0000011)) || // LBU
+    ((Funct3() == 3'b101) && (Opcode() == 7'b0000011))    // LHU
+  );
+  endfunction;
+
+  function automatic Store_Instruction();
+  Store_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b0100011)) || // SB
+    ((Funct3() == 3'b001) && (Opcode() == 7'b0100011)) || // SH
+    ((Funct3() == 3'b010) && (Opcode() == 7'b0100011))    // SW
+  );
+  endfunction;
+
+  function automatic Branch_Instruction();
+  Branch_Instruction = (
+    ((Funct3() == 3'b000) && (Opcode() == 7'b1100011)) || // BEQ
+    ((Funct3() == 3'b001) && (Opcode() == 7'b1100011)) || // BNE
+    ((Funct3() == 3'b100) && (Opcode() == 7'b1100011)) || // BLT
+    ((Funct3() == 3'b101) && (Opcode() == 7'b1100011)) || // BGE
+    ((Funct3() == 3'b110) && (Opcode() == 7'b1100011)) || // BLTU
+    ((Funct3() == 3'b111) && (Opcode() == 7'b1100011))    // BGEU
+  );
+  endfunction;
+
+  function automatic Jump_Instruction();
+  Jump_Instruction = (
+    (                        (Opcode() == 7'b1101111)) || // JAL
+    ((Funct3() == 3'b000) && (Opcode() == 7'b1100111))    // JALR
+  );
+  endfunction;
+
+  function automatic Mult_Instruction();
+  Mult_Instruction = (
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b000) && (Opcode() == 7'b0110011)) || // MUL
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b001) && (Opcode() == 7'b0110011)) || // MULH
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b010) && (Opcode() == 7'b0110011)) || // MULHSU
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b011) && (Opcode() == 7'b0110011))    // MULHU
+  );
+  endfunction;
+
+  function automatic Div_Instruction();
+  Div_Instruction = (
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b100) && (Opcode() == 7'b0110011)) || // DIV
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b101) && (Opcode() == 7'b0110011)) || // DIVU
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b110) && (Opcode() == 7'b0110011)) || // REM
+    ((Funct7() == 7'b0000001) && (Funct3() == 3'b111) && (Opcode() == 7'b0110011))    // REMU
+  );
+  endfunction;
+
+  function automatic CSR_Access_Instruction();
+  CSR_Access_Instruction = (
+    ((Funct3() == 3'b001) && (Opcode() == 7'b1110011)) || // CSRRW
+    ((Funct3() == 3'b010) && (Opcode() == 7'b1110011)) || // CSRRS
+    ((Funct3() == 3'b011) && (Opcode() == 7'b1110011)) || // CSRRC
+    ((Funct3() == 3'b101) && (Opcode() == 7'b1110011)) || // CSRRWI
+    ((Funct3() == 3'b110) && (Opcode() == 7'b1110011)) || // CSRRSI
+    ((Funct3() == 3'b111) && (Opcode() == 7'b1110011))    // CSRRCI
+  );
+  endfunction;
+
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+    (P1.id_stage_i.fetch_entry_ready_o      == P2.id_stage_i.fetch_entry_ready_o     ) &&
+    (P1.id_stage_i.issue_entry_valid_o      == P2.id_stage_i.issue_entry_valid_o     ) &&
+    (P1.id_stage_i.is_ctrl_flow_o           == P2.id_stage_i.is_ctrl_flow_o          ) &&
+    (P1.issue_stage_i.sb_full_o             == P2.issue_stage_i.sb_full_o            ) &&
+    (P1.issue_stage_i.decoded_instr_ack_o   == P2.issue_stage_i.decoded_instr_ack_o  ) &&
+    (P1.issue_stage_i.is_compressed_instr_o == P2.issue_stage_i.is_compressed_instr_o) &&
+    (P1.issue_stage_i.alu_valid_o           == P2.issue_stage_i.alu_valid_o          ) &&
+    (P1.issue_stage_i.lsu_valid_o           == P2.issue_stage_i.lsu_valid_o          ) &&
+    (P1.issue_stage_i.branch_valid_o        == P2.issue_stage_i.branch_valid_o       ) &&
+    (P1.issue_stage_i.mult_valid_o          == P2.issue_stage_i.mult_valid_o         ) &&
+    (P1.issue_stage_i.fpu_valid_o           == P2.issue_stage_i.fpu_valid_o          ) &&
+    (P1.issue_stage_i.csr_valid_o           == P2.issue_stage_i.csr_valid_o          ) &&
+    (P1.ex_stage_i.flu_ready_o              == P2.ex_stage_i.flu_ready_o             ) &&
+    (P1.ex_stage_i.flu_valid_o              == P2.ex_stage_i.flu_valid_o             ) &&
+    (P1.ex_stage_i.resolve_branch_o         == P2.ex_stage_i.resolve_branch_o        ) &&
+    (P1.ex_stage_i.lsu_ready_o              == P2.ex_stage_i.lsu_ready_o             ) &&
+    (P1.ex_stage_i.load_valid_o             == P2.ex_stage_i.load_valid_o            ) &&
+    (P1.ex_stage_i.store_valid_o            == P2.ex_stage_i.store_valid_o           ) &&
+    (P1.ex_stage_i.lsu_commit_ready_o       == P2.ex_stage_i.lsu_commit_ready_o      ) &&
+    (P1.ex_stage_i.no_st_pending_o          == P2.ex_stage_i.no_st_pending_o         ) &&
+    (P1.ex_stage_i.fpu_ready_o              == P2.ex_stage_i.fpu_ready_o             ) &&
+    (P1.ex_stage_i.fpu_valid_o              == P2.ex_stage_i.fpu_valid_o             ) &&
+//    (P1.ex_stage_i.icache_areq_o            == P2.ex_stage_i.icache_areq_o           ) &&
+    (P1.commit_stage_i.dirty_fp_state_o     == P2.commit_stage_i.dirty_fp_state_o    ) &&
+    (P1.commit_stage_i.csr_write_fflags_o   == P2.commit_stage_i.csr_write_fflags_o  ) &&
+    (P1.commit_stage_i.commit_lsu_o         == P2.commit_stage_i.commit_lsu_o        ) &&
+    (P1.commit_stage_i.amo_valid_commit_o   == P2.commit_stage_i.amo_valid_commit_o  ) &&
+    (P1.commit_stage_i.commit_csr_o         == P2.commit_stage_i.commit_csr_o        ) &&
+    (P1.commit_stage_i.fence_i_o            == P2.commit_stage_i.fence_i_o           ) &&
+    (P1.commit_stage_i.fence_o              == P2.commit_stage_i.fence_o             ) &&
+    (P1.commit_stage_i.flush_commit_o       == P2.commit_stage_i.flush_commit_o      ) &&
+    (P1.commit_stage_i.sfence_vma_o         == P2.commit_stage_i.sfence_vma_o        ) &&
+    (P1.commit_stage_i.commit_ack_o         == P2.commit_stage_i.commit_ack_o        )
+  );
+  endfunction;
+
+  // ---------------
+  // - Constraints -
+  // ---------------
+
+  property control_input_c;
+//    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o) &&
+    (P1.i_cache_subsystem.amo_resp_o             == P2.i_cache_subsystem.amo_resp_o            ) &&
+    (P1.i_cache_subsystem.axi_req_o              == P2.i_cache_subsystem.axi_req_o             ) &&
+    (P1.i_cache_subsystem.dcache_flush_ack_o     == P2.i_cache_subsystem.dcache_flush_ack_o    ) &&
+    (P1.i_cache_subsystem.dcache_miss_o          == P2.i_cache_subsystem.dcache_miss_o         ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_o     == P2.i_cache_subsystem.dcache_req_ports_o    ) &&
+    (P1.i_cache_subsystem.icache_areq_o          == P2.i_cache_subsystem.icache_areq_o         ) &&
+    (P1.i_cache_subsystem.icache_dreq_o          == P2.i_cache_subsystem.icache_dreq_o         ) &&
+    (P1.i_cache_subsystem.icache_miss_o          == P2.i_cache_subsystem.icache_miss_o         ) &&
+    (P1.i_cache_subsystem.wbuffer_empty_o        == P2.i_cache_subsystem.wbuffer_empty_o       ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_exception_o == P2.ex_stage_i.fpu_gen.fpu_i.fpu_exception_o) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_ready_o     == P2.ex_stage_i.fpu_gen.fpu_i.fpu_ready_o    ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_trans_id_o  == P2.ex_stage_i.fpu_gen.fpu_i.fpu_trans_id_o ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_valid_o     == P2.ex_stage_i.fpu_gen.fpu_i.fpu_valid_o    ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.result_o        == P2.ex_stage_i.fpu_gen.fpu_i.result_o       );
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+  property discrepancy_c;
+    ((P1.issue_stage_i.decoded_instr_i.pc == IUV_PC) && (P2.issue_stage_i.decoded_instr_i.pc == IUV_PC))
+    ? (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o != P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o)
+    : (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o);
+  endproperty
+  discrepancy_c_a: assume property (discrepancy_c);
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (P1.id_stage_i.issue_q == '0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  sequence t_done;
+    await(nxt(t,1), ((P1.commit_stage_i.commit_instr_i[0].pc == IUV_PC) || (P1.commit_stage_i.commit_instr_i[1].pc == IUV_PC)), MAX_LATENCY-1);
+  endsequence
+
+
+  property dit_r_type_arith_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 R_Type_Arithmetic_Instruction() and
+
+    // Passing the current pc as a parameter to the time point definition is not possible in tidal.
+    // Therefore, we fix the address of the instruction under verification.
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and // Extend to start from t+1?
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_r_type_arith_p_a: assert property (disable iff (rst) dit_r_type_arith_p);
+
+
+  property dit_i_type_arith_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 I_Type_Arithmetic_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i))
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_i_type_arith_p_a: assert property (disable iff (rst) dit_i_type_arith_p);
+
+
+  property dit_load_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Load_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i)) //and
+
+
+    // Violation 1: Matching address offset with an uncommited store
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.i_load_unit.page_offset_matches_i == P2.ex_stage_i.lsu_i.i_load_unit.page_offset_matches_i)) and
+
+    // Violation 2: Exception due to Access Fault (PMP)
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.i_pmp_data.allow_o == P2.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.i_pmp_data.allow_o)) and
+
+    // Violation 3: Load is delayed due to a DTLB miss
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.i_load_unit.dtlb_hit_i == P2.ex_stage_i.lsu_i.i_load_unit.dtlb_hit_i)) and
+
+    // Violation 4: Load causes a page fault
+    //during(t, t_done, ((P1.ex_stage_i.lsu_i.i_load_unit.ex_o.cause != 13) && (P2.ex_stage_i.lsu_i.i_load_unit.ex_o.cause != 13))) and
+
+    // Violation 5: Load is misaligned and throws an exception
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.misaligned_exception.valid == P2.ex_stage_i.lsu_i.misaligned_exception.valid))
+
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_load_p_a: assert property (disable iff (rst) dit_load_p);
+
+
+  property dit_store_rs1_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Store_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i)) and
+
+    during(t, t_done, (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o[1] == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o[1])) //and
+
+    // Violation 1: Exception due to Access Fault (PMP)
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.i_pmp_data.allow_o == P2.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.i_pmp_data.allow_o)) and
+
+    // Violation 2: Store is delayed due to a DTLB miss
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.i_store_unit.dtlb_hit_i == P2.ex_stage_i.lsu_i.i_store_unit.dtlb_hit_i)) and 
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.dtlb_hit_q == P2.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.dtlb_hit_q)) and 
+
+    // Violation 3: Store is misaligned and throws an exception
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.misaligned_exception.valid == P2.ex_stage_i.lsu_i.misaligned_exception.valid)) and
+
+    // Violation 4: Store causes a page fault
+    //during(t, t_done, ((P1.ex_stage_i.lsu_i.i_store_unit.ex_o.cause != 15) && (P2.ex_stage_i.lsu_i.i_store_unit.ex_o.cause != 15))) and
+
+    // False Counterexample: Load Unit in state "WAIT_PAGE_OFFSET" at t==0
+    //during(t, t_done, ((P1.ex_stage_i.lsu_i.i_load_unit.state_q == P2.ex_stage_i.lsu_i.i_load_unit.state_q))) and
+
+    // Violation 5: Matching address offset can delay a following load instruction
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.i_load_unit.page_offset_matches_i == P2.ex_stage_i.lsu_i.i_load_unit.page_offset_matches_i)) and
+
+    // Violation 6:
+    //during(t, t_done, (P1.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.ptw_access_exception == P2.ex_stage_i.lsu_i.gen_mmu_sv39.i_cva6_mmu.ptw_access_exception))
+ 
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs1_p_a: assert property (disable iff (rst) dit_store_rs1_p);
+
+
+  property dit_store_rs2_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Store_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i)) and
+
+    during(t, t_done, (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o[0] == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o[0]))
+ 
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_store_rs2_p_a: assert property (disable iff (rst) dit_store_rs2_p);
+
+
+  property dit_branch_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Branch_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i)) //and
+
+    // Violation 1: Mispredicted Branches cause a pipeline flush
+    //during(t, t_done, (P1.i_frontend.is_mispredict == P2.i_frontend.is_mispredict))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_branch_p_a: assert property (disable iff (rst) dit_branch_p);
+
+
+  property dit_jump_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Jump_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i)) //and
+
+    // Violation 1: Mispredicted Jump address
+    //during(t, t_done, (P1.ex_stage_i.branch_unit_i.resolved_branch_o.is_mispredict == P2.ex_stage_i.branch_unit_i.resolved_branch_o.is_mispredict))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_jump_p_a: assert property (disable iff (rst) dit_jump_p);
+
+
+  property dit_mult_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Mult_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_mult_p_a: assert property (disable iff (rst) dit_mult_p);
+
+
+  property dit_div_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 Div_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_div_p_a: assert property (disable iff (rst) dit_div_p);
+
+
+  property dit_csr_access_p;
+
+    t ##0 State_Equivalence() and
+    t ##0 CSR_Access_Instruction() and
+
+    t ##0 (P1.id_stage_i.fetch_entry_i.address == IUV_PC) and
+    t ##0 (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC) and
+    during_o(t, 2, t_done, -1, (P1.issue_stage_i.decoded_instr_i.pc != IUV_PC)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs1_forwarding_i == P2.ex_stage_i.rs1_forwarding_i)) and
+    during_o(t, 2, t_done, -1, (P1.ex_stage_i.rs2_forwarding_i == P2.ex_stage_i.rs2_forwarding_i))
+
+  implies
+    during_o(t, 1, t_done, 0, No_Control_Discrepancy());
+  endproperty
+  dit_csr_access_p_a: assert property (disable iff (rst) dit_csr_access_p);
+
+
+
+
+`end_tda
+
+endmodule
+
+bind ariane_miter property_checker checker_bind(.clk(clk), .rst(rst));
