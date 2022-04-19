@@ -68,6 +68,7 @@ module fwrisc_mul_div_shift #(
 				working <= 1;
 				case (op)
 					OP_SLL, OP_SRL, OP_SRA: begin // sll
+						// Deutschmann: Single cycle shift does not work, as it does not set the out_valid correctly
 						if (SINGLE_CYCLE_SHIFT) begin
 							shift_amt_r <= 0;
 							case (op_r)

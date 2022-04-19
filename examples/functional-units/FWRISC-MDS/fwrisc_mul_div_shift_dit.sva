@@ -38,11 +38,37 @@ module property_checker
     );
   endfunction
 
+  function automatic control_state_equality();
+    control_state_equality = (
+//      (MDS1.div_dividend == MDS2.div_dividend) &&
+//      (MDS1.div_divisor  == MDS2.div_divisor ) &&
+      (MDS1.div_msk      == MDS2.div_msk     ) &&
+//      (MDS1.div_quotient == MDS2.div_quotient) &&
+//      (MDS1.div_sign     == MDS2.div_sign    ) &&
+//      (MDS1.mul_res      == MDS2.mul_res     ) &&
+//      (MDS1.mul_tmp1     == MDS2.mul_tmp1    ) &&
+//      (MDS1.mul_tmp2     == MDS2.mul_tmp2    ) &&
+      (MDS1.op_r         == MDS2.op_r        ) &&
+      (MDS1.shift_amt_r  == MDS2.shift_amt_r ) &&
+      (MDS1.working      == MDS2.working     ) &&
+//      (MDS1.out          == MDS2.out         ) &&
+      (MDS1.out_valid    == MDS2.out_valid   )
+    );
+  endfunction
+
   function automatic shift_operation();
     shift_operation = (
       (MDS1.op == 4'b0000) || // SLL
       (MDS1.op == 4'b0001) || // SRL
       (MDS1.op == 4'b0010)    // SRA
+    );
+  endfunction
+
+  function automatic no_shift_operation();
+    no_shift_operation = (
+      (MDS1.op != 4'b0000) && // SLL
+      (MDS1.op != 4'b0001) && // SRL
+      (MDS1.op != 4'b0010)    // SRA
     );
   endfunction
 
@@ -253,6 +279,25 @@ module property_checker
     during_o(t, 1, t, MAX_LATENCY, (MDS1.out_valid == MDS2.out_valid));
   endproperty
   dit_div_in_b_out_valid_p_a: assert property (disable iff (rst) dit_div_in_b_out_valid_p);
+
+
+  property noninterference_no_shift_p;
+    t ##0 control_state_equality() and
+    t ##0 no_shift_operation()
+  implies
+    t ##1 control_state_equality() and
+    t ##1 (MDS1.out_valid == MDS2.out_valid);
+  endproperty
+  noninterference_no_shift_p_a: assert property (disable iff (rst) noninterference_no_shift_p);
+
+  property noninterference_shift_p;
+    t ##0 control_state_equality() and
+    t ##0 shift_operation()
+  implies
+    t ##1 control_state_equality() and
+    t ##1 (MDS1.out_valid == MDS2.out_valid);
+  endproperty
+  noninterference_shift_p_a: assert property (disable iff (rst) noninterference_shift_p);
 
 `end_tda
 
