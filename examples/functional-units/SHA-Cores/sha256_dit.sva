@@ -10,6 +10,8 @@ module property_checker
 
 `begin_tda(ops)
 
+  localparam MAX_LATENCY = 81;
+
   function automatic state_equality();
     state_equality = (
       (SHA256_1.busy == SHA256_2.busy) &&
@@ -52,6 +54,48 @@ module property_checker
     );
   endfunction
 
+  function automatic control_state_equality();
+    control_state_equality = (
+      (SHA256_1.busy == SHA256_2.busy) &&
+      (SHA256_1.cmd == SHA256_2.cmd) &&
+      (SHA256_1.read_counter == SHA256_2.read_counter) &&
+      (SHA256_1.round == SHA256_2.round) &&
+//      (SHA256_1.H0 == SHA256_2.H0) &&
+//      (SHA256_1.H1 == SHA256_2.H1) &&
+//      (SHA256_1.H2 == SHA256_2.H2) &&
+//      (SHA256_1.H3 == SHA256_2.H3) &&
+//      (SHA256_1.H4 == SHA256_2.H4) &&
+//      (SHA256_1.H5 == SHA256_2.H5) &&
+//      (SHA256_1.H6 == SHA256_2.H6) &&
+//      (SHA256_1.H7 == SHA256_2.H7) &&
+//      (SHA256_1.W0 == SHA256_2.W0) &&
+//      (SHA256_1.W1 == SHA256_2.W1) &&
+//      (SHA256_1.W2 == SHA256_2.W2) &&
+//      (SHA256_1.W3 == SHA256_2.W3) &&
+//      (SHA256_1.W4 == SHA256_2.W4) &&
+//      (SHA256_1.W5 == SHA256_2.W5) &&
+//      (SHA256_1.W6 == SHA256_2.W6) &&
+//      (SHA256_1.W7 == SHA256_2.W7) &&
+//      (SHA256_1.W8 == SHA256_2.W8) &&
+//      (SHA256_1.W9 == SHA256_2.W9) &&
+//      (SHA256_1.W10 == SHA256_2.W10) &&
+//      (SHA256_1.W11 == SHA256_2.W11) &&
+//      (SHA256_1.W12 == SHA256_2.W12) &&
+//      (SHA256_1.W13 == SHA256_2.W13) &&
+//      (SHA256_1.W14 == SHA256_2.W14) &&
+//      (SHA256_1.Wt == SHA256_2.Wt) &&
+      (SHA256_1.Kt == SHA256_2.Kt)// &&
+//      (SHA256_1.A == SHA256_2.A) &&
+//      (SHA256_1.B == SHA256_2.B) &&
+//      (SHA256_1.C == SHA256_2.C) &&
+//      (SHA256_1.D == SHA256_2.D) &&
+//      (SHA256_1.E == SHA256_2.E) &&
+//      (SHA256_1.F == SHA256_2.F) &&
+//      (SHA256_1.G == SHA256_2.G) &&
+//      (SHA256_1.H == SHA256_2.H)
+    );
+  endfunction
+
   property control_input_c;
     (SHA256_1.cmd_i   == SHA256_2.cmd_i)  &&
     (SHA256_1.cmd_w_i == SHA256_2.cmd_w_i);
@@ -78,18 +122,18 @@ module property_checker
   property dit_text_i_cmd_o_p;
     t ##0 state_equality()
     implies
-    during_o(t, 1, t, 81, (SHA256_1.cmd_o == SHA256_2.cmd_o));
+    during_o(t, 1, t, MAX_LATENCY, (SHA256_1.cmd_o == SHA256_2.cmd_o));
   endproperty
   dit_text_i_cmd_o_p_a: assert property (disable iff (rst) dit_text_i_cmd_o_p);
 
-  /*
-  property dit_text_i_text_o_p;
-    t ##0 state_equality()
+  property noninterference_p;
+    t ##0 control_state_equality()
     implies
-    during_o(t, 1, t, 81, (SHA256_1.text_o == SHA256_2.text_o));
+    t ##1 control_state_equality() and
+    t ##1 (SHA256_1.cmd_o == SHA256_2.cmd_o);
   endproperty
-  dit_text_i_text_o_p_a: assert property (disable iff (rst) dit_text_i_text_o_p);
-  */
+  noninterference_p_a: assert property (disable iff (rst) noninterference_p);
+
 
 `end_tda
 
