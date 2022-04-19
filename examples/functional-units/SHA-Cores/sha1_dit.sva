@@ -10,6 +10,8 @@ module property_checker
 
 `begin_tda(ops)
 
+  localparam MAX_LATENCY = 91;
+
   function automatic state_equality();
     state_equality = (
       (SHA1_1.busy == SHA1_2.busy) &&
@@ -46,6 +48,16 @@ module property_checker
     );
   endfunction
 
+  function automatic control_state_equality();
+    control_state_equality = (
+      (SHA1_1.busy == SHA1_2.busy) &&
+      (SHA1_1.cmd == SHA1_2.cmd) &&
+      (SHA1_1.read_counter == SHA1_2.read_counter) &&
+      (SHA1_1.round == SHA1_2.round) &&
+      (SHA1_1.Kt == SHA1_2.Kt) 
+    );
+  endfunction
+
   property control_input_c;
     (SHA1_1.cmd_i   == SHA1_2.cmd_i)  &&
     (SHA1_1.cmd_w_i == SHA1_2.cmd_w_i);
@@ -65,12 +77,24 @@ module property_checker
   endproperty
   reset_p_a: assert property (reset_p);
 
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
   property dit_text_i_cmd_o_p;
     t ##0 state_equality()
     implies
-    during_o(t, 1, t, 91, (SHA1_1.cmd_o == SHA1_2.cmd_o));
+    during_o(t, 1, t, MAX_LATENCY, (SHA1_1.cmd_o == SHA1_2.cmd_o));
   endproperty
   dit_text_i_cmd_o_p_a: assert property (disable iff (rst) dit_text_i_cmd_o_p);
+
+  property noninterference_p;
+    t ##0 control_state_equality()
+    implies
+    t ##1 control_state_equality() and
+    t ##1 (SHA1_1.cmd_o == SHA1_2.cmd_o);
+  endproperty
+  noninterference_p_a: assert property (disable iff (rst) noninterference_p);
 
 `end_tda
 
