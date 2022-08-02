@@ -1,0 +1,7 @@
+# running in sha512/src/
+read -formal sha512.v sha512_miter.sv
+prep -top sha512_miter
+
+hierarchy -smtcheck
+write_jny -no-connections ../model/design.json
+write_rtlil ../model/design.il

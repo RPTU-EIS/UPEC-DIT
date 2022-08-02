@@ -1,0 +1,630 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.19+34 (git sha1 d19f9d0b6, clang 14.0.0-1ubuntu1 -fPIC -Os)
+
+
+-- Executing script file `../model/design.ys' --
+
+1. Executing Verilog-2005 frontend: sha512.v
+Parsing formal SystemVerilog input from `sha512.v' to AST representation.
+Storing AST representation for module `$abstract\sha512'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: sha512_miter.sv
+Parsing formal SystemVerilog input from `sha512_miter.sv' to AST representation.
+Storing AST representation for module `$abstract\sha512_miter'.
+Successfully finished Verilog frontend.
+
+3. Executing PREP pass.
+
+3.1. Executing HIERARCHY pass (managing design hierarchy).
+
+3.2. Executing AST frontend in derive mode using pre-parsed AST for module `\sha512_miter'.
+Generating RTLIL representation for module `\sha512_miter'.
+
+3.2.1. Analyzing design hierarchy..
+Top module:  \sha512_miter
+
+3.2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\sha512'.
+Generating RTLIL representation for module `\sha512'.
+
+3.2.3. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+
+3.2.4. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+Removing unused module `$abstract\sha512_miter'.
+Removing unused module `$abstract\sha512'.
+Removed 2 unused modules.
+Module sha512_miter directly or indirectly contains formal properties -> setting "keep" attribute.
+
+3.3. Executing PROC pass (convert processes to netlists).
+
+3.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 7 switch rules as full_case in process $proc$sha512.v:950$73 in module sha512.
+Marked 2 switch rules as full_case in process $proc$sha512.v:837$72 in module sha512.
+Marked 4 switch rules as full_case in process $proc$sha512.v:259$63 in module sha512.
+Marked 2 switch rules as full_case in process $proc$sha512.v:205$33 in module sha512.
+Removed a total of 0 dead cases.
+
+3.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 2 redundant assignments.
+Promoted 6 assignments to connections.
+
+3.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\sha512_miter.$proc$sha512_miter.sv:0$31'.
+  Set init value: $formal$sha512_miter.sv:19$4_EN = 1'0
+Found init rule in `\sha512_miter.$proc$sha512_miter.sv:0$29'.
+  Set init value: $formal$sha512_miter.sv:18$3_EN = 1'0
+Found init rule in `\sha512_miter.$proc$sha512_miter.sv:0$27'.
+  Set init value: $formal$sha512_miter.sv:17$2_EN = 1'0
+Found init rule in `\sha512_miter.$proc$sha512_miter.sv:0$25'.
+  Set init value: $formal$sha512_miter.sv:16$1_EN = 1'0
+Found init rule in `\sha512_miter.$proc$sha512_miter.sv:14$24'.
+  Set init value: \init = 1'1
+
+3.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 1 switch.
+<suppressed ~20 debug messages>
+
+3.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\sha512.$proc$sha512.v:950$73'.
+     1/2: $0\read_counter[4:0]
+     2/2: $0\text_o[31:0]
+Creating decoders for process `\sha512.$proc$sha512.v:837$72'.
+     1/1: $0\Kt[63:0]
+Creating decoders for process `\sha512.$proc$sha512.v:259$63'.
+     1/50: $0\Wt[63:0] [63:32]
+     2/50: $0\W13[63:0] [63:32]
+     3/50: $0\W12[63:0] [63:32]
+     4/50: $0\W11[63:0] [63:32]
+     5/50: $0\W10[63:0] [63:32]
+     6/50: $0\W9[63:0] [63:32]
+     7/50: $0\W8[63:0] [63:32]
+     8/50: $0\W7[63:0] [63:32]
+     9/50: $0\W6[63:0] [63:32]
+    10/50: $0\W5[63:0] [63:32]
+    11/50: $0\W4[63:0] [63:32]
+    12/50: $0\W3[63:0] [63:32]
+    13/50: $0\W2[63:0] [63:32]
+    14/50: $0\W1[63:0] [63:32]
+    15/50: $0\W0[63:0] [63:32]
+    16/50: $0\W14[63:0] [63:32]
+    17/50: $0\W14[63:0] [31:0]
+    18/50: $0\busy[0:0]
+    19/50: $0\W0[63:0] [31:0]
+    20/50: $0\W13[63:0] [31:0]
+    21/50: $0\W12[63:0] [31:0]
+    22/50: $0\W11[63:0] [31:0]
+    23/50: $0\W10[63:0] [31:0]
+    24/50: $0\W9[63:0] [31:0]
+    25/50: $0\W8[63:0] [31:0]
+    26/50: $0\W7[63:0] [31:0]
+    27/50: $0\W6[63:0] [31:0]
+    28/50: $0\W5[63:0] [31:0]
+    29/50: $0\W4[63:0] [31:0]
+    30/50: $0\W3[63:0] [31:0]
+    31/50: $0\W2[63:0] [31:0]
+    32/50: $0\W1[63:0] [31:0]
+    33/50: $0\Wt[63:0] [31:0]
+    34/50: $0\round[6:0]
+    35/50: $0\H7[63:0]
+    36/50: $0\H6[63:0]
+    37/50: $0\H5[63:0]
+    38/50: $0\H4[63:0]
+    39/50: $0\H3[63:0]
+    40/50: $0\H2[63:0]
+    41/50: $0\H1[63:0]
+    42/50: $0\H0[63:0]
+    43/50: $0\H[63:0]
+    44/50: $0\G[63:0]
+    45/50: $0\F[63:0]
+    46/50: $0\E[63:0]
+    47/50: $0\D[63:0]
+    48/50: $0\C[63:0]
+    49/50: $0\B[63:0]
+    50/50: $0\A[63:0]
+Creating decoders for process `\sha512.$proc$sha512.v:205$33'.
+     1/3: $0\cmd[4:0] [3:2]
+     2/3: $0\cmd[4:0] [1:0]
+     3/3: $0\cmd[4:0] [4]
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:0$31'.
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:0$29'.
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:0$27'.
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:0$25'.
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:14$24'.
+Creating decoders for process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+     1/8: $0$formal$sha512_miter.sv:16$1_EN[0:0]$7
+     2/8: $0$formal$sha512_miter.sv:16$1_CHECK[0:0]$6
+     3/8: $0$formal$sha512_miter.sv:17$2_EN[0:0]$9
+     4/8: $0$formal$sha512_miter.sv:17$2_CHECK[0:0]$8
+     5/8: $0$formal$sha512_miter.sv:18$3_EN[0:0]$11
+     6/8: $0$formal$sha512_miter.sv:18$3_CHECK[0:0]$10
+     7/8: $0$formal$sha512_miter.sv:19$4_EN[0:0]$13
+     8/8: $0$formal$sha512_miter.sv:19$4_CHECK[0:0]$12
+
+3.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+3.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\sha512.\text_o' using process `\sha512.$proc$sha512.v:950$73'.
+  created $dff cell `$procdff$1171' with positive edge clock.
+Creating register for signal `\sha512.\read_counter' using process `\sha512.$proc$sha512.v:950$73'.
+  created $dff cell `$procdff$1172' with positive edge clock.
+Creating register for signal `\sha512.\Kt' using process `\sha512.$proc$sha512.v:837$72'.
+  created $dff cell `$procdff$1173' with positive edge clock.
+Creating register for signal `\sha512.\A' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1174' with positive edge clock.
+Creating register for signal `\sha512.\B' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1175' with positive edge clock.
+Creating register for signal `\sha512.\C' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1176' with positive edge clock.
+Creating register for signal `\sha512.\D' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1177' with positive edge clock.
+Creating register for signal `\sha512.\E' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1178' with positive edge clock.
+Creating register for signal `\sha512.\F' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1179' with positive edge clock.
+Creating register for signal `\sha512.\G' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1180' with positive edge clock.
+Creating register for signal `\sha512.\H' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1181' with positive edge clock.
+Creating register for signal `\sha512.\round' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1182' with positive edge clock.
+Creating register for signal `\sha512.\H0' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1183' with positive edge clock.
+Creating register for signal `\sha512.\H1' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1184' with positive edge clock.
+Creating register for signal `\sha512.\H2' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1185' with positive edge clock.
+Creating register for signal `\sha512.\H3' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1186' with positive edge clock.
+Creating register for signal `\sha512.\H4' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1187' with positive edge clock.
+Creating register for signal `\sha512.\H5' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1188' with positive edge clock.
+Creating register for signal `\sha512.\H6' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1189' with positive edge clock.
+Creating register for signal `\sha512.\H7' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1190' with positive edge clock.
+Creating register for signal `\sha512.\W0' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1191' with positive edge clock.
+Creating register for signal `\sha512.\W1' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1192' with positive edge clock.
+Creating register for signal `\sha512.\W2' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1193' with positive edge clock.
+Creating register for signal `\sha512.\W3' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1194' with positive edge clock.
+Creating register for signal `\sha512.\W4' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1195' with positive edge clock.
+Creating register for signal `\sha512.\W5' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1196' with positive edge clock.
+Creating register for signal `\sha512.\W6' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1197' with positive edge clock.
+Creating register for signal `\sha512.\W7' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1198' with positive edge clock.
+Creating register for signal `\sha512.\W8' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1199' with positive edge clock.
+Creating register for signal `\sha512.\W9' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1200' with positive edge clock.
+Creating register for signal `\sha512.\W10' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1201' with positive edge clock.
+Creating register for signal `\sha512.\W11' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1202' with positive edge clock.
+Creating register for signal `\sha512.\W12' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1203' with positive edge clock.
+Creating register for signal `\sha512.\W13' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1204' with positive edge clock.
+Creating register for signal `\sha512.\W14' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1205' with positive edge clock.
+Creating register for signal `\sha512.\Wt' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1206' with positive edge clock.
+Creating register for signal `\sha512.\busy' using process `\sha512.$proc$sha512.v:259$63'.
+  created $dff cell `$procdff$1207' with positive edge clock.
+Creating register for signal `\sha512.\cmd' using process `\sha512.$proc$sha512.v:205$33'.
+  created $dff cell `$procdff$1208' with positive edge clock.
+Creating register for signal `\sha512_miter.\init' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1209' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:16$1_CHECK' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1210' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:16$1_EN' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1211' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:17$2_CHECK' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1212' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:17$2_EN' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1213' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:18$3_CHECK' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1214' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:18$3_EN' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1215' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:19$4_CHECK' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1216' with positive edge clock.
+Creating register for signal `\sha512_miter.$formal$sha512_miter.sv:19$4_EN' using process `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+  created $dff cell `$procdff$1217' with positive edge clock.
+
+3.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 8 empty switches in `\sha512.$proc$sha512.v:950$73'.
+Removing empty process `sha512.$proc$sha512.v:950$73'.
+Found and cleaned up 2 empty switches in `\sha512.$proc$sha512.v:837$72'.
+Removing empty process `sha512.$proc$sha512.v:837$72'.
+Found and cleaned up 4 empty switches in `\sha512.$proc$sha512.v:259$63'.
+Removing empty process `sha512.$proc$sha512.v:259$63'.
+Found and cleaned up 3 empty switches in `\sha512.$proc$sha512.v:205$33'.
+Removing empty process `sha512.$proc$sha512.v:205$33'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:0$31'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:0$29'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:0$27'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:0$25'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:14$24'.
+Found and cleaned up 4 empty switches in `\sha512_miter.$proc$sha512_miter.sv:15$5'.
+Removing empty process `sha512_miter.$proc$sha512_miter.sv:15$5'.
+Cleaned up 21 empty switches.
+
+3.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+<suppressed ~43 debug messages>
+Optimizing module sha512_miter.
+<suppressed ~6 debug messages>
+
+3.4. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+3.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+Removed 5 unused cells and 181 unused wires.
+<suppressed ~7 debug messages>
+
+3.6. Executing CHECK pass (checking for obvious problems).
+Checking module sha512...
+Checking module sha512_miter...
+Found and reported 0 problems.
+
+3.7. Executing OPT pass (performing simple optimizations).
+
+3.7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+3.7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+<suppressed ~8877 debug messages>
+Finding identical cells in module `\sha512_miter'.
+Removed a total of 2959 cells.
+
+3.7.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \sha512..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sha512_miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~64 debug messages>
+
+3.7.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \sha512.
+    New ctrl vector for $pmux cell $procmux$145: { $auto$opt_reduce.cc:134:opt_pmux$1219 $procmux$241_CTRL }
+    New ctrl vector for $pmux cell $procmux$926: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1221 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$836: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1223 }
+    New ctrl vector for $pmux cell $procmux$453: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1225 $procmux$241_CTRL }
+    New ctrl vector for $pmux cell $procmux$1076: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1227 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$1046: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1229 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$1106: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1231 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$883: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1233 }
+    New ctrl vector for $pmux cell $procmux$956: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1235 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$479: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1237 }
+    New ctrl vector for $pmux cell $procmux$896: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1239 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$986: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1241 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$296: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1243 }
+    New ctrl vector for $pmux cell $procmux$789: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1245 }
+    New ctrl vector for $pmux cell $procmux$1016: { $procmux$1011_CMP $auto$opt_reduce.cc:134:opt_pmux$1247 $procmux$1017_CMP }
+    New ctrl vector for $pmux cell $procmux$554: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1249 }
+    New ctrl vector for $pmux cell $procmux$601: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1251 }
+    New ctrl vector for $pmux cell $procmux$648: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1253 }
+    New ctrl vector for $pmux cell $procmux$695: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1255 }
+    New ctrl vector for $pmux cell $procmux$742: { $procmux$1008_CMP $procmux$1007_CMP $auto$opt_reduce.cc:134:opt_pmux$1257 }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1220: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1226: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1228: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1230: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1234: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1236: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP $procmux$162_CMP $procmux$161_CMP $procmux$160_CMP $procmux$159_CMP $procmux$158_CMP $procmux$157_CMP $procmux$156_CMP $procmux$155_CMP $procmux$154_CMP $procmux$153_CMP $procmux$152_CMP $procmux$151_CMP $procmux$150_CMP $procmux$149_CMP $procmux$148_CMP $procmux$147_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1238: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1240: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1242: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP $procmux$162_CMP $procmux$161_CMP $procmux$160_CMP $procmux$159_CMP $procmux$158_CMP $procmux$157_CMP $procmux$156_CMP $procmux$155_CMP $procmux$154_CMP $procmux$153_CMP $procmux$152_CMP $procmux$151_CMP $procmux$150_CMP $procmux$149_CMP $procmux$148_CMP $procmux$147_CMP }
+    New input vector for $reduce_or cell $auto$opt_reduce.cc:128:opt_pmux$1246: { $procmux$1029_CMP $procmux$1028_CMP $procmux$1027_CMP $procmux$1026_CMP $procmux$1025_CMP $procmux$1024_CMP $procmux$1023_CMP $procmux$1022_CMP $procmux$1021_CMP $procmux$1020_CMP $procmux$1019_CMP $procmux$1018_CMP $procmux$1003_CMP $procmux$1002_CMP $procmux$1001_CMP $procmux$1000_CMP }
+  Optimizing cells in module \sha512.
+  Optimizing cells in module \sha512_miter.
+Performed a total of 30 changes.
+
+3.7.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+<suppressed ~45 debug messages>
+Finding identical cells in module `\sha512_miter'.
+<suppressed ~12 debug messages>
+Removed a total of 19 cells.
+
+3.7.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+Removed 0 unused cells and 395 unused wires.
+<suppressed ~2 debug messages>
+
+3.7.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+3.7.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+3.7.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \sha512..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \sha512_miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~62 debug messages>
+
+3.7.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \sha512.
+  Optimizing cells in module \sha512_miter.
+Performed a total of 0 changes.
+
+3.7.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+Finding identical cells in module `\sha512_miter'.
+Removed a total of 0 cells.
+
+3.7.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+
+3.7.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+3.7.14. Finished OPT passes. (There is nothing left to do.)
+
+3.8. Executing WREDUCE pass (reducing word size of cells).
+Removed top 25 address bits (of 32) from memory init port sha512.$auto$mem.cc:319:emit$80 ($auto$proc_rom.cc:150:do_switch$78).
+Removed top 7 bits (of 64) from port B of cell sha512.$xor$sha512.v:235$49 ($xor).
+Removed top 6 bits (of 64) from port B of cell sha512.$xor$sha512.v:238$51 ($xor).
+Removed top 31 bits (of 32) from port B of cell sha512.$add$sha512.v:254$62 ($add).
+Removed top 25 bits (of 32) from port Y of cell sha512.$add$sha512.v:254$62 ($add).
+Removed top 31 bits (of 32) from port B of cell sha512.$sub$sha512.v:1013$76 ($sub).
+Removed top 27 bits (of 32) from port Y of cell sha512.$sub$sha512.v:1013$76 ($sub).
+Removed top 3 bits (of 5) from port B of cell sha512.$procmux$100_CMP0 ($eq).
+Removed top 3 bits (of 5) from port B of cell sha512.$procmux$101_CMP0 ($eq).
+Removed top 2 bits (of 5) from port B of cell sha512.$procmux$102_CMP0 ($eq).
+Removed top 2 bits (of 5) from port B of cell sha512.$procmux$103_CMP0 ($eq).
+Removed top 2 bits (of 5) from port B of cell sha512.$procmux$104_CMP0 ($eq).
+Removed top 2 bits (of 5) from port B of cell sha512.$procmux$105_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$106_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$107_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$108_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$109_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$110_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$111_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$112_CMP0 ($eq).
+Removed top 1 bits (of 5) from port B of cell sha512.$procmux$113_CMP0 ($eq).
+Removed top 4 bits (of 5) from port B of cell sha512.$procmux$119_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$147_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$148_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$149_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$150_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$151_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$152_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$153_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$154_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$155_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$156_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$157_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$158_CMP0 ($eq).
+Removed top 4 bits (of 7) from port B of cell sha512.$procmux$159_CMP0 ($eq).
+Removed top 4 bits (of 7) from port B of cell sha512.$procmux$160_CMP0 ($eq).
+Removed top 5 bits (of 7) from port B of cell sha512.$procmux$161_CMP0 ($eq).
+Removed top 6 bits (of 7) from port B of cell sha512.$procmux$162_CMP0 ($eq).
+Removed top 1 bits (of 2) from port B of cell sha512.$procmux$557_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$1000_CMP0 ($eq).
+Removed top 4 bits (of 7) from port B of cell sha512.$procmux$1001_CMP0 ($eq).
+Removed top 4 bits (of 7) from port B of cell sha512.$procmux$1002_CMP0 ($eq).
+Removed top 5 bits (of 7) from port B of cell sha512.$procmux$1003_CMP0 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP0 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP1 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP2 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP3 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP4 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP5 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP6 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP7 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP8 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP9 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP10 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP11 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP12 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP13 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP14 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP15 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP16 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP17 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP18 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP19 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP20 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP21 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP22 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP23 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP24 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP25 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP26 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP27 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP28 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP29 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP30 ($eq).
+Removed top 1 bits (of 7) from port B of cell sha512.$procmux$1018_CMP31 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1019_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1020_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1021_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1022_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1023_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1024_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1025_CMP0 ($eq).
+Removed top 2 bits (of 7) from port B of cell sha512.$procmux$1026_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$1027_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$1028_CMP0 ($eq).
+Removed top 3 bits (of 7) from port B of cell sha512.$procmux$1029_CMP0 ($eq).
+Removed top 27 bits (of 32) from wire sha512.$sub$sha512.v:1013$76_Y.
+
+3.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+Removed 0 unused cells and 2 unused wires.
+<suppressed ~1 debug messages>
+
+3.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+3.11. Executing OPT pass (performing simple optimizations).
+
+3.11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+3.11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+Finding identical cells in module `\sha512_miter'.
+Removed a total of 0 cells.
+
+3.11.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+
+3.11.4. Finished fast OPT passes.
+
+3.12. Printing statistics.
+
+=== sha512 ===
+
+   Number of wires:                288
+   Number of wire bits:          12295
+   Number of public wires:          63
+   Number of public wire bits:    4013
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                356
+     $add                           19
+     $and                            5
+     $dff                           38
+     $eq                           114
+     $logic_not                      3
+     $mem_v2                         1
+     $mux                           93
+     $not                            2
+     $pmux                          62
+     $reduce_or                      7
+     $sub                            1
+     $xor                           11
+
+=== sha512_miter ===
+
+   Number of wires:                 30
+   Number of wire bits:            177
+   Number of public wires:          15
+   Number of public wire bits:     162
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 22
+     $assert                         3
+     $assume                         1
+     $dff                            7
+     $eq                             3
+     $mux                            6
+     sha512                          2
+
+=== design hierarchy ===
+
+   sha512_miter                      1
+     sha512                          2
+
+   Number of wires:                606
+   Number of wire bits:          24767
+   Number of public wires:         141
+   Number of public wire bits:    8188
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                732
+     $add                           38
+     $and                           10
+     $assert                         3
+     $assume                         1
+     $dff                           83
+     $eq                           231
+     $logic_not                      6
+     $mem_v2                         2
+     $mux                          192
+     $not                            4
+     $pmux                         124
+     $reduce_or                     14
+     $sub                            2
+     $xor                           22
+
+3.13. Executing CHECK pass (checking for obvious problems).
+Checking module sha512...
+Checking module sha512_miter...
+Found and reported 0 problems.
+
+4. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+
+4.2. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+Removed 0 unused modules.
+Module sha512_miter directly or indirectly contains formal properties -> setting "keep" attribute.
+
+5. Executing jny backend.
+
+6. Executing RTLIL backend.
+Output filename: ../model/design.il
+
+End of script. Logfile hash: 40b55ddb3c, CPU: user 0.86s system 0.03s, MEM: 40.47 MB peak
+Yosys 0.19+34 (git sha1 d19f9d0b6, clang 14.0.0-1ubuntu1 -fPIC -Os)
+Time spent: 30% 2x check (0 sec), 20% 6x opt_expr (0 sec), ...

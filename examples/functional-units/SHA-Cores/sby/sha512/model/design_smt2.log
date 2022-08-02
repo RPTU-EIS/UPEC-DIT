@@ -1,0 +1,291 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.19+34 (git sha1 d19f9d0b6, clang 14.0.0-1ubuntu1 -fPIC -Os)
+
+
+-- Executing script file `design_smt2.ys' --
+
+1. Executing RTLIL frontend.
+Input filename: design.il
+
+2. Executing MEMORY_NORDFF pass (extracting $dff cells from memories).
+
+3. Executing SCC pass (detecting logic loops).
+Found 0 SCCs in module sha512_miter.
+Found 0 SCCs in module sha512.
+Found 0 SCCs.
+
+4. Executing SIMPLEMAP pass (map simple cells to gate primitives).
+
+5. Executing ASYNC2SYNC pass.
+
+6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512_miter..
+Finding unused cells or wires in module \sha512..
+Removed 2 unused cells and 2 unused wires.
+<suppressed ~3 debug messages>
+
+7. Executing SETUNDEF pass (replace undef values with defined constants).
+
+8. Executing OPT pass (performing simple optimizations).
+
+8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+Optimizing module sha512_miter.
+
+8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+Finding identical cells in module `\sha512_miter'.
+Removed a total of 0 cells.
+
+8.3. Executing OPT_DFF pass (perform DFF optimizations).
+Adding SRST signal on $procdff$1208 ($dff) from module sha512 (D = { $procmux$1150_Y $procmux$1136_Y $procmux$1144_Y }, Q = \cmd, rval = 5'00000).
+Adding EN signal on $auto$ff.cc:262:slice$1289 ($sdff) from module sha512 (D = \busy, Q = \cmd [4]).
+Adding EN signal on $auto$ff.cc:262:slice$1289 ($sdff) from module sha512 (D = \cmd_i [3:2], Q = \cmd [3:2]).
+Adding EN signal on $auto$ff.cc:262:slice$1289 ($sdff) from module sha512 (D = $procmux$1144_Y, Q = \cmd [1:0]).
+Adding SRST signal on $procdff$1207 ($dff) from module sha512 (D = $procmux$296_Y, Q = \busy, rval = 1'0).
+Adding EN signal on $auto$ff.cc:262:slice$1295 ($sdff) from module sha512 (D = $procmux$296_Y, Q = \busy).
+Adding SRST signal on $procdff$1206 ($dff) from module sha512 (D = { $procmux$145_Y $procmux$453_Y }, Q = \Wt, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1303 ($sdff) from module sha512 (D = $procmux$145_Y, Q = \Wt [63:32]).
+Adding EN signal on $auto$ff.cc:262:slice$1303 ($sdff) from module sha512 (D = $procmux$453_Y, Q = \Wt [31:0]).
+Adding SRST signal on $procdff$1205 ($dff) from module sha512 (D = { $procmux$280_Y $procmux$288_Y }, Q = \W14, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1314 ($sdff) from module sha512 (D = $procmux$288_Y, Q = \W14 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1314 ($sdff) from module sha512 (D = $procmux$280_Y, Q = \W14 [63:32]).
+Adding SRST signal on $procdff$1204 ($dff) from module sha512 (D = { $procmux$168_Y $procmux$349_Y }, Q = \W13, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1321 ($sdff) from module sha512 (D = $procmux$349_Y, Q = \W13 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1321 ($sdff) from module sha512 (D = $procmux$168_Y, Q = \W13 [63:32]).
+Adding SRST signal on $procdff$1203 ($dff) from module sha512 (D = { $procmux$176_Y $procmux$357_Y }, Q = \W12, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1328 ($sdff) from module sha512 (D = $procmux$357_Y, Q = \W12 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1328 ($sdff) from module sha512 (D = $procmux$176_Y, Q = \W12 [63:32]).
+Adding SRST signal on $procdff$1202 ($dff) from module sha512 (D = { $procmux$184_Y $procmux$365_Y }, Q = \W11, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1335 ($sdff) from module sha512 (D = $procmux$365_Y, Q = \W11 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1335 ($sdff) from module sha512 (D = $procmux$184_Y, Q = \W11 [63:32]).
+Adding SRST signal on $procdff$1201 ($dff) from module sha512 (D = { $procmux$192_Y $procmux$373_Y }, Q = \W10, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1342 ($sdff) from module sha512 (D = $procmux$373_Y, Q = \W10 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1342 ($sdff) from module sha512 (D = $procmux$192_Y, Q = \W10 [63:32]).
+Adding SRST signal on $procdff$1200 ($dff) from module sha512 (D = { $procmux$200_Y $procmux$381_Y }, Q = \W9, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1349 ($sdff) from module sha512 (D = $procmux$381_Y, Q = \W9 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1349 ($sdff) from module sha512 (D = $procmux$200_Y, Q = \W9 [63:32]).
+Adding SRST signal on $procdff$1199 ($dff) from module sha512 (D = { $procmux$208_Y $procmux$389_Y }, Q = \W8, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1356 ($sdff) from module sha512 (D = $procmux$389_Y, Q = \W8 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1356 ($sdff) from module sha512 (D = $procmux$208_Y, Q = \W8 [63:32]).
+Adding SRST signal on $procdff$1198 ($dff) from module sha512 (D = { $procmux$216_Y $procmux$397_Y }, Q = \W7, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1363 ($sdff) from module sha512 (D = $procmux$397_Y, Q = \W7 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1363 ($sdff) from module sha512 (D = $procmux$216_Y, Q = \W7 [63:32]).
+Adding SRST signal on $procdff$1197 ($dff) from module sha512 (D = { $procmux$224_Y $procmux$405_Y }, Q = \W6, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1370 ($sdff) from module sha512 (D = $procmux$405_Y, Q = \W6 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1370 ($sdff) from module sha512 (D = $procmux$224_Y, Q = \W6 [63:32]).
+Adding SRST signal on $procdff$1196 ($dff) from module sha512 (D = { $procmux$232_Y $procmux$413_Y }, Q = \W5, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1377 ($sdff) from module sha512 (D = $procmux$413_Y, Q = \W5 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1377 ($sdff) from module sha512 (D = $procmux$232_Y, Q = \W5 [63:32]).
+Adding SRST signal on $procdff$1195 ($dff) from module sha512 (D = { $procmux$240_Y $procmux$421_Y }, Q = \W4, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1384 ($sdff) from module sha512 (D = $procmux$421_Y, Q = \W4 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1384 ($sdff) from module sha512 (D = $procmux$240_Y, Q = \W4 [63:32]).
+Adding SRST signal on $procdff$1194 ($dff) from module sha512 (D = { $procmux$248_Y $procmux$429_Y }, Q = \W3, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1391 ($sdff) from module sha512 (D = $procmux$429_Y, Q = \W3 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1391 ($sdff) from module sha512 (D = $procmux$248_Y, Q = \W3 [63:32]).
+Adding SRST signal on $procdff$1193 ($dff) from module sha512 (D = { $procmux$256_Y $procmux$437_Y }, Q = \W2, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1398 ($sdff) from module sha512 (D = $procmux$437_Y, Q = \W2 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1398 ($sdff) from module sha512 (D = $procmux$256_Y, Q = \W2 [63:32]).
+Adding SRST signal on $procdff$1192 ($dff) from module sha512 (D = { $procmux$264_Y $procmux$445_Y }, Q = \W1, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1405 ($sdff) from module sha512 (D = $procmux$445_Y, Q = \W1 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1405 ($sdff) from module sha512 (D = $procmux$264_Y, Q = \W1 [63:32]).
+Adding SRST signal on $procdff$1191 ($dff) from module sha512 (D = { $procmux$272_Y $procmux$338_Y }, Q = \W0, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1412 ($sdff) from module sha512 (D = $procmux$338_Y, Q = \W0 [31:0]).
+Adding EN signal on $auto$ff.cc:262:slice$1412 ($sdff) from module sha512 (D = $procmux$272_Y, Q = \W0 [63:32]).
+Adding SRST signal on $procdff$1190 ($dff) from module sha512 (D = $procmux$561_Y, Q = \H7, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1423 ($sdff) from module sha512 (D = $procmux$554_Y, Q = \H7).
+Adding SRST signal on $procdff$1189 ($dff) from module sha512 (D = $procmux$608_Y, Q = \H6, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1427 ($sdff) from module sha512 (D = $procmux$601_Y, Q = \H6).
+Adding SRST signal on $procdff$1188 ($dff) from module sha512 (D = $procmux$655_Y, Q = \H5, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1431 ($sdff) from module sha512 (D = $procmux$648_Y, Q = \H5).
+Adding SRST signal on $procdff$1187 ($dff) from module sha512 (D = $procmux$702_Y, Q = \H4, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1435 ($sdff) from module sha512 (D = $procmux$695_Y, Q = \H4).
+Adding SRST signal on $procdff$1186 ($dff) from module sha512 (D = $procmux$749_Y, Q = \H3, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1439 ($sdff) from module sha512 (D = $procmux$742_Y, Q = \H3).
+Adding SRST signal on $procdff$1185 ($dff) from module sha512 (D = $procmux$796_Y, Q = \H2, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1443 ($sdff) from module sha512 (D = $procmux$789_Y, Q = \H2).
+Adding SRST signal on $procdff$1184 ($dff) from module sha512 (D = $procmux$843_Y, Q = \H1, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1447 ($sdff) from module sha512 (D = $procmux$836_Y, Q = \H1).
+Adding SRST signal on $procdff$1183 ($dff) from module sha512 (D = $procmux$890_Y, Q = \H0, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1451 ($sdff) from module sha512 (D = $procmux$883_Y, Q = \H0).
+Adding SRST signal on $procdff$1182 ($dff) from module sha512 (D = $procmux$479_Y, Q = \round, rval = 7'0000000).
+Adding SRST signal on $procdff$1181 ($dff) from module sha512 (D = $procmux$896_Y, Q = \H, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1456 ($sdff) from module sha512 (D = $procmux$896_Y, Q = \H).
+Adding SRST signal on $procdff$1180 ($dff) from module sha512 (D = $procmux$926_Y, Q = \G, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1466 ($sdff) from module sha512 (D = $procmux$926_Y, Q = \G).
+Adding SRST signal on $procdff$1179 ($dff) from module sha512 (D = $procmux$956_Y, Q = \F, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1476 ($sdff) from module sha512 (D = $procmux$956_Y, Q = \F).
+Adding SRST signal on $procdff$1178 ($dff) from module sha512 (D = $procmux$986_Y, Q = \E, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1486 ($sdff) from module sha512 (D = $procmux$986_Y, Q = \E).
+Adding SRST signal on $procdff$1177 ($dff) from module sha512 (D = $procmux$1016_Y, Q = \D, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1496 ($sdff) from module sha512 (D = $procmux$1016_Y, Q = \D).
+Adding SRST signal on $procdff$1176 ($dff) from module sha512 (D = $procmux$1046_Y, Q = \C, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1506 ($sdff) from module sha512 (D = $procmux$1046_Y, Q = \C).
+Adding SRST signal on $procdff$1175 ($dff) from module sha512 (D = $procmux$1076_Y, Q = \B, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1516 ($sdff) from module sha512 (D = $procmux$1076_Y, Q = \B).
+Adding SRST signal on $procdff$1174 ($dff) from module sha512 (D = $procmux$1106_Y, Q = \A, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding EN signal on $auto$ff.cc:262:slice$1526 ($sdff) from module sha512 (D = $procmux$1106_Y, Q = \A).
+Adding SRST signal on $procdff$1173 ($dff) from module sha512 (D = $auto$proc_rom.cc:149:do_switch$77, Q = \Kt, rval = 64'0000000000000000000000000000000000000000000000000000000000000000).
+Adding SRST signal on $procdff$1172 ($dff) from module sha512 (D = $procmux$90_Y, Q = \read_counter, rval = 5'00000).
+Adding EN signal on $auto$ff.cc:262:slice$1537 ($sdff) from module sha512 (D = $procmux$90_Y, Q = \read_counter).
+Adding SRST signal on $procdff$1171 ($dff) from module sha512 (D = $procmux$134_Y, Q = \text_o, rval = 0).
+Adding EN signal on $auto$ff.cc:262:slice$1545 ($sdff) from module sha512 (D = $procmux$131_Y, Q = \text_o).
+
+8.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+Removed 75 unused cells and 57 unused wires.
+<suppressed ~76 debug messages>
+
+8.5. Rerunning OPT passes. (Removed registers in this run.)
+
+8.6. Executing OPT_EXPR pass (perform const folding).
+Optimizing module sha512.
+<suppressed ~42 debug messages>
+Optimizing module sha512_miter.
+
+8.7. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\sha512'.
+<suppressed ~117 debug messages>
+Finding identical cells in module `\sha512_miter'.
+Removed a total of 39 cells.
+
+8.8. Executing OPT_DFF pass (perform DFF optimizations).
+
+8.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \sha512..
+Finding unused cells or wires in module \sha512_miter..
+Removed 0 unused cells and 39 unused wires.
+<suppressed ~1 debug messages>
+
+8.10. Finished fast OPT passes.
+
+9. Executing CHECK pass (checking for obvious problems).
+Checking module sha512...
+Checking module sha512_miter...
+Found and reported 0 problems.
+
+10. Executing HIERARCHY pass (managing design hierarchy).
+
+10.1. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+
+10.2. Analyzing design hierarchy..
+Top module:  \sha512_miter
+Used module:     \sha512
+Removed 0 unused modules.
+Module sha512_miter directly or indirectly contains formal properties -> setting "keep" attribute.
+
+11. Executing DFFUNMAP pass (unmap clock enable and synchronous reset from FFs).
+
+12. Printing statistics.
+
+=== sha512 ===
+
+   Number of wires:                396
+   Number of wire bits:          13890
+   Number of public wires:          63
+   Number of public wire bits:    4013
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                464
+     $add                           19
+     $and                            5
+     $anyseq                        11
+     $dff                           56
+     $eq                           114
+     $logic_not                      3
+     $mem_v2                         1
+     $mux                          127
+     $ne                             4
+     $not                            3
+     $pmux                          62
+     $reduce_and                     6
+     $reduce_bool                   34
+     $reduce_or                      7
+     $sub                            1
+     $xor                           11
+
+=== sha512_miter ===
+
+   Number of wires:                 32
+   Number of wire bits:            179
+   Number of public wires:          15
+   Number of public wire bits:     162
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 24
+     $anyseq                         4
+     $assert                         3
+     $assume                         1
+     $dff                            5
+     $eq                             3
+     $mux                            6
+     sha512                          2
+
+=== design hierarchy ===
+
+   sha512_miter                      1
+     sha512                          2
+
+   Number of wires:                824
+   Number of wire bits:          27959
+   Number of public wires:         141
+   Number of public wire bits:    8188
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                950
+     $add                           38
+     $and                           10
+     $anyseq                        26
+     $assert                         3
+     $assume                         1
+     $dff                          117
+     $eq                           231
+     $logic_not                      6
+     $mem_v2                         2
+     $mux                          260
+     $ne                             8
+     $not                            6
+     $pmux                         124
+     $reduce_and                    12
+     $reduce_bool                   68
+     $reduce_or                     14
+     $sub                            2
+     $xor                           22
+
+13. Executing SMT2 backend.
+
+13.1. Executing BMUXMAP pass.
+
+13.2. Executing DEMUXMAP pass.
+Creating SMT-LIBv2 representation of module sha512.
+Creating SMT-LIBv2 representation of module sha512_miter.
+
+End of script. Logfile hash: 914250ebb2, CPU: user 0.27s system 0.01s, MEM: 20.73 MB peak
+Yosys 0.19+34 (git sha1 d19f9d0b6, clang 14.0.0-1ubuntu1 -fPIC -Os)
+Time spent: 24% 3x opt_clean (0 sec), 23% 2x opt_dff (0 sec), ...

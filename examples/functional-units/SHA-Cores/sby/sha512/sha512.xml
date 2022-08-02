@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+<testsuite timestamp="2022-08-02T14:44:30" hostname="brunello" package="sha512" id="0" name="default" tests="3" errors="0" failures="0" time="2" skipped="0">
+<properties>
+<property name="os" value="Linux"/>
+<property name="expect" value="PASS"/>
+<property name="status" value="PASS"/>
+</properties>
+<testcase classname="default" name="build execution" time="0">
+</testcase>
+<testcase classname="default" name="Property ASSERT in sha512_miter at sha512_miter.sv:17.14-17.40" time="0" type="ASSERT" location="sha512_miter.sv:17.14-17.40" id="$assert$sha512_miter.sv:17$21">
+</testcase>
+<testcase classname="default" name="Property ASSERT in sha512_miter at sha512_miter.sv:18.14-18.42" time="0" type="ASSERT" location="sha512_miter.sv:18.14-18.42" id="$assert$sha512_miter.sv:18$22">
+</testcase>
+<testcase classname="default" name="Property ASSERT in sha512_miter at sha512_miter.sv:19.14-19.44" time="0" type="ASSERT" location="sha512_miter.sv:19.14-19.44" id="$assert$sha512_miter.sv:19$23">
+</testcase>
+<system-out>SBY 14:44:28 [sha512] Removing directory '/import/home/deutschmann/Security/UPEC-DIT/examples/functional-units/SHA-Cores/sby/sha512'.
+SBY 14:44:28 [sha512] Copy '/import/home/deutschmann/Security/UPEC-DIT/examples/functional-units/SHA-Cores/sby/sha512.v' to '/import/home/deutschmann/Security/UPEC-DIT/examples/functional-units/SHA-Cores/sby/sha512/src/sha512.v'.
+SBY 14:44:28 [sha512] Copy '/import/home/deutschmann/Security/UPEC-DIT/examples/functional-units/SHA-Cores/sby/sha512_miter.sv' to '/import/home/deutschmann/Security/UPEC-DIT/examples/functional-units/SHA-Cores/sby/sha512/src/sha512_miter.sv'.
+SBY 14:44:28 [sha512] engine_0: smtbmc
+SBY 14:44:28 [sha512] base: starting process &quot;cd sha512/src; yosys -ql ../model/design.log ../model/design.ys&quot;
+SBY 14:44:29 [sha512] base: finished (returncode=0)
+SBY 14:44:29 [sha512] smt2: starting process &quot;cd sha512/model; yosys -ql design_smt2.log design_smt2.ys&quot;
+SBY 14:44:29 [sha512] smt2: finished (returncode=0)
+SBY 14:44:29 [sha512] engine_0.basecase: starting process &quot;cd sha512; yosys-smtbmc --presat --unroll --noprogress -t 20  --append 0 --dump-vcd engine_0/trace.vcd --dump-vlogtb engine_0/trace_tb.v --dump-smtc engine_0/trace.smtc model/design_smt2.smt2&quot;
+SBY 14:44:29 [sha512] engine_0.induction: starting process &quot;cd sha512; yosys-smtbmc --presat --unroll -i --noprogress -t 20  --append 0 --dump-vcd engine_0/trace_induct.vcd --dump-vlogtb engine_0/trace_induct_tb.v --dump-smtc engine_0/trace_induct.smtc model/design_smt2.smt2&quot;
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Solver: yices
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Solver: yices
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 0..
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Trying induction in step 20..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 0..
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Trying induction in step 19..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 1..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 1..
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Trying induction in step 18..
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Temporal induction successful.
+SBY 14:44:29 [sha512] engine_0.induction: ##   0:00:00  Status: passed
+SBY 14:44:29 [sha512] engine_0.induction: finished (returncode=0)
+SBY 14:44:29 [sha512] engine_0: Status returned by engine for induction: pass
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 2..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 2..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 3..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 3..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 4..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 4..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 5..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 5..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 6..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 6..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 7..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 7..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 8..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 8..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 9..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 9..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 10..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 10..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 11..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 11..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 12..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 12..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 13..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 13..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 14..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 14..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 15..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 15..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 16..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 16..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 17..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 17..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 18..
+SBY 14:44:29 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 18..
+SBY 14:44:30 [sha512] engine_0.basecase: ##   0:00:00  Checking assumptions in step 19..
+SBY 14:44:30 [sha512] engine_0.basecase: ##   0:00:00  Checking assertions in step 19..
+SBY 14:44:30 [sha512] engine_0.basecase: ##   0:00:00  Status: passed
+SBY 14:44:30 [sha512] engine_0.basecase: finished (returncode=0)
+SBY 14:44:30 [sha512] engine_0: Status returned by engine for basecase: pass
+SBY 14:44:30 [sha512] summary: Elapsed clock time [H:MM:SS (secs)]: 0:00:02 (2)
+SBY 14:44:30 [sha512] summary: Elapsed process time [H:MM:SS (secs)]: 0:00:02 (2)
+SBY 14:44:30 [sha512] summary: engine_0 (smtbmc) returned pass for induction
+SBY 14:44:30 [sha512] summary: engine_0 (smtbmc) returned pass for basecase
+SBY 14:44:30 [sha512] summary: successful proof by k-induction.
+SBY 14:44:30 [sha512] DONE (PASS, rc=0)
+</system-out>
+<system-err>
+</system-err>
+</testsuite>
+</testsuites>

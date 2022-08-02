@@ -1,0 +1,13 @@
+[options]
+mode prove
+
+[engines]
+smtbmc
+
+[script]
+read -formal sha512.v sha512_miter.sv
+prep -top sha512_miter
+
+[files]
+sha512.v
+sha512_miter.sv
