@@ -1,3 +1,5 @@
+# @lang=tcl @ts=8
+
 read_vhdl -golden  -pragma_ignore {}  -version 2008 { ./rtl/modmult.vhd ./rtl/rsacypher.vhd } 
 
 read_verilog -golden  -pragma_ignore {}  -version sv2012 {./rsacypher_miter.sv } 

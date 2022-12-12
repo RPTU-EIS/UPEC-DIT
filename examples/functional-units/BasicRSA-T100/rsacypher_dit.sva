@@ -94,14 +94,12 @@ module property_checker
 
   
   /*
-  The given modulo (inMod) can also influence timing, as it influences the operands of subsequent instructions.
-  However, the modulo is usually considered public.
+  The given modulo (inMod) can also influence timing, as it influences the operands of subsequent modmult operations.
   */
   property dit_inmod_ready_p;
     t ##0 state_equivalence() and
     during_o(t, 0, t, MAX_LATENCY-1, (C1.indata == C2.indata)) and
-    during_o(t, 0, t, MAX_LATENCY-1, (C1.inExp == C2.inExp)) and
-    during_o(t, 1, t, MAX_LATENCY-1, (C1.ds == 1'b0))
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.inExp == C2.inExp))
     implies
     during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
   endproperty

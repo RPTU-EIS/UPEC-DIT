@@ -1,0 +1,83 @@
+// @lang=sva @ts=8
+
+module property_checker
+  // Adjust this parameter in the miter before elaboration with
+  // set_elaborate_option -verilog_parameter modmult_miter.MPWID=32
+  #(parameter MPWID = 32)
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 2;
+
+  function automatic state_equivalence();
+  state_equivalence = (
+    (C1.first   == C2.first) &&
+    (C1.mcreg   == C2.mcreg) &&
+    (C1.modreg1 == C2.modreg1) &&
+    (C1.modreg2 == C2.modreg2) &&
+    (C1.mpreg   == C2.mpreg) &&
+    (C1.prodreg == C2.prodreg)
+  );
+  endfunction
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (C1.first  == 1'b1);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // -----------------------------------
+  // - UPEC for Data-Independet Timing -
+  // -----------------------------------
+
+
+  property dit_mpand_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.mplier == C2.mplier)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.modulus == C2.modulus))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_mpand_ready_p_a: assert property (disable iff (rst) dit_mpand_ready_p);
+
+  property dit_mplier_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.mpand == C2.mpand)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.modulus == C2.modulus))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_mplier_ready_p_a: assert property (disable iff (rst) dit_mplier_ready_p);
+
+  property dit_modulus_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.mpand == C2.mpand)) and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.mplier == C2.mplier))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  dit_modulus_ready_p_a: assert property (disable iff (rst) dit_modulus_ready_p);
+
+
+`end_tda
+
+endmodule
+
+bind modmult_miter property_checker #(.MPWID(MPWID)) checker_bind(.clk(clk), .rst(rst));
