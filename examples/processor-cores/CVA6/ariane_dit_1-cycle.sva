@@ -1,0 +1,383 @@
+// @lang=sva @ts=8
+
+module property_checker import ariane_pkg::*; (
+  input clk,
+  input rst
+);
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+  `include "state_equivalence_1-cycle.sva"
+  `include "control_equivalence.sva"
+
+`begin_tda(ops)
+
+  // ---------------
+  // - Constraints -
+  // ---------------
+
+  property Black_Box_Output_Equality_c;
+//    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.rdata_o) &&
+
+    (P1.i_cache_subsystem.amo_resp_o             == P2.i_cache_subsystem.amo_resp_o            ) &&
+    (P1.i_cache_subsystem.axi_req_o              == P2.i_cache_subsystem.axi_req_o             ) &&
+    (P1.i_cache_subsystem.dcache_flush_ack_o     == P2.i_cache_subsystem.dcache_flush_ack_o    ) &&
+    (P1.i_cache_subsystem.dcache_miss_o          == P2.i_cache_subsystem.dcache_miss_o         ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_o     == P2.i_cache_subsystem.dcache_req_ports_o    ) &&
+    (P1.i_cache_subsystem.icache_areq_o          == P2.i_cache_subsystem.icache_areq_o         ) &&
+    (P1.i_cache_subsystem.icache_dreq_o          == P2.i_cache_subsystem.icache_dreq_o         ) &&
+    (P1.i_cache_subsystem.icache_miss_o          == P2.i_cache_subsystem.icache_miss_o         ) &&
+    (P1.i_cache_subsystem.wbuffer_empty_o        == P2.i_cache_subsystem.wbuffer_empty_o       ) &&
+
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_exception_o == P2.ex_stage_i.fpu_gen.fpu_i.fpu_exception_o) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_ready_o     == P2.ex_stage_i.fpu_gen.fpu_i.fpu_ready_o    ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_trans_id_o  == P2.ex_stage_i.fpu_gen.fpu_i.fpu_trans_id_o ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_valid_o     == P2.ex_stage_i.fpu_gen.fpu_i.fpu_valid_o    ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.result_o        == P2.ex_stage_i.fpu_gen.fpu_i.result_o       ) &&
+
+    (P1.ex_stage_i.branch_unit_i.branch_exception_o == P2.ex_stage_i.branch_unit_i.branch_exception_o) &&
+    (P1.ex_stage_i.branch_unit_i.branch_result_o    == P2.ex_stage_i.branch_unit_i.branch_result_o   ) &&
+    (P1.ex_stage_i.branch_unit_i.resolve_branch_o   == P2.ex_stage_i.branch_unit_i.resolve_branch_o  ) &&
+    (P1.ex_stage_i.branch_unit_i.resolved_branch_o  == P2.ex_stage_i.branch_unit_i.resolved_branch_o ) &&
+
+    (P1.ex_stage_i.csr_buffer_i.csr_addr_o   == P2.ex_stage_i.csr_buffer_i.csr_addr_o  ) &&
+    (P1.ex_stage_i.csr_buffer_i.csr_ready_o  == P2.ex_stage_i.csr_buffer_i.csr_ready_o ) &&
+    (P1.ex_stage_i.csr_buffer_i.csr_result_o == P2.ex_stage_i.csr_buffer_i.csr_result_o) &&
+
+    (P1.ex_stage_i.lsu_i.amo_req_o          == P2.ex_stage_i.lsu_i.amo_req_o         ) &&
+    (P1.ex_stage_i.lsu_i.commit_ready_o     == P2.ex_stage_i.lsu_i.commit_ready_o    ) &&
+    (P1.ex_stage_i.lsu_i.dcache_req_ports_o == P2.ex_stage_i.lsu_i.dcache_req_ports_o) &&
+    (P1.ex_stage_i.lsu_i.dtlb_miss_o        == P2.ex_stage_i.lsu_i.dtlb_miss_o       ) &&
+    (P1.ex_stage_i.lsu_i.icache_areq_o      == P2.ex_stage_i.lsu_i.icache_areq_o     ) &&
+    (P1.ex_stage_i.lsu_i.itlb_miss_o        == P2.ex_stage_i.lsu_i.itlb_miss_o       ) &&
+    (P1.ex_stage_i.lsu_i.load_exception_o   == P2.ex_stage_i.lsu_i.load_exception_o  ) &&
+    (P1.ex_stage_i.lsu_i.load_result_o      == P2.ex_stage_i.lsu_i.load_result_o     ) &&
+    (P1.ex_stage_i.lsu_i.load_trans_id_o    == P2.ex_stage_i.lsu_i.load_trans_id_o   ) &&
+    (P1.ex_stage_i.lsu_i.load_valid_o       == P2.ex_stage_i.lsu_i.load_valid_o      ) &&
+    (P1.ex_stage_i.lsu_i.lsu_ready_o        == P2.ex_stage_i.lsu_i.lsu_ready_o       ) &&
+    (P1.ex_stage_i.lsu_i.no_st_pending_o    == P2.ex_stage_i.lsu_i.no_st_pending_o   ) &&
+    (P1.ex_stage_i.lsu_i.store_exception_o  == P2.ex_stage_i.lsu_i.store_exception_o ) &&
+    (P1.ex_stage_i.lsu_i.store_result_o     == P2.ex_stage_i.lsu_i.store_result_o    ) &&
+    (P1.ex_stage_i.lsu_i.store_trans_id_o   == P2.ex_stage_i.lsu_i.store_trans_id_o  ) &&
+    (P1.ex_stage_i.lsu_i.store_valid_o      == P2.ex_stage_i.lsu_i.store_valid_o     ) &&
+
+    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.rdata_o == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.rdata_o);
+  endproperty
+  Black_Box_Output_Equality_c_a: assume property (Black_Box_Output_Equality_c);
+
+  property no_div_c;
+    (P1.ex_stage_i.i_mult.i_div.state_q == P2.ex_stage_i.i_mult.i_div.state_q);
+  endproperty
+  no_div_c_a: assume property (no_div_c);
+
+  property no_csr_write_c;
+    (P1.csr_regfile_i.csr_wdata_i == P2.csr_regfile_i.csr_wdata_i);
+  endproperty
+  no_csr_write_c_a: assume property (no_csr_write_c);
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (P1.id_stage_i.issue_q == '0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+
+
+  property upec_dit_p;
+    t ##0 Control_Equivalence()
+  implies
+    t ##1 Control_Equivalence() and
+    t ##1 Control_Output_Equality();
+  endproperty
+  upec_dit_p_a: assert property (disable iff (rst) upec_dit_p);
+
+
+/*
+  property upec_dit_unrolled_p(k, signal_1, signal_2);
+    t ##0 State_Equivalence()
+  implies
+    t ##k (signal_1 == signal_2);
+  endproperty
+
+
+  // 1-cycle Fanout
+  upec_dit_1_p_issue_stage_i_i_issue_read_operands_operand_a_q: assert property (disable iff (rst) upec_dit_unrolled_p(1, P1.issue_stage_i.i_issue_read_operands.operand_a_q, P2.issue_stage_i.i_issue_read_operands.operand_a_q));
+  upec_dit_1_p_issue_stage_i_i_issue_read_operands_operand_b_q: assert property (disable iff (rst) upec_dit_unrolled_p(1, P1.issue_stage_i.i_issue_read_operands.operand_b_q, P2.issue_stage_i.i_issue_read_operands.operand_b_q));
+  upec_dit_1_p_ex_stage_i_asid_to_be_flushed:                   assert property (disable iff (rst) upec_dit_unrolled_p(1, P1.ex_stage_i.asid_to_be_flushed,                   P2.ex_stage_i.asid_to_be_flushed));
+  upec_dit_1_p_ex_stage_i_vaddr_to_be_flushed:                  assert property (disable iff (rst) upec_dit_unrolled_p(1, P1.ex_stage_i.vaddr_to_be_flushed,                  P2.ex_stage_i.vaddr_to_be_flushed));
+
+  // 2-cycle Fanout
+  upec_dit_2_p_i_frontend_i_instr_queue_i_fifo_address_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q, P2.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_gen_instr_fifo1_i_fifo_instr_data_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q));
+  upec_dit_2_p_ex_stage_i_current_instruction_is_sfence_vma: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.current_instruction_is_sfence_vma, P2.ex_stage_i.current_instruction_is_sfence_vma));
+  upec_dit_2_p_id_stage_i_issue_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.id_stage_i.issue_q, P2.id_stage_i.issue_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_imm_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.imm_q, P2.issue_stage_i.i_issue_read_operands.imm_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_fpu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.fpu_valid_q, P2.issue_stage_i.i_issue_read_operands.fpu_valid_q));
+  upec_dit_2_p_ex_stage_i_i_mult_word_op_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.word_op_q, P2.ex_stage_i.i_mult.word_op_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_multiplier_trans_id_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_multiplier.trans_id_q, P2.ex_stage_i.i_mult.i_multiplier.trans_id_q));
+  upec_dit_2_p_issue_stage_i_i_re_name_re_name_table_fpr_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_re_name.re_name_table_fpr_q, P2.issue_stage_i.i_re_name.re_name_table_fpr_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_pc_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.pc_q, P2.i_frontend.i_instr_queue.pc_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_gen_instr_fifo0_i_fifo_instr_data_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_alu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.alu_valid_q, P2.issue_stage_i.i_issue_read_operands.alu_valid_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_res_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.res_q, P2.ex_stage_i.i_mult.i_div.res_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_lsu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.lsu_valid_q, P2.issue_stage_i.i_issue_read_operands.lsu_valid_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_rem_sel_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.rem_sel_q, P2.ex_stage_i.i_mult.i_div.rem_sel_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_div_res_zero_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.div_res_zero_q, P2.ex_stage_i.i_mult.i_div.div_res_zero_q));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_issue_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.issue_cnt_q, P2.issue_stage_i.i_scoreboard.issue_cnt_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_csr_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.csr_valid_q, P2.issue_stage_i.i_issue_read_operands.csr_valid_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_multiplier_mult_result_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_multiplier.mult_result_q, P2.ex_stage_i.i_mult.i_multiplier.mult_result_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_op_b_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.op_b_q, P2.ex_stage_i.i_mult.i_div.op_b_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_state_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.state_q, P2.ex_stage_i.i_mult.i_div.state_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_mult_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.mult_valid_q, P2.issue_stage_i.i_issue_read_operands.mult_valid_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_comp_inv_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.comp_inv_q, P2.ex_stage_i.i_mult.i_div.comp_inv_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_op_a_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.op_a_q, P2.ex_stage_i.i_mult.i_div.op_a_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_op_b_zero_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.op_b_zero_q, P2.ex_stage_i.i_mult.i_div.op_b_zero_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_multiplier_mult_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_multiplier.mult_valid_q, P2.ex_stage_i.i_mult.i_multiplier.mult_valid_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_fpu_rm_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.fpu_rm_q, P2.issue_stage_i.i_issue_read_operands.fpu_rm_q));
+  upec_dit_2_p_issue_stage_i_i_re_name_re_name_table_gpr_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_re_name.re_name_table_gpr_q, P2.issue_stage_i.i_re_name.re_name_table_gpr_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_i_fifo_address_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q, P2.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.cnt_q, P2.ex_stage_i.i_mult.i_div.cnt_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_id_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.id_q, P2.ex_stage_i.i_mult.i_div.id_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_idx_ds_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.idx_ds_q, P2.i_frontend.i_instr_queue.idx_ds_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_branch_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.branch_valid_q, P2.issue_stage_i.i_issue_read_operands.branch_valid_q));
+  upec_dit_2_p_issue_stage_i_i_issue_read_operands_fpu_fmt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_issue_read_operands.fpu_fmt_q, P2.issue_stage_i.i_issue_read_operands.fpu_fmt_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_gen_instr_fifo1_i_fifo_instr_data_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_div_res_inv_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_div.res_inv_q, P2.ex_stage_i.i_mult.i_div.res_inv_q));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_issue_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.issue_pointer_q, P2.issue_stage_i.i_scoreboard.issue_pointer_q));
+  upec_dit_2_p_ex_stage_i_i_mult_i_multiplier_operator_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.ex_stage_i.i_mult.i_multiplier.operator_q, P2.ex_stage_i.i_mult.i_multiplier.operator_q));
+  upec_dit_2_p_i_frontend_i_instr_queue_gen_instr_fifo0_i_fifo_instr_data_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].issued        , P2.issue_stage_i.i_scoreboard.mem_q[7].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[7].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_7_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].issued        , P2.issue_stage_i.i_scoreboard.mem_q[6].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[6].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_6_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].issued        , P2.issue_stage_i.i_scoreboard.mem_q[5].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[5].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_5_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].issued        , P2.issue_stage_i.i_scoreboard.mem_q[4].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[4].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_4_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].issued        , P2.issue_stage_i.i_scoreboard.mem_q[3].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[3].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_3_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].issued        , P2.issue_stage_i.i_scoreboard.mem_q[2].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[2].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_2_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].issued        , P2.issue_stage_i.i_scoreboard.mem_q[1].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[1].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_1_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.is_compressed));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_0: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].issued        , P2.issue_stage_i.i_scoreboard.mem_q[0].issued        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_1: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].is_rd_fpr_flag, P2.issue_stage_i.i_scoreboard.mem_q[0].is_rd_fpr_flag));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_00: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.pc           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.pc           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_01: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.trans_id     , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.trans_id     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_02: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.fu           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.fu           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_03: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.op           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.op           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_04: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs1          , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs1          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_05: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs2          , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs2          ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_06: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rd           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rd           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_07: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.result       , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.result       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_08: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.valid        , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.valid        ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_09: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_imm      , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_imm      ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_10: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_zimm     , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_zimm     ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_11: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_pc       , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_pc       ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_12: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_13: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp           , P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp           ));
+  upec_dit_2_p_issue_stage_i_i_scoreboard_mem_q_0_2_14: assert property (disable iff (rst) upec_dit_unrolled_p(2, P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed, P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed));
+
+  // 3-cycle Fanout
+  upec_dit_3_p_ex_stage_i_i_mult_i_div_state_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.i_mult.i_div.state_q, P2.ex_stage_i.i_mult.i_div.state_q));
+  upec_dit_3_p_ex_stage_i_i_mult_i_div_res_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.i_mult.i_div.res_q, P2.ex_stage_i.i_mult.i_div.res_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_i_fifo_address_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q, P2.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo1_i_fifo_instr_data_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q));
+  upec_dit_3_p_id_stage_i_issue_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.id_stage_i.issue_q, P2.id_stage_i.issue_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_imm_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.imm_q, P2.issue_stage_i.i_issue_read_operands.imm_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_fpu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.fpu_valid_q, P2.issue_stage_i.i_issue_read_operands.fpu_valid_q));
+  upec_dit_3_p_issue_stage_i_i_re_name_re_name_table_fpr_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_re_name.re_name_table_fpr_q, P2.issue_stage_i.i_re_name.re_name_table_fpr_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_pc_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.pc_q, P2.i_frontend.i_instr_queue.pc_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo0_i_fifo_instr_data_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_alu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.alu_valid_q, P2.issue_stage_i.i_issue_read_operands.alu_valid_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_lsu_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.lsu_valid_q, P2.issue_stage_i.i_issue_read_operands.lsu_valid_q));
+  upec_dit_3_p_issue_stage_i_i_scoreboard_issue_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_scoreboard.issue_cnt_q, P2.issue_stage_i.i_scoreboard.issue_cnt_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_csr_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.csr_valid_q, P2.issue_stage_i.i_issue_read_operands.csr_valid_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_mult_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.mult_valid_q, P2.issue_stage_i.i_issue_read_operands.mult_valid_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_fpu_rm_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.fpu_rm_q, P2.issue_stage_i.i_issue_read_operands.fpu_rm_q));
+  upec_dit_3_p_issue_stage_i_i_re_name_re_name_table_gpr_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_re_name.re_name_table_gpr_q, P2.issue_stage_i.i_re_name.re_name_table_gpr_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_i_fifo_address_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q, P2.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_idx_ds_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.idx_ds_q, P2.i_frontend.i_instr_queue.idx_ds_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_branch_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.branch_valid_q, P2.issue_stage_i.i_issue_read_operands.branch_valid_q));
+  upec_dit_3_p_issue_stage_i_i_issue_read_operands_fpu_fmt_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_issue_read_operands.fpu_fmt_q, P2.issue_stage_i.i_issue_read_operands.fpu_fmt_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo1_i_fifo_instr_data_read_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q));
+  upec_dit_3_p_issue_stage_i_i_scoreboard_issue_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_scoreboard.issue_pointer_q, P2.issue_stage_i.i_scoreboard.issue_pointer_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo0_i_fifo_instr_data_status_cnt_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q));
+  upec_dit_3_p_csr_regfile_i_stval_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.stval_q, P2.csr_regfile_i.stval_q));
+  upec_dit_3_p_ex_stage_i_current_instruction_is_sfence_vma: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.current_instruction_is_sfence_vma, P2.ex_stage_i.current_instruction_is_sfence_vma));
+  upec_dit_3_p_csr_regfile_i_satp_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.satp_q, P2.csr_regfile_i.satp_q));
+  upec_dit_3_p_csr_regfile_i_mtval_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mtval_q, P2.csr_regfile_i.mtval_q));
+  upec_dit_3_p_csr_regfile_i_dscratch1_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.dscratch1_q, P2.csr_regfile_i.dscratch1_q));
+  upec_dit_3_p_csr_regfile_i_sepc_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.sepc_q, P2.csr_regfile_i.sepc_q));
+  upec_dit_3_p_csr_regfile_i_dscratch0_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.dscratch0_q, P2.csr_regfile_i.dscratch0_q));
+  upec_dit_3_p_csr_regfile_i_mideleg_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mideleg_q, P2.csr_regfile_i.mideleg_q));
+  upec_dit_3_p_ex_stage_i_i_mult_i_multiplier_mult_valid_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.i_mult.i_multiplier.mult_valid_q, P2.ex_stage_i.i_mult.i_multiplier.mult_valid_q));
+  upec_dit_3_p_i_perf_counters_perf_counter_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_perf_counters.perf_counter_q, P2.i_perf_counters.perf_counter_q));
+  upec_dit_3_p_csr_regfile_i_dcsr_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.dcsr_q, P2.csr_regfile_i.dcsr_q));
+  upec_dit_3_p_csr_regfile_i_icache_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.icache_q, P2.csr_regfile_i.icache_q));
+  upec_dit_3_p_csr_regfile_i_mcounteren_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mcounteren_q, P2.csr_regfile_i.mcounteren_q));
+  upec_dit_3_p_csr_regfile_i_scause_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.scause_q, P2.csr_regfile_i.scause_q));
+  upec_dit_3_p_i_frontend_npc_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.npc_q, P2.i_frontend.npc_q));
+  upec_dit_3_p_i_frontend_i_instr_realign_unaligned_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_realign.unaligned_q, P2.i_frontend.i_instr_realign.unaligned_q));
+  upec_dit_3_p_csr_regfile_i_mepc_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mepc_q, P2.csr_regfile_i.mepc_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_i_fifo_address_write_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.i_fifo_address.write_pointer_q, P2.i_frontend.i_instr_queue.i_fifo_address.write_pointer_q));
+  upec_dit_3_p_controller_i_flush_dcache_o: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.controller_i.flush_dcache_o, P2.controller_i.flush_dcache_o));
+  upec_dit_3_p_csr_regfile_i_dcache_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.dcache_q, P2.csr_regfile_i.dcache_q));
+  upec_dit_3_p_controller_i_fence_active_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.controller_i.fence_active_q, P2.controller_i.fence_active_q));
+  upec_dit_3_p_csr_regfile_i_sscratch_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.sscratch_q, P2.csr_regfile_i.sscratch_q));
+  upec_dit_3_p_csr_regfile_i_mstatus_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mstatus_q, P2.csr_regfile_i.mstatus_q));
+  upec_dit_3_p_issue_stage_i_i_scoreboard_commit_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.issue_stage_i.i_scoreboard.commit_pointer_q, P2.issue_stage_i.i_scoreboard.commit_pointer_q));
+  upec_dit_3_p_csr_regfile_i_mcause_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mcause_q, P2.csr_regfile_i.mcause_q));
+  upec_dit_3_p_csr_regfile_i_medeleg_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.medeleg_q, P2.csr_regfile_i.medeleg_q));
+  upec_dit_3_p_csr_regfile_i_cycle_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.cycle_q, P2.csr_regfile_i.cycle_q));
+  upec_dit_3_p_csr_regfile_i_scounteren_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.scounteren_q, P2.csr_regfile_i.scounteren_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_idx_is_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.idx_is_q, P2.i_frontend.i_instr_queue.idx_is_q));
+  upec_dit_3_p_ex_stage_i_i_mult_i_div_rem_sel_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.i_mult.i_div.rem_sel_q, P2.ex_stage_i.i_mult.i_div.rem_sel_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_reset_address_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.reset_address_q, P2.i_frontend.i_instr_queue.reset_address_q));
+  upec_dit_3_p_csr_regfile_i_mscratch_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mscratch_q, P2.csr_regfile_i.mscratch_q));
+  upec_dit_3_p_ex_stage_i_i_mult_i_div_id_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.ex_stage_i.i_mult.i_div.id_q, P2.ex_stage_i.i_mult.i_div.id_q));
+  upec_dit_3_p_csr_regfile_i_pmpcfg_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.pmpcfg_q, P2.csr_regfile_i.pmpcfg_q));
+  upec_dit_3_p_i_frontend_speculative_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.speculative_q, P2.i_frontend.speculative_q));
+  upec_dit_3_p_csr_regfile_i_dpc_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.dpc_q, P2.csr_regfile_i.dpc_q));
+  upec_dit_3_p_csr_regfile_i_debug_mode_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.debug_mode_q, P2.csr_regfile_i.debug_mode_q));
+  upec_dit_3_p_csr_regfile_i_pmpaddr_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.pmpaddr_q, P2.csr_regfile_i.pmpaddr_q));
+  upec_dit_3_p_csr_regfile_i_priv_lvl_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.priv_lvl_q, P2.csr_regfile_i.priv_lvl_q));
+  upec_dit_3_p_csr_regfile_i_mie_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mie_q, P2.csr_regfile_i.mie_q));
+  upec_dit_3_p_csr_regfile_i_fcsr_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.fcsr_q, P2.csr_regfile_i.fcsr_q));
+  upec_dit_3_p_csr_regfile_i_mip_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mip_q, P2.csr_regfile_i.mip_q));
+  upec_dit_3_p_csr_regfile_i_instret_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.instret_q, P2.csr_regfile_i.instret_q));
+  upec_dit_3_p_csr_regfile_i_stvec_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.stvec_q, P2.csr_regfile_i.stvec_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo0_i_fifo_instr_data_write_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.write_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.write_pointer_q));
+  upec_dit_3_p_csr_regfile_i_mtvec_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.mtvec_q, P2.csr_regfile_i.mtvec_q));
+  upec_dit_3_p_i_frontend_i_instr_queue_gen_instr_fifo1_i_fifo_instr_data_write_pointer_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.write_pointer_q, P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.write_pointer_q));
+  upec_dit_3_p_csr_regfile_i_wfi_q: assert property (disable iff (rst) upec_dit_unrolled_p(3, P1.csr_regfile_i.wfi_q, P2.csr_regfile_i.wfi_q));
+ 
+  // 4-cycle Fanout
+  upec_dit_4_p_issue_stage_i_i_issue_read_operands_imm_q: assert property (disable iff (rst) upec_dit_unrolled_p(4, P1.issue_stage_i.i_issue_read_operands.imm_q, P2.issue_stage_i.i_issue_read_operands.imm_q));
+*/
+
+`end_tda
+
+endmodule
+
+bind ariane_miter property_checker checker_bind(.clk(clk), .rst(rst));

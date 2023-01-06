@@ -4,7 +4,7 @@ module ariane_miter import ariane_pkg::*; #(
   input  logic                         clk,
   input  logic                         rst,
 
-  output ariane_axi::req_t             axi_req_o,
+//  output ariane_axi::req_t             axi_req_o,
   input  ariane_axi::resp_t            axi_resp_i
 
 );
@@ -24,7 +24,7 @@ ariane #(
   .time_irq_i(1'b0),   // timer interrupt in (async)
   .debug_req_i(1'b0),  // debug request (async)
   // memory side, AXI Master
-  .axi_req_o(axi_req_o),
+  .axi_req_o(),
   .axi_resp_i(axi_resp_i)
 );
 
@@ -43,7 +43,7 @@ ariane #(
   .time_irq_i(1'b0),   // timer interrupt in (async)
   .debug_req_i(1'b0),  // debug request (async)
   // memory side, AXI Master
-  .axi_req_o(axi_req_o),
+  .axi_req_o(),
   .axi_resp_i(axi_resp_i)
 );
 

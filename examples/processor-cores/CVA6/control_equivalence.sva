@@ -1,0 +1,367 @@
+function automatic Control_Equivalence();
+Control_Equivalence = (
+  (P1.controller_i.fence_active_q == P2.controller_i.fence_active_q) &&
+  (P1.controller_i.flush_dcache_o == P2.controller_i.flush_dcache_o) &&
+  (P1.csr_regfile_i.cycle_q == P2.csr_regfile_i.cycle_q) &&
+  (P1.csr_regfile_i.dcache_q == P2.csr_regfile_i.dcache_q) &&
+  (P1.csr_regfile_i.dcsr_q == P2.csr_regfile_i.dcsr_q) &&
+  (P1.csr_regfile_i.debug_mode_q == P2.csr_regfile_i.debug_mode_q) &&
+  (P1.csr_regfile_i.dpc_q == P2.csr_regfile_i.dpc_q) &&
+  (P1.csr_regfile_i.dscratch0_q == P2.csr_regfile_i.dscratch0_q) &&
+  (P1.csr_regfile_i.dscratch1_q == P2.csr_regfile_i.dscratch1_q) &&
+  (P1.csr_regfile_i.en_ld_st_translation_q == P2.csr_regfile_i.en_ld_st_translation_q) &&
+  (P1.csr_regfile_i.fcsr_q == P2.csr_regfile_i.fcsr_q) &&
+  (P1.csr_regfile_i.icache_q == P2.csr_regfile_i.icache_q) &&
+  (P1.csr_regfile_i.instret_q == P2.csr_regfile_i.instret_q) &&
+  (P1.csr_regfile_i.mcause_q == P2.csr_regfile_i.mcause_q) &&
+  (P1.csr_regfile_i.mcounteren_q == P2.csr_regfile_i.mcounteren_q) &&
+  (P1.csr_regfile_i.medeleg_q == P2.csr_regfile_i.medeleg_q) &&
+  (P1.csr_regfile_i.mepc_q == P2.csr_regfile_i.mepc_q) &&
+  (P1.csr_regfile_i.mideleg_q == P2.csr_regfile_i.mideleg_q) &&
+  (P1.csr_regfile_i.mie_q == P2.csr_regfile_i.mie_q) &&
+  (P1.csr_regfile_i.mip_q == P2.csr_regfile_i.mip_q) &&
+  (P1.csr_regfile_i.mscratch_q == P2.csr_regfile_i.mscratch_q) &&
+  (P1.csr_regfile_i.mstatus_q == P2.csr_regfile_i.mstatus_q) &&
+  (P1.csr_regfile_i.mtval_q == P2.csr_regfile_i.mtval_q) &&
+  (P1.csr_regfile_i.mtvec_q == P2.csr_regfile_i.mtvec_q) &&
+  (P1.csr_regfile_i.mtvec_rst_load_q == P2.csr_regfile_i.mtvec_rst_load_q) &&
+  (P1.csr_regfile_i.pmpaddr_q == P2.csr_regfile_i.pmpaddr_q) &&
+  (P1.csr_regfile_i.pmpcfg_q == P2.csr_regfile_i.pmpcfg_q) &&
+  (P1.csr_regfile_i.priv_lvl_q == P2.csr_regfile_i.priv_lvl_q) &&
+  (P1.csr_regfile_i.satp_q == P2.csr_regfile_i.satp_q) &&
+  (P1.csr_regfile_i.scause_q == P2.csr_regfile_i.scause_q) &&
+  (P1.csr_regfile_i.scounteren_q == P2.csr_regfile_i.scounteren_q) &&
+  (P1.csr_regfile_i.sepc_q == P2.csr_regfile_i.sepc_q) &&
+  (P1.csr_regfile_i.sscratch_q == P2.csr_regfile_i.sscratch_q) &&
+  (P1.csr_regfile_i.stval_q == P2.csr_regfile_i.stval_q) &&
+  (P1.csr_regfile_i.stvec_q == P2.csr_regfile_i.stvec_q) &&
+  (P1.csr_regfile_i.wfi_q == P2.csr_regfile_i.wfi_q) &&
+//  (P1.ex_stage_i.asid_to_be_flushed == P2.ex_stage_i.asid_to_be_flushed) &&
+  (P1.ex_stage_i.current_instruction_is_sfence_vma == P2.ex_stage_i.current_instruction_is_sfence_vma) &&
+//  (P1.ex_stage_i.i_mult.i_div.cnt_q == P2.ex_stage_i.i_mult.i_div.cnt_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.comp_inv_q == P2.ex_stage_i.i_mult.i_div.comp_inv_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.div_res_zero_q == P2.ex_stage_i.i_mult.i_div.div_res_zero_q) &&
+  (P1.ex_stage_i.i_mult.i_div.id_q == P2.ex_stage_i.i_mult.i_div.id_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.op_a_q == P2.ex_stage_i.i_mult.i_div.op_a_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.op_b_q == P2.ex_stage_i.i_mult.i_div.op_b_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.op_b_zero_q == P2.ex_stage_i.i_mult.i_div.op_b_zero_q) &&
+  (P1.ex_stage_i.i_mult.i_div.rem_sel_q == P2.ex_stage_i.i_mult.i_div.rem_sel_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.res_inv_q == P2.ex_stage_i.i_mult.i_div.res_inv_q) &&
+//  (P1.ex_stage_i.i_mult.i_div.res_q == P2.ex_stage_i.i_mult.i_div.res_q) &&
+  (P1.ex_stage_i.i_mult.i_div.state_q == P2.ex_stage_i.i_mult.i_div.state_q) &&
+//  (P1.ex_stage_i.i_mult.i_multiplier.mult_result_q == P2.ex_stage_i.i_mult.i_multiplier.mult_result_q) &&
+  (P1.ex_stage_i.i_mult.i_multiplier.mult_valid_q == P2.ex_stage_i.i_mult.i_multiplier.mult_valid_q) &&
+  (P1.ex_stage_i.i_mult.i_multiplier.operator_q == P2.ex_stage_i.i_mult.i_multiplier.operator_q) &&
+  (P1.ex_stage_i.i_mult.i_multiplier.trans_id_q == P2.ex_stage_i.i_mult.i_multiplier.trans_id_q) &&
+  (P1.ex_stage_i.i_mult.word_op_q == P2.ex_stage_i.i_mult.word_op_q) &&
+//  (P1.ex_stage_i.vaddr_to_be_flushed == P2.ex_stage_i.vaddr_to_be_flushed) &&
+  (P1.i_frontend.bht_q == P2.i_frontend.bht_q) &&
+  (P1.i_frontend.btb_q == P2.i_frontend.btb_q) &&
+  (P1.i_frontend.i_bht.bht_q == P2.i_frontend.i_bht.bht_q) &&
+  (P1.i_frontend.i_btb.btb_q == P2.i_frontend.i_btb.btb_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.mem_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.mem_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.read_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.status_cnt_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.write_pointer_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[0].i_fifo_instr_data.write_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.mem_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.mem_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.read_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.status_cnt_q) &&
+  (P1.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.write_pointer_q == P2.i_frontend.i_instr_queue.gen_instr_fifo[1].i_fifo_instr_data.write_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.i_fifo_address.mem_q == P2.i_frontend.i_instr_queue.i_fifo_address.mem_q) &&
+  (P1.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q == P2.i_frontend.i_instr_queue.i_fifo_address.read_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q == P2.i_frontend.i_instr_queue.i_fifo_address.status_cnt_q) &&
+  (P1.i_frontend.i_instr_queue.i_fifo_address.write_pointer_q == P2.i_frontend.i_instr_queue.i_fifo_address.write_pointer_q) &&
+  (P1.i_frontend.i_instr_queue.idx_ds_q == P2.i_frontend.i_instr_queue.idx_ds_q) &&
+  (P1.i_frontend.i_instr_queue.idx_is_q == P2.i_frontend.i_instr_queue.idx_is_q) &&
+  (P1.i_frontend.i_instr_queue.pc_q == P2.i_frontend.i_instr_queue.pc_q) &&
+  (P1.i_frontend.i_instr_queue.reset_address_q == P2.i_frontend.i_instr_queue.reset_address_q) &&
+  (P1.i_frontend.i_instr_realign.unaligned_address_q == P2.i_frontend.i_instr_realign.unaligned_address_q) &&
+  (P1.i_frontend.i_instr_realign.unaligned_instr_q == P2.i_frontend.i_instr_realign.unaligned_instr_q) &&
+  (P1.i_frontend.i_instr_realign.unaligned_q == P2.i_frontend.i_instr_realign.unaligned_q) &&
+  (P1.i_frontend.i_ras.stack_q == P2.i_frontend.i_ras.stack_q) &&
+  (P1.i_frontend.icache_data_q == P2.i_frontend.icache_data_q) &&
+  (P1.i_frontend.icache_ex_valid_q == P2.i_frontend.icache_ex_valid_q) &&
+  (P1.i_frontend.icache_vaddr_q == P2.i_frontend.icache_vaddr_q) &&
+  (P1.i_frontend.icache_valid_q == P2.i_frontend.icache_valid_q) &&
+  (P1.i_frontend.npc_q == P2.i_frontend.npc_q) &&
+  (P1.i_frontend.npc_rst_load_q == P2.i_frontend.npc_rst_load_q) &&
+  (P1.i_frontend.speculative_q == P2.i_frontend.speculative_q) &&
+  (P1.i_perf_counters.perf_counter_q == P2.i_perf_counters.perf_counter_q) &&
+  (P1.id_stage_i.issue_q == P2.id_stage_i.issue_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.alu_valid_q == P2.issue_stage_i.i_issue_read_operands.alu_valid_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.branch_predict_o == P2.issue_stage_i.i_issue_read_operands.branch_predict_o) &&
+  (P1.issue_stage_i.i_issue_read_operands.branch_valid_q == P2.issue_stage_i.i_issue_read_operands.branch_valid_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.csr_valid_q == P2.issue_stage_i.i_issue_read_operands.csr_valid_q) &&
+//  (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.mem == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.mem) &&
+  (P1.issue_stage_i.i_issue_read_operands.fpu_fmt_q == P2.issue_stage_i.i_issue_read_operands.fpu_fmt_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.fpu_rm_q == P2.issue_stage_i.i_issue_read_operands.fpu_rm_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.fpu_valid_q == P2.issue_stage_i.i_issue_read_operands.fpu_valid_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.fu_q == P2.issue_stage_i.i_issue_read_operands.fu_q) &&
+//  (P1.issue_stage_i.i_issue_read_operands.imm_q == P2.issue_stage_i.i_issue_read_operands.imm_q) &&  // Added for 1-cycle
+  (P1.issue_stage_i.i_issue_read_operands.is_compressed_instr_o == P2.issue_stage_i.i_issue_read_operands.is_compressed_instr_o) &&
+  (P1.issue_stage_i.i_issue_read_operands.lsu_valid_q == P2.issue_stage_i.i_issue_read_operands.lsu_valid_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.mult_valid_q == P2.issue_stage_i.i_issue_read_operands.mult_valid_q) &&
+//  (P1.issue_stage_i.i_issue_read_operands.operand_a_q == P2.issue_stage_i.i_issue_read_operands.operand_a_q) &&
+//  (P1.issue_stage_i.i_issue_read_operands.operand_b_q == P2.issue_stage_i.i_issue_read_operands.operand_b_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.operator_q == P2.issue_stage_i.i_issue_read_operands.operator_q) &&
+  (P1.issue_stage_i.i_issue_read_operands.pc_o == P2.issue_stage_i.i_issue_read_operands.pc_o) &&
+  (P1.issue_stage_i.i_issue_read_operands.trans_id_q == P2.issue_stage_i.i_issue_read_operands.trans_id_q) &&
+  (P1.issue_stage_i.i_re_name.re_name_table_fpr_q == P2.issue_stage_i.i_re_name.re_name_table_fpr_q) &&
+  (P1.issue_stage_i.i_re_name.re_name_table_gpr_q == P2.issue_stage_i.i_re_name.re_name_table_gpr_q) &&
+  (P1.issue_stage_i.i_scoreboard.commit_pointer_q == P2.issue_stage_i.i_scoreboard.commit_pointer_q) &&
+  (P1.issue_stage_i.i_scoreboard.issue_cnt_q == P2.issue_stage_i.i_scoreboard.issue_cnt_q) &&
+  (P1.issue_stage_i.i_scoreboard.issue_pointer_q == P2.issue_stage_i.i_scoreboard.issue_pointer_q) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].issued            == P2.issue_stage_i.i_scoreboard.mem_q[7].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[7].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[7].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[7].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].issued            == P2.issue_stage_i.i_scoreboard.mem_q[6].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[6].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[6].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[6].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].issued            == P2.issue_stage_i.i_scoreboard.mem_q[5].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[5].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[5].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[5].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].issued            == P2.issue_stage_i.i_scoreboard.mem_q[4].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[4].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[4].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[4].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].issued            == P2.issue_stage_i.i_scoreboard.mem_q[3].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[3].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[3].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[3].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].issued            == P2.issue_stage_i.i_scoreboard.mem_q[2].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[2].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[2].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[2].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].issued            == P2.issue_stage_i.i_scoreboard.mem_q[1].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[1].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[1].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[1].sbe.is_compressed) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].issued            == P2.issue_stage_i.i_scoreboard.mem_q[0].issued           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].is_rd_fpr_flag    == P2.issue_stage_i.i_scoreboard.mem_q[0].is_rd_fpr_flag   ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.pc            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.pc           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.trans_id      == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.trans_id     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.fu            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.fu           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.op            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.op           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs1           == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs1          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs2           == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rs2          ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.rd            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.rd           ) &&
+//  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.result        == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.result       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.valid         == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.valid        ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_imm       == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_imm      ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_zimm      == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_zimm     ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_pc        == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.use_pc       ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp           ) &&
+  (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed)
+//  (P1.issue_stage_i.i_scoreboard.mem_q == P2.issue_stage_i.i_scoreboard.mem_q)
+);
+endfunction
+
+ function automatic Control_Output_Equality();
+  Control_Output_Equality = (
+    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.raddr_i   == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.raddr_i  ) &&
+    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.test_en_i == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.test_en_i) &&
+    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.waddr_i   == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.waddr_i  ) &&
+//    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.wdata_i   == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.wdata_i  ) &&
+    (P1.issue_stage_i.i_issue_read_operands.i_ariane_regfile.we_i      == P2.issue_stage_i.i_issue_read_operands.i_ariane_regfile.we_i     ) &&
+
+//    (P1.ex_stage_i.branch_unit_i.branch_comp_res_i     == P2.ex_stage_i.branch_unit_i.branch_comp_res_i    ) &&
+    (P1.ex_stage_i.branch_unit_i.branch_predict_i      == P2.ex_stage_i.branch_unit_i.branch_predict_i     ) &&
+    (P1.ex_stage_i.branch_unit_i.branch_valid_i        == P2.ex_stage_i.branch_unit_i.branch_valid_i       ) &&
+    (P1.ex_stage_i.branch_unit_i.debug_mode_i          == P2.ex_stage_i.branch_unit_i.debug_mode_i         ) &&
+//    (P1.ex_stage_i.branch_unit_i.fu_data_i             == P2.ex_stage_i.branch_unit_i.fu_data_i            ) &&
+    (P1.ex_stage_i.branch_unit_i.fu_valid_i            == P2.ex_stage_i.branch_unit_i.fu_valid_i           ) &&
+    (P1.ex_stage_i.branch_unit_i.is_compressed_instr_i == P2.ex_stage_i.branch_unit_i.is_compressed_instr_i) &&
+    (P1.ex_stage_i.branch_unit_i.pc_i                  == P2.ex_stage_i.branch_unit_i.pc_i                 ) &&
+
+    (P1.ex_stage_i.csr_buffer_i.csr_commit_i == P2.ex_stage_i.csr_buffer_i.csr_commit_i) &&
+    (P1.ex_stage_i.csr_buffer_i.csr_valid_i  == P2.ex_stage_i.csr_buffer_i.csr_valid_i ) &&
+    (P1.ex_stage_i.csr_buffer_i.flush_i      == P2.ex_stage_i.csr_buffer_i.flush_i     ) &&
+//    (P1.ex_stage_i.csr_buffer_i.fu_data_i    == P2.ex_stage_i.csr_buffer_i.fu_data_i   ) &&
+
+    (P1.ex_stage_i.lsu_i.amo_resp_i              == P2.ex_stage_i.lsu_i.amo_resp_i             ) &&
+    (P1.ex_stage_i.lsu_i.amo_valid_commit_i      == P2.ex_stage_i.lsu_i.amo_valid_commit_i     ) &&
+    (P1.ex_stage_i.lsu_i.asid_i                  == P2.ex_stage_i.lsu_i.asid_i                 ) &&
+//    (P1.ex_stage_i.lsu_i.asid_to_be_flushed_i    == P2.ex_stage_i.lsu_i.asid_to_be_flushed_i   ) &&
+    (P1.ex_stage_i.lsu_i.commit_i                == P2.ex_stage_i.lsu_i.commit_i               ) &&
+    (P1.ex_stage_i.lsu_i.commit_tran_id_i        == P2.ex_stage_i.lsu_i.commit_tran_id_i       ) &&
+    (P1.ex_stage_i.lsu_i.dcache_req_ports_i      == P2.ex_stage_i.lsu_i.dcache_req_ports_i     ) &&
+    (P1.ex_stage_i.lsu_i.dcache_wbuffer_empty_i  == P2.ex_stage_i.lsu_i.dcache_wbuffer_empty_i ) &&
+    (P1.ex_stage_i.lsu_i.dcache_wbuffer_not_ni_i == P2.ex_stage_i.lsu_i.dcache_wbuffer_not_ni_i) &&
+    (P1.ex_stage_i.lsu_i.en_ld_st_translation_i  == P2.ex_stage_i.lsu_i.en_ld_st_translation_i ) &&
+    (P1.ex_stage_i.lsu_i.enable_translation_i    == P2.ex_stage_i.lsu_i.enable_translation_i   ) &&
+    (P1.ex_stage_i.lsu_i.flush_i                 == P2.ex_stage_i.lsu_i.flush_i                ) &&
+    (P1.ex_stage_i.lsu_i.flush_tlb_i             == P2.ex_stage_i.lsu_i.flush_tlb_i            ) &&
+//    (P1.ex_stage_i.lsu_i.fu_data_i               == P2.ex_stage_i.lsu_i.fu_data_i              ) &&
+    (P1.ex_stage_i.lsu_i.icache_areq_i           == P2.ex_stage_i.lsu_i.icache_areq_i          ) &&
+    (P1.ex_stage_i.lsu_i.ld_st_priv_lvl_i        == P2.ex_stage_i.lsu_i.ld_st_priv_lvl_i       ) &&
+    (P1.ex_stage_i.lsu_i.lsu_valid_i             == P2.ex_stage_i.lsu_i.lsu_valid_i            ) &&
+    (P1.ex_stage_i.lsu_i.mxr_i                   == P2.ex_stage_i.lsu_i.mxr_i                  ) &&
+    (P1.ex_stage_i.lsu_i.pmpaddr_i               == P2.ex_stage_i.lsu_i.pmpaddr_i              ) &&
+    (P1.ex_stage_i.lsu_i.pmpcfg_i                == P2.ex_stage_i.lsu_i.pmpcfg_i               ) &&
+    (P1.ex_stage_i.lsu_i.priv_lvl_i              == P2.ex_stage_i.lsu_i.priv_lvl_i             ) &&
+    (P1.ex_stage_i.lsu_i.satp_ppn_i              == P2.ex_stage_i.lsu_i.satp_ppn_i             ) &&
+    (P1.ex_stage_i.lsu_i.sum_i                   == P2.ex_stage_i.lsu_i.sum_i                  ) &&
+//    (P1.ex_stage_i.lsu_i.vaddr_to_be_flushed_i   == P2.ex_stage_i.lsu_i.vaddr_to_be_flushed_i  ) &&
+
+    (P1.ex_stage_i.fpu_gen.fpu_i.flush_i     == P2.ex_stage_i.fpu_gen.fpu_i.flush_i    ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_fmt_i   == P2.ex_stage_i.fpu_gen.fpu_i.fpu_fmt_i  ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_frm_i   == P2.ex_stage_i.fpu_gen.fpu_i.fpu_frm_i  ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_prec_i  == P2.ex_stage_i.fpu_gen.fpu_i.fpu_prec_i ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_rm_i    == P2.ex_stage_i.fpu_gen.fpu_i.fpu_rm_i   ) &&
+    (P1.ex_stage_i.fpu_gen.fpu_i.fpu_valid_i == P2.ex_stage_i.fpu_gen.fpu_i.fpu_valid_i) &&
+//    (P1.ex_stage_i.fpu_gen.fpu_i.fu_data_i   == P2.ex_stage_i.fpu_gen.fpu_i.fu_data_i  ) &&
+
+    (P1.i_cache_subsystem.amo_req_i          == P2.i_cache_subsystem.amo_req_i         ) &&
+    (P1.i_cache_subsystem.axi_resp_i         == P2.i_cache_subsystem.axi_resp_i        ) &&
+    (P1.i_cache_subsystem.dcache_enable_i    == P2.i_cache_subsystem.dcache_enable_i   ) &&
+    (P1.i_cache_subsystem.dcache_flush_i     == P2.i_cache_subsystem.dcache_flush_i    ) &&
+
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].address_index == P2.i_cache_subsystem.dcache_req_ports_i[0].address_index) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].address_tag   == P2.i_cache_subsystem.dcache_req_ports_i[0].address_tag  ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].data_be       == P2.i_cache_subsystem.dcache_req_ports_i[0].data_be      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].data_req      == P2.i_cache_subsystem.dcache_req_ports_i[0].data_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].data_size     == P2.i_cache_subsystem.dcache_req_ports_i[0].data_size    ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].data_wdata    == P2.i_cache_subsystem.dcache_req_ports_i[0].data_wdata   ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].data_we       == P2.i_cache_subsystem.dcache_req_ports_i[0].data_we      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].kill_req      == P2.i_cache_subsystem.dcache_req_ports_i[0].kill_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[0].tag_valid     == P2.i_cache_subsystem.dcache_req_ports_i[0].tag_valid    ) &&
+
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].address_index == P2.i_cache_subsystem.dcache_req_ports_i[1].address_index) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].address_tag   == P2.i_cache_subsystem.dcache_req_ports_i[1].address_tag  ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].data_be       == P2.i_cache_subsystem.dcache_req_ports_i[1].data_be      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].data_req      == P2.i_cache_subsystem.dcache_req_ports_i[1].data_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].data_size     == P2.i_cache_subsystem.dcache_req_ports_i[1].data_size    ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].data_wdata    == P2.i_cache_subsystem.dcache_req_ports_i[1].data_wdata   ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].data_we       == P2.i_cache_subsystem.dcache_req_ports_i[1].data_we      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].kill_req      == P2.i_cache_subsystem.dcache_req_ports_i[1].kill_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[1].tag_valid     == P2.i_cache_subsystem.dcache_req_ports_i[1].tag_valid    ) &&
+
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].address_index == P2.i_cache_subsystem.dcache_req_ports_i[2].address_index) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].address_tag   == P2.i_cache_subsystem.dcache_req_ports_i[2].address_tag  ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].data_be       == P2.i_cache_subsystem.dcache_req_ports_i[2].data_be      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].data_req      == P2.i_cache_subsystem.dcache_req_ports_i[2].data_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].data_size     == P2.i_cache_subsystem.dcache_req_ports_i[2].data_size    ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].data_wdata    == P2.i_cache_subsystem.dcache_req_ports_i[2].data_wdata   ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].data_we       == P2.i_cache_subsystem.dcache_req_ports_i[2].data_we      ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].kill_req      == P2.i_cache_subsystem.dcache_req_ports_i[2].kill_req     ) &&
+    (P1.i_cache_subsystem.dcache_req_ports_i[2].tag_valid     == P2.i_cache_subsystem.dcache_req_ports_i[2].tag_valid    ) &&
+
+    (P1.i_cache_subsystem.icache_areq_i.fetch_valid           == P2.i_cache_subsystem.icache_areq_i.fetch_valid    ) &&
+    (P1.i_cache_subsystem.icache_areq_i.fetch_paddr           == P2.i_cache_subsystem.icache_areq_i.fetch_paddr    ) &&
+    (P1.i_cache_subsystem.icache_areq_i.fetch_exception.cause == P2.i_cache_subsystem.icache_areq_i.fetch_exception.cause) &&
+    (P1.i_cache_subsystem.icache_areq_i.fetch_exception.tval  == P2.i_cache_subsystem.icache_areq_i.fetch_exception.tval ) &&
+    (P1.i_cache_subsystem.icache_areq_i.fetch_exception.valid == P2.i_cache_subsystem.icache_areq_i.fetch_exception.valid) &&
+
+    (P1.i_cache_subsystem.icache_dreq_i.req     == P2.i_cache_subsystem.icache_dreq_i.req    ) &&
+    (P1.i_cache_subsystem.icache_dreq_i.kill_s1 == P2.i_cache_subsystem.icache_dreq_i.kill_s1) &&
+    (P1.i_cache_subsystem.icache_dreq_i.kill_s2 == P2.i_cache_subsystem.icache_dreq_i.kill_s2) &&
+    (P1.i_cache_subsystem.icache_dreq_i.spec    == P2.i_cache_subsystem.icache_dreq_i.spec   ) &&
+    (P1.i_cache_subsystem.icache_dreq_i.vaddr   == P2.i_cache_subsystem.icache_dreq_i.vaddr  ) &&
+
+    (P1.i_cache_subsystem.icache_en_i        == P2.i_cache_subsystem.icache_en_i       ) &&
+    (P1.i_cache_subsystem.icache_flush_i     == P2.i_cache_subsystem.icache_flush_i    ) &&
+    (P1.i_cache_subsystem.priv_lvl_i         == P2.i_cache_subsystem.priv_lvl_i        ) &&
+
+    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.raddr_i   == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.raddr_i) &&
+    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.test_en_i == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.test_en_i) &&
+    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.waddr_i   == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.waddr_i) &&
+//    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.wdata_i   == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.wdata_i) &&
+    (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.we_i      == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.we_i)
+  );
+  endfunction
+
