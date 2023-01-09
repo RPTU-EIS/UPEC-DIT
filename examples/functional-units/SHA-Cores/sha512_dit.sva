@@ -87,20 +87,28 @@ module property_checker
   // - UPEC for Data-Independent Timing -
   // ------------------------------------
 
-  property dit_text_i_cmd_o_p;
+  property dit_unrolled_p;
     t ##0 state_equality()
     implies
     during_o(t, 1, t, MAX_LATENCY, (SHA512_1.cmd_o == SHA512_2.cmd_o));
   endproperty
-  dit_text_i_cmd_o_p_a: assert property (disable iff (rst) dit_text_i_cmd_o_p);
+  dit_unrolled_p_a: assert property (disable iff (rst) dit_unrolled_p);
 
-  property noninterference_p;
+  property dit_base_p;
+    t ##0 reset_sequence
+    implies
+    t ##1 control_state_equality() and
+    t ##1 (SHA512_1.cmd_o == SHA512_2.cmd_o);
+  endproperty
+  dit_base_p_a: assert property (dit_base_p);
+
+  property dit_step_p;
     t ##0 control_state_equality()
     implies
     t ##1 control_state_equality() and
     t ##1 (SHA512_1.cmd_o == SHA512_2.cmd_o);
   endproperty
-  noninterference_p_a: assert property (disable iff (rst) noninterference_p);
+  dit_step_p_a: assert property (disable iff (rst) dit_step_p);
 
 `end_tda
 
