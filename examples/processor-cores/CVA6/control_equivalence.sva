@@ -92,7 +92,6 @@ Control_Equivalence = (
   (P1.issue_stage_i.i_issue_read_operands.branch_predict_o == P2.issue_stage_i.i_issue_read_operands.branch_predict_o) &&
   (P1.issue_stage_i.i_issue_read_operands.branch_valid_q == P2.issue_stage_i.i_issue_read_operands.branch_valid_q) &&
   (P1.issue_stage_i.i_issue_read_operands.csr_valid_q == P2.issue_stage_i.i_issue_read_operands.csr_valid_q) &&
-//  (P1.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.mem == P2.issue_stage_i.i_issue_read_operands.float_regfile_gen.i_ariane_fp_regfile.mem) &&
   (P1.issue_stage_i.i_issue_read_operands.fpu_fmt_q == P2.issue_stage_i.i_issue_read_operands.fpu_fmt_q) &&
   (P1.issue_stage_i.i_issue_read_operands.fpu_rm_q == P2.issue_stage_i.i_issue_read_operands.fpu_rm_q) &&
   (P1.issue_stage_i.i_issue_read_operands.fpu_valid_q == P2.issue_stage_i.i_issue_read_operands.fpu_valid_q) &&
@@ -247,7 +246,6 @@ Control_Equivalence = (
   (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.ex           ) &&
   (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp            == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.bp           ) &&
   (P1.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed == P2.issue_stage_i.i_scoreboard.mem_q[0].sbe.is_compressed)
-//  (P1.issue_stage_i.i_scoreboard.mem_q == P2.issue_stage_i.i_scoreboard.mem_q)
 );
 endfunction
 

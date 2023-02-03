@@ -113,7 +113,7 @@ set_compile_option -golden -black_box_instances {{P1/i_cache_subsystem} {P2/i_ca
                                                  {P1/issue_stage_i/i_issue_read_operands/float_regfile_gen/i_ariane_fp_regfile} {P2/issue_stage_i/i_issue_read_operands/float_regfile_gen/i_ariane_fp_regfile}
                                                  {P1/ex_stage_i/branch_unit_i} {P2/ex_stage_i/branch_unit_i}
                                                  {P1/ex_stage_i/csr_buffer_i} {P2/ex_stage_i/csr_buffer_i} 
-                                                 {P1/ex_stage_i/lsu_i} {P1/ex_stage_i/lsu_i}
+                                                 {P1/ex_stage_i/lsu_i} {P2/ex_stage_i/lsu_i}
                                                  {P1/ex_stage_i/fpu_gen/fpu_i} {P2/ex_stage_i/fpu_gen/fpu_i}}
 
 compile -golden
