@@ -1,0 +1,157 @@
+// @lang=sva @ts=8
+
+/*
+The module has date-dependent timing for all the division instructions (DIV (4), DIVU (5), REM (6), REMU (7)).
+A negative sign produces an increased latency, but also the counter value of the division strongly depends on the data.
+
+The multiplication instructions (MUL (0), MULH (1), MULHSU (2), MULHU (3)) are data-oblivious.
+
+The other fn values (8-15) should not occur during normal operation (see "Multiplier.scala" and "ALU.scala").
+*/
+
+module property_checker
+  (
+  input clock,
+  input reset
+  );
+
+  default clocking default_clk @(posedge clock); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 5;
+
+  enum {S_READY, S_NEG_INPUTS, S_MUL, S_DIV, S_DUMMY, S_NEG_OUTPUT, S_DONE_MUL, S_DONE_DIV} state_t;
+
+  function automatic State_Equivalence();
+  State_Equivalence = (
+    (U1.count     == U2.count    ) &&
+    (U1.divisor   == U2.divisor  ) &&
+    (U1.isHi      == U2.isHi     ) &&
+    (U1.neg_out   == U2.neg_out  ) &&
+    (U1.remainder == U2.remainder) &&
+    (U1.req_dw    == U2.req_dw   ) &&
+    (U1.resHi     == U2.resHi    ) &&
+    (U1.state     == U2.state    )
+  );
+  endfunction
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+    (U1.count         == U2.count        ) &&
+    (U1.state         == U2.state        ) &&
+    (U1.io_resp_valid == U2.io_resp_valid) &&
+    (U1.io_req_valid  == U2.io_req_valid )
+  );
+  endfunction
+
+  function automatic Control_Equivalence();
+  Control_Equivalence = (
+    (U1.count     == U2.count    ) &&
+//    (U1.divisor   == U2.divisor  ) &&
+    (U1.isHi      == U2.isHi     ) &&
+//    (U1.neg_out   == U2.neg_out  ) &&
+//    (U1.remainder == U2.remainder) &&
+    (U1.req_dw    == U2.req_dw   ) &&
+    (U1.resHi     == U2.resHi    ) &&
+    (U1.state     == U2.state    ) &&
+    (U1.io_resp_valid == U2.io_resp_valid) &&
+    (U1.io_req_valid  == U2.io_req_valid )
+  );
+  endfunction
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (reset == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (U1.state == S_READY) and
+    t ##0 (U2.state == S_READY);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  property state_invariant_p;
+    t ##0 ((U1.state != S_DUMMY) && (U2.state != S_DUMMY))
+    implies
+    t ##1 ((U1.state != S_DUMMY) && (U2.state != S_DUMMY));
+  endproperty
+  state_invariant_p_a: assert property (disable iff (reset) state_invariant_p);
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  property dit_in1_resp_valid_p(fn);
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_req_bits_in2 == U2.io_req_bits_in2)) and
+    during_o(t, 0, t, MAX_LATENCY, ((U1.io_req_bits_fn == fn) && (U2.io_req_bits_fn == fn)))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+
+  property dit_in2_resp_valid_p(fn);
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_req_bits_in1 == U2.io_req_bits_in1)) and
+    during_o(t, 0, t, MAX_LATENCY, ((U1.io_req_bits_fn == fn) && (U2.io_req_bits_fn == fn)))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+
+  dit_in1_resp_valid_fn00_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd00));
+  dit_in1_resp_valid_fn01_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd01));
+  dit_in1_resp_valid_fn02_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd02));
+  dit_in1_resp_valid_fn03_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd03));
+  dit_in1_resp_valid_fn04_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd04));
+  dit_in1_resp_valid_fn05_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd05));
+  dit_in1_resp_valid_fn06_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd06));
+  dit_in1_resp_valid_fn07_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd07));
+  dit_in1_resp_valid_fn08_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd08));
+  dit_in1_resp_valid_fn09_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd09));
+  dit_in1_resp_valid_fn10_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd10));
+  dit_in1_resp_valid_fn11_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd11));
+  dit_in1_resp_valid_fn12_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd12));
+  dit_in1_resp_valid_fn13_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd13));
+  dit_in1_resp_valid_fn14_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd14));
+  dit_in1_resp_valid_fn15_p_a: assert property (disable iff (reset) dit_in1_resp_valid_p(4'd15));
+
+  dit_in2_resp_valid_fn00_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd00));
+  dit_in2_resp_valid_fn01_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd01));
+  dit_in2_resp_valid_fn02_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd02));
+  dit_in2_resp_valid_fn03_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd03));
+  dit_in2_resp_valid_fn04_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd04));
+  dit_in2_resp_valid_fn05_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd05));
+  dit_in2_resp_valid_fn06_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd06));
+  dit_in2_resp_valid_fn07_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd07));
+  dit_in2_resp_valid_fn08_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd08));
+  dit_in2_resp_valid_fn09_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd09));
+  dit_in2_resp_valid_fn10_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd10));
+  dit_in2_resp_valid_fn11_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd11));
+  dit_in2_resp_valid_fn12_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd12));
+  dit_in2_resp_valid_fn13_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd13));
+  dit_in2_resp_valid_fn14_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd14));
+  dit_in2_resp_valid_fn15_p_a: assert property (disable iff (reset) dit_in2_resp_valid_p(4'd15));
+
+  property noninterference_p();
+    t ##0 Control_Equivalence() and
+    t ##0 (U1.io_req_bits_fn >= 4'd0) && (U1.io_req_bits_fn <= 4'd3) and
+    t ##0 (U2.io_req_bits_fn >= 4'd0) && (U2.io_req_bits_fn <= 4'd3) and
+    t ##0 (U1.state != S_DIV) && (U2.state != S_DIV)
+    implies
+    t ##0 (U1.state != S_DIV) && (U2.state != S_DIV) and
+    t ##1 Control_Equivalence();
+  endproperty
+  noninterference_p_a: assert property (disable iff (reset) noninterference_p());
+
+`end_tda
+
+endmodule
+
+bind MulDiv_Miter property_checker checker_bind(.clock(clock), .reset(reset));

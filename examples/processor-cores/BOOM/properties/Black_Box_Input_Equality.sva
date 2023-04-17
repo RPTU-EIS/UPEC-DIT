@@ -1,0 +1,154 @@
+// @lang=sva @ts=8
+
+function automatic Black_Box_Input_Equality();
+  Black_Box_Input_Equality = (
+    (U1.iregfile.io_read_ports_0_addr       == U2.iregfile.io_read_ports_0_addr      ) &&
+    (U1.iregfile.io_read_ports_1_addr       == U2.iregfile.io_read_ports_1_addr      ) &&
+    (U1.iregfile.io_read_ports_2_addr       == U2.iregfile.io_read_ports_2_addr      ) &&
+    (U1.iregfile.io_read_ports_3_addr       == U2.iregfile.io_read_ports_3_addr      ) &&
+    (U1.iregfile.io_read_ports_4_addr       == U2.iregfile.io_read_ports_4_addr      ) &&
+    (U1.iregfile.io_read_ports_5_addr       == U2.iregfile.io_read_ports_5_addr      ) &&
+    (U1.iregfile.io_write_ports_0_bits_addr == U2.iregfile.io_write_ports_0_bits_addr) &&
+//    (U1.iregfile.io_write_ports_0_bits_data == U2.iregfile.io_write_ports_0_bits_data) &&
+    (U1.iregfile.io_write_ports_0_valid     == U2.iregfile.io_write_ports_0_valid    ) &&
+    (U1.iregfile.io_write_ports_1_bits_addr == U2.iregfile.io_write_ports_1_bits_addr) &&
+//    (U1.iregfile.io_write_ports_1_bits_data == U2.iregfile.io_write_ports_1_bits_data) &&
+    (U1.iregfile.io_write_ports_1_valid     == U2.iregfile.io_write_ports_1_valid    ) &&
+    (U1.iregfile.io_write_ports_2_bits_addr == U2.iregfile.io_write_ports_2_bits_addr) &&
+//    (U1.iregfile.io_write_ports_2_bits_data == U2.iregfile.io_write_ports_2_bits_data) &&
+    (U1.iregfile.io_write_ports_2_valid     == U2.iregfile.io_write_ports_2_valid    ) &&
+    
+    (U1.fp_pipeline.fregfile.io_read_ports_0_addr       == U2.fp_pipeline.fregfile.io_read_ports_0_addr) && 
+    (U1.fp_pipeline.fregfile.io_read_ports_1_addr       == U2.fp_pipeline.fregfile.io_read_ports_1_addr) && 
+    (U1.fp_pipeline.fregfile.io_read_ports_2_addr       == U2.fp_pipeline.fregfile.io_read_ports_2_addr) && 
+    (U1.fp_pipeline.fregfile.io_write_ports_0_bits_addr == U2.fp_pipeline.fregfile.io_write_ports_0_bits_addr) && 
+//    (U1.fp_pipeline.fregfile.io_write_ports_0_bits_data == U2.fp_pipeline.fregfile.io_write_ports_0_bits_data) && 
+    (U1.fp_pipeline.fregfile.io_write_ports_0_valid     == U2.fp_pipeline.fregfile.io_write_ports_0_valid) && 
+    (U1.fp_pipeline.fregfile.io_write_ports_1_bits_addr == U2.fp_pipeline.fregfile.io_write_ports_1_bits_addr) && 
+//    (U1.fp_pipeline.fregfile.io_write_ports_1_bits_data == U2.fp_pipeline.fregfile.io_write_ports_1_bits_data) && 
+    (U1.fp_pipeline.fregfile.io_write_ports_1_valid     == U2.fp_pipeline.fregfile.io_write_ports_1_valid) && 
+
+    (U1.csr.io_cause == U2.csr.io_cause) &&
+    (U1.csr.io_counters_0_inc == U2.csr.io_counters_0_inc) &&
+    (U1.csr.io_counters_1_inc == U2.csr.io_counters_1_inc) &&
+    (U1.csr.io_counters_2_inc == U2.csr.io_counters_2_inc) &&
+    (U1.csr.io_counters_3_inc == U2.csr.io_counters_3_inc) &&
+    (U1.csr.io_counters_4_inc == U2.csr.io_counters_4_inc) &&
+    (U1.csr.io_counters_5_inc == U2.csr.io_counters_5_inc) &&
+    (U1.csr.io_decode_0_inst == U2.csr.io_decode_0_inst) &&
+    (U1.csr.io_decode_1_inst == U2.csr.io_decode_1_inst) &&
+    (U1.csr.io_exception == U2.csr.io_exception) &&
+    (U1.csr.io_fcsr_flags_bits == U2.csr.io_fcsr_flags_bits) &&
+    (U1.csr.io_fcsr_flags_valid == U2.csr.io_fcsr_flags_valid) &&
+    (U1.csr.io_hartid == U2.csr.io_hartid) &&
+    (U1.csr.io_interrupts_debug == U2.csr.io_interrupts_debug) &&
+    (U1.csr.io_interrupts_meip == U2.csr.io_interrupts_meip) &&
+    (U1.csr.io_interrupts_msip == U2.csr.io_interrupts_msip) &&
+    (U1.csr.io_interrupts_mtip == U2.csr.io_interrupts_mtip) &&
+    (U1.csr.io_interrupts_seip == U2.csr.io_interrupts_seip) &&
+    (U1.csr.io_pc == U2.csr.io_pc) &&
+    (U1.csr.io_retire == U2.csr.io_retire) &&
+    (U1.csr.io_rw_addr == U2.csr.io_rw_addr) &&
+    (U1.csr.io_rw_cmd == U2.csr.io_rw_cmd) &&
+//    (U1.csr.io_rw_wdata == U2.csr.io_rw_wdata) &&
+    (U1.csr.io_set_fs_dirty == U2.csr.io_set_fs_dirty) &&
+    (U1.csr.io_tval == U2.csr.io_tval) &&
+    (U1.csr.io_ungated_clock == U2.csr.io_ungated_clock) &&
+
+    (U1.rob.io_brupdate_b1_mispredict_mask == U2.rob.io_brupdate_b1_mispredict_mask) &&
+    (U1.rob.io_brupdate_b1_resolve_mask == U2.rob.io_brupdate_b1_resolve_mask) &&
+    (U1.rob.io_brupdate_b2_mispredict == U2.rob.io_brupdate_b2_mispredict) &&
+    (U1.rob.io_brupdate_b2_uop_rob_idx == U2.rob.io_brupdate_b2_uop_rob_idx) &&
+    (U1.rob.io_csr_stall == U2.rob.io_csr_stall) &&
+    (U1.rob.io_enq_partial_stall == U2.rob.io_enq_partial_stall) &&
+    (U1.rob.io_enq_uops_0_br_mask == U2.rob.io_enq_uops_0_br_mask) &&
+    (U1.rob.io_enq_uops_0_debug_fsrc == U2.rob.io_enq_uops_0_debug_fsrc) &&
+    (U1.rob.io_enq_uops_0_debug_inst == U2.rob.io_enq_uops_0_debug_inst) &&
+    (U1.rob.io_enq_uops_0_dst_rtype == U2.rob.io_enq_uops_0_dst_rtype) &&
+    (U1.rob.io_enq_uops_0_edge_inst == U2.rob.io_enq_uops_0_edge_inst) &&
+    (U1.rob.io_enq_uops_0_exc_cause == U2.rob.io_enq_uops_0_exc_cause) &&
+    (U1.rob.io_enq_uops_0_exception == U2.rob.io_enq_uops_0_exception) &&
+    (U1.rob.io_enq_uops_0_flush_on_commit == U2.rob.io_enq_uops_0_flush_on_commit) &&
+    (U1.rob.io_enq_uops_0_fp_val == U2.rob.io_enq_uops_0_fp_val) &&
+    (U1.rob.io_enq_uops_0_ftq_idx == U2.rob.io_enq_uops_0_ftq_idx) &&
+    (U1.rob.io_enq_uops_0_is_br == U2.rob.io_enq_uops_0_is_br) &&
+    (U1.rob.io_enq_uops_0_is_fence == U2.rob.io_enq_uops_0_is_fence) &&
+    (U1.rob.io_enq_uops_0_is_fencei == U2.rob.io_enq_uops_0_is_fencei) &&
+    (U1.rob.io_enq_uops_0_is_jal == U2.rob.io_enq_uops_0_is_jal) &&
+    (U1.rob.io_enq_uops_0_is_jalr == U2.rob.io_enq_uops_0_is_jalr) &&
+    (U1.rob.io_enq_uops_0_is_rvc == U2.rob.io_enq_uops_0_is_rvc) &&
+    (U1.rob.io_enq_uops_0_is_sys_pc2epc == U2.rob.io_enq_uops_0_is_sys_pc2epc) &&
+    (U1.rob.io_enq_uops_0_is_unique == U2.rob.io_enq_uops_0_is_unique) &&
+    (U1.rob.io_enq_uops_0_ldst == U2.rob.io_enq_uops_0_ldst) &&
+    (U1.rob.io_enq_uops_0_ldst_val == U2.rob.io_enq_uops_0_ldst_val) &&
+    (U1.rob.io_enq_uops_0_pc_lob == U2.rob.io_enq_uops_0_pc_lob) &&
+    (U1.rob.io_enq_uops_0_pdst == U2.rob.io_enq_uops_0_pdst) &&
+    (U1.rob.io_enq_uops_0_rob_idx == U2.rob.io_enq_uops_0_rob_idx) &&
+    (U1.rob.io_enq_uops_0_stale_pdst == U2.rob.io_enq_uops_0_stale_pdst) &&
+    (U1.rob.io_enq_uops_0_uopc == U2.rob.io_enq_uops_0_uopc) &&
+    (U1.rob.io_enq_uops_0_uses_ldq == U2.rob.io_enq_uops_0_uses_ldq) &&
+    (U1.rob.io_enq_uops_0_uses_stq == U2.rob.io_enq_uops_0_uses_stq) &&
+    (U1.rob.io_enq_uops_1_br_mask == U2.rob.io_enq_uops_1_br_mask) &&
+    (U1.rob.io_enq_uops_1_debug_fsrc == U2.rob.io_enq_uops_1_debug_fsrc) &&
+    (U1.rob.io_enq_uops_1_debug_inst == U2.rob.io_enq_uops_1_debug_inst) &&
+    (U1.rob.io_enq_uops_1_dst_rtype == U2.rob.io_enq_uops_1_dst_rtype) &&
+    (U1.rob.io_enq_uops_1_edge_inst == U2.rob.io_enq_uops_1_edge_inst) &&
+    (U1.rob.io_enq_uops_1_exc_cause == U2.rob.io_enq_uops_1_exc_cause) &&
+    (U1.rob.io_enq_uops_1_exception == U2.rob.io_enq_uops_1_exception) &&
+    (U1.rob.io_enq_uops_1_flush_on_commit == U2.rob.io_enq_uops_1_flush_on_commit) &&
+    (U1.rob.io_enq_uops_1_fp_val == U2.rob.io_enq_uops_1_fp_val) &&
+    (U1.rob.io_enq_uops_1_ftq_idx == U2.rob.io_enq_uops_1_ftq_idx) &&
+    (U1.rob.io_enq_uops_1_is_br == U2.rob.io_enq_uops_1_is_br) &&
+    (U1.rob.io_enq_uops_1_is_fence == U2.rob.io_enq_uops_1_is_fence) &&
+    (U1.rob.io_enq_uops_1_is_fencei == U2.rob.io_enq_uops_1_is_fencei) &&
+    (U1.rob.io_enq_uops_1_is_jal == U2.rob.io_enq_uops_1_is_jal) &&
+    (U1.rob.io_enq_uops_1_is_jalr == U2.rob.io_enq_uops_1_is_jalr) &&
+    (U1.rob.io_enq_uops_1_is_rvc == U2.rob.io_enq_uops_1_is_rvc) &&
+    (U1.rob.io_enq_uops_1_is_sys_pc2epc == U2.rob.io_enq_uops_1_is_sys_pc2epc) &&
+    (U1.rob.io_enq_uops_1_is_unique == U2.rob.io_enq_uops_1_is_unique) &&
+    (U1.rob.io_enq_uops_1_ldst == U2.rob.io_enq_uops_1_ldst) &&
+    (U1.rob.io_enq_uops_1_ldst_val == U2.rob.io_enq_uops_1_ldst_val) &&
+    (U1.rob.io_enq_uops_1_pc_lob == U2.rob.io_enq_uops_1_pc_lob) &&
+    (U1.rob.io_enq_uops_1_pdst == U2.rob.io_enq_uops_1_pdst) &&
+    (U1.rob.io_enq_uops_1_rob_idx == U2.rob.io_enq_uops_1_rob_idx) &&
+    (U1.rob.io_enq_uops_1_stale_pdst == U2.rob.io_enq_uops_1_stale_pdst) &&
+    (U1.rob.io_enq_uops_1_uopc == U2.rob.io_enq_uops_1_uopc) &&
+    (U1.rob.io_enq_uops_1_uses_ldq == U2.rob.io_enq_uops_1_uses_ldq) &&
+    (U1.rob.io_enq_uops_1_uses_stq == U2.rob.io_enq_uops_1_uses_stq) &&
+    (U1.rob.io_enq_valids_0 == U2.rob.io_enq_valids_0) &&
+    (U1.rob.io_enq_valids_1 == U2.rob.io_enq_valids_1) &&
+//    (U1.rob.io_fflags_0_bits_flags == U2.rob.io_fflags_0_bits_flags) &&
+    (U1.rob.io_fflags_0_bits_uop_rob_idx == U2.rob.io_fflags_0_bits_uop_rob_idx) &&
+    (U1.rob.io_fflags_0_valid == U2.rob.io_fflags_0_valid) &&
+//    (U1.rob.io_fflags_1_bits_flags == U2.rob.io_fflags_1_bits_flags) &&
+    (U1.rob.io_fflags_1_bits_uop_rob_idx == U2.rob.io_fflags_1_bits_uop_rob_idx) &&
+    (U1.rob.io_fflags_1_valid == U2.rob.io_fflags_1_valid) &&
+    (U1.rob.io_lsu_clr_bsy_0_bits == U2.rob.io_lsu_clr_bsy_0_bits) &&
+    (U1.rob.io_lsu_clr_bsy_0_valid == U2.rob.io_lsu_clr_bsy_0_valid) &&
+    (U1.rob.io_lsu_clr_bsy_1_bits == U2.rob.io_lsu_clr_bsy_1_bits) &&
+    (U1.rob.io_lsu_clr_bsy_1_valid == U2.rob.io_lsu_clr_bsy_1_valid) &&
+    (U1.rob.io_lxcpt_bits_badvaddr == U2.rob.io_lxcpt_bits_badvaddr) &&
+    (U1.rob.io_lxcpt_bits_cause == U2.rob.io_lxcpt_bits_cause) &&
+    (U1.rob.io_lxcpt_bits_uop_br_mask == U2.rob.io_lxcpt_bits_uop_br_mask) &&
+    (U1.rob.io_lxcpt_bits_uop_rob_idx == U2.rob.io_lxcpt_bits_uop_rob_idx) &&
+    (U1.rob.io_lxcpt_valid == U2.rob.io_lxcpt_valid) &&
+    (U1.rob.io_wb_resps_0_bits_predicated == U2.rob.io_wb_resps_0_bits_predicated) &&
+    (U1.rob.io_wb_resps_0_bits_uop_pdst == U2.rob.io_wb_resps_0_bits_uop_pdst) &&
+    (U1.rob.io_wb_resps_0_bits_uop_rob_idx == U2.rob.io_wb_resps_0_bits_uop_rob_idx) &&
+    (U1.rob.io_wb_resps_0_valid == U2.rob.io_wb_resps_0_valid) &&
+    (U1.rob.io_wb_resps_1_bits_uop_pdst == U2.rob.io_wb_resps_1_bits_uop_pdst) &&
+    (U1.rob.io_wb_resps_1_bits_uop_rob_idx == U2.rob.io_wb_resps_1_bits_uop_rob_idx) &&
+    (U1.rob.io_wb_resps_1_valid == U2.rob.io_wb_resps_1_valid) &&
+    (U1.rob.io_wb_resps_2_bits_uop_pdst == U2.rob.io_wb_resps_2_bits_uop_pdst) &&
+    (U1.rob.io_wb_resps_2_bits_uop_rob_idx == U2.rob.io_wb_resps_2_bits_uop_rob_idx) &&
+    (U1.rob.io_wb_resps_2_valid == U2.rob.io_wb_resps_2_valid) &&
+    (U1.rob.io_wb_resps_3_bits_predicated == U2.rob.io_wb_resps_3_bits_predicated) &&
+    (U1.rob.io_wb_resps_3_bits_uop_pdst == U2.rob.io_wb_resps_3_bits_uop_pdst) &&
+    (U1.rob.io_wb_resps_3_bits_uop_rob_idx == U2.rob.io_wb_resps_3_bits_uop_rob_idx) &&
+    (U1.rob.io_wb_resps_3_valid == U2.rob.io_wb_resps_3_valid) &&
+    (U1.rob.io_wb_resps_4_bits_uop_pdst == U2.rob.io_wb_resps_4_bits_uop_pdst) &&
+    (U1.rob.io_wb_resps_4_bits_uop_rob_idx == U2.rob.io_wb_resps_4_bits_uop_rob_idx) &&
+    (U1.rob.io_wb_resps_4_valid == U2.rob.io_wb_resps_4_valid) &&
+    (U1.rob.io_xcpt_fetch_pc == U2.rob.io_xcpt_fetch_pc)
+  );
+  endfunction

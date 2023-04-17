@@ -1,0 +1,401 @@
+// @lang=sva @ts=8
+
+function automatic Fanout_Equality_1();
+  Fanout_Equality_1 = (
+//    (U1.iregister_read.exe_reg_rs1_data_0 == U2.iregister_read.exe_reg_rs1_data_0) &&
+//    (U1.iregister_read.exe_reg_rs2_data_0 == U2.iregister_read.exe_reg_rs2_data_0) &&
+//    (U1.iregister_read.exe_reg_rs1_data_1 == U2.iregister_read.exe_reg_rs1_data_1) &&
+//    (U1.iregister_read.exe_reg_rs2_data_1 == U2.iregister_read.exe_reg_rs2_data_1) &&
+//    (U1.iregister_read.exe_reg_rs1_data_2 == U2.iregister_read.exe_reg_rs1_data_2) &&
+//    (U1.iregister_read.exe_reg_rs2_data_2 == U2.iregister_read.exe_reg_rs2_data_2) &&
+    1'b1
+  );
+endfunction
+
+
+function automatic Fanout_Equality_2();
+  Fanout_Equality_2 = (
+    (U1.brinfos_0_mispredict               == U2.brinfos_0_mispredict              ) &&
+    (U1.brinfos_1_mispredict               == U2.brinfos_1_mispredict              ) &&
+    (U1.brinfos_0_taken                    == U2.brinfos_0_taken                   ) &&
+    (U1.brinfos_1_taken                    == U2.brinfos_1_taken                   ) &&
+//    (U1.brinfos_0_pc_sel                   == U2.brinfos_0_pc_sel                  ) &&
+//    (U1.brinfos_1_pc_sel                   == U2.brinfos_1_pc_sel                  ) &&
+//    (U1.b2_jalr_target_REG                 == U2.b2_jalr_target_REG                ) &&
+//    (U1.csr_exe_unit.div.div.divisor       == U2.csr_exe_unit.div.div.divisor      ) &&
+//    (U1.csr_exe_unit.div.div.neg_out       == U2.csr_exe_unit.div.div.neg_out      ) &&
+//    (U1.csr_exe_unit.div.div.remainder     == U2.csr_exe_unit.div.div.remainder    ) &&
+//    (U1.csr_exe_unit.alu.r_data_0          == U2.csr_exe_unit.alu.r_data_0         ) &&
+    (U1.csr_exe_unit.div.div.state         == U2.csr_exe_unit.div.div.state        ) &&
+//    (U1.io_ifu_sfence_REG_bits_addr        == U2.io_ifu_sfence_REG_bits_addr       ) &&
+//    (U1.jmp_unit.imul.imul.inPipe_bits_in1 == U2.jmp_unit.imul.imul.inPipe_bits_in1) &&
+//    (U1.jmp_unit.imul.imul.inPipe_bits_in2 == U2.jmp_unit.imul.imul.inPipe_bits_in2) &&
+//    (U1.jmp_unit.alu.r_data_0              == U2.jmp_unit.alu.r_data_0             ) &&
+//    (U1.jmp_unit.ifpu.ifpu.inPipe_bits_in1 == U2.jmp_unit.ifpu.ifpu.inPipe_bits_in1) &&
+    1'b1
+  );
+endfunction
+
+
+function automatic Fanout_Equality_3();
+  Fanout_Equality_3 = (
+//    (U1.b2_pc_sel                              == U2.b2_pc_sel                             ) &&
+//    (U1.b2_jalr_target                         == U2.b2_jalr_target                        ) &&
+//    (U1.csr_exe_unit.div.div.count             == U2.csr_exe_unit.div.div.count            ) &&
+//    (U1.jmp_unit.imul.imul.io_resp_bits_data_b == U2.jmp_unit.imul.imul.io_resp_bits_data_b) &&
+//    (U1.jmp_unit.alu.r_data_1                  == U2.jmp_unit.alu.r_data_1                 ) &&
+//    (U1.jmp_unit.ifpu.ifpu.io_out_b_data       == U2.jmp_unit.ifpu.ifpu.io_out_b_data      ) &&
+//    (U1.jmp_unit.ifpu.ifpu.io_out_b_exc        == U2.jmp_unit.ifpu.ifpu.io_out_b_exc       ) &&
+    1'b1
+  );
+endfunction
+
+
+function automatic Fanout_Equality_4();
+  Fanout_Equality_4 = (
+    (U1.csr_exe_unit.div.div.resHi                          == U2.csr_exe_unit.div.div.resHi                         ) &&
+//    (U1.jmp_unit.alu.r_data_2                               == U2.jmp_unit.alu.r_data_2                              ) &&
+//    (U1.fp_pipeline.fregfile_io_write_ports_0_REG_bits_data == U2.fp_pipeline.fregfile_io_write_ports_0_REG_bits_data) &&
+//    (U1.jmp_unit.imul.imul.io_resp_bits_data_outPipe_bits   == U2.jmp_unit.imul.imul.io_resp_bits_data_outPipe_bits) &&
+//    (U1.jmp_unit.queue.ram_data                             == U2.jmp_unit.queue.ram_data                            ) &&
+//    (U1.jmp_unit.queue.ram_fflags_bits_flags                == U2.jmp_unit.queue.ram_fflags_bits_flags               ) &&
+    1'b1
+  );
+endfunction
+
+/*
+function automatic Fanout_Equality_5();
+  Fanout_Equality_5 = (
+    (U1.fregfile.fregfile == U2.fregfile.fregfile) &&
+    1'b1
+  );
+endfunction
+*/
+
+
+function automatic FP_Fanout_Equality_1();
+  FP_Fanout_Equality_1 = (
+//    (U1.fp_pipeline.fregister_read.exe_reg_rs1_data_0 == U2.fp_pipeline.fregister_read.exe_reg_rs1_data_0) &&
+//    (U1.fp_pipeline.fregister_read.exe_reg_rs2_data_0 == U2.fp_pipeline.fregister_read.exe_reg_rs2_data_0) &&
+//    (U1.fp_pipeline.fregister_read.exe_reg_rs3_data_0 == U2.fp_pipeline.fregister_read.exe_reg_rs3_data_0) &&
+    1'b1
+  );
+endfunction
+
+
+function automatic FP_Fanout_Equality_2();
+  FP_Fanout_Equality_2 = (
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in1 == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in1) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in2 == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in2) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in3 == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.in_in3) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in1 == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in1) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in2 == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in2) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in3 == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.in_in3) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu.in_in1 == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu.in_in1) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu.in_in2 == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu.in_in2) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.inPipe_bits_in1 == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.inPipe_bits_in1) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.inPipe_bits_in2 == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.inPipe_bits_in2) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_fin_in1 == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_fin_in1) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_fin_in2 == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_fin_in2) &&
+//    (U1.fp_pipeline.fpiu_unit.fp_sdq.ram_data == U2.fp_pipeline.fpiu_unit.fp_sdq.ram_data) &&
+    1'b1
+  );
+endfunction
+
+
+function automatic FP_Fanout_Equality_3();
+  FP_Fanout_Equality_3 = (
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA         == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB         == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC         == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB       == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB      ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC          == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA          == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB          == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC          == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd        == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd       ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant     == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny     == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags       == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags      ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum         == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_mulAddResult_b               == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.mulAddRecFNToRaw_postMul_io_mulAddResult_b              ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA         == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB         == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC         == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB       == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB      ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC          == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA          == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB          == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC          == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC         ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd        == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd       ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant     == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny     == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags       == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags      ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum         == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_mulAddResult_b               == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.mulAddRecFNToRaw_postMul_io_mulAddResult_b              ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_toint == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_toint) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_b_data      == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_b_data) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_exc   == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_exc) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_b_exc       == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_b_exc) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ER1_B_sqrt      == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ER1_B_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_A      == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_A) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractA_PA       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractA_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PA       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractR0_A       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractR0_A) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.hiSqrR0_A_sqrt  == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.hiSqrR0_A_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PA        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PB        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PB) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isInf_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PA        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PB        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PB) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNaN_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PA       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PB       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PB) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PC       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZero_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PA     == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PB     == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PB) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PC     == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.majorExc_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.nextMulAdd9A_A  == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.nextMulAdd9A_A) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.nextMulAdd9B_A  == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.nextMulAdd9B_A) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.partNegSigma0_A == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.partNegSigma0_A) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PA == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PA         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PA         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PB         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PB) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PC         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sign_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PA       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PB       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PC       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PA        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PA) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PB        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_a_s1                          == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_a_s1) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_b_s1                          == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_b_s1) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s1                            == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s1) &&
+    1'b1
+  );
+endfunction
+
+function automatic FP_Fanout_Equality_4();
+  FP_Fanout_Equality_4 = (
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_invalidExc_b == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_invalidExc_b) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sign    == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sign   ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isZero  == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isZero ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isNaN   == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isNaN  ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isInf   == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_isInf  ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sig     == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sig    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sExp    == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.fma.roundRawFNToRecFN_io_in_b_sExp   ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_invalidExc_b == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_invalidExc_b) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sign    == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sign   ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isZero  == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isZero ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isNaN   == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isNaN  ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isInf   == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_isInf  ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sig     == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sig    ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sExp    == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.fma.roundRawFNToRecFN_io_in_b_sExp   ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_1_toint     == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_1_toint) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_data == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_data) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_1_exc       == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_1_exc) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_exc  == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_exc) &&
+
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC) &&
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_B      == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_B) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_C      == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_C) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PB   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PC   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PB       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PC       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PB == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PC == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PB         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PB) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PC         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigXN_C         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigXN_C) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.u_C_sqrt        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.u_C_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_a_s2                          == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_a_s2) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_b_s2                          == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_b_s2) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s1                            == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s1) &&
+
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val            == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val           == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_wdata_double      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_wdata_double) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_flags_double      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_flags_double) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val               == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst          == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype     == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype) &&
+
+  1'b1
+  );
+endfunction
+
+function automatic FP_Fanout_Equality_5();
+  FP_Fanout_Equality_5 = (
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.io_out_b_data == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.io_out_b_data) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.sfma.io_out_b_exc  == U2.fp_pipeline.fpiu_unit.fpu.fpu.sfma.io_out_b_exc ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.io_out_b_data == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.io_out_b_data) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.dfma.io_out_b_exc  == U2.fp_pipeline.fpiu_unit.fpu.fpu.dfma.io_out_b_exc ) &&
+
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_2_toint       == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_2_toint      ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_1_data == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_1_data) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_2_exc         == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpiu_outPipe_bits_2_exc        ) &&
+//    (U1.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_1_exc  == U2.fp_pipeline.fpiu_unit.fpu.fpu.fpmu.io_out_outPipe_bits_1_exc ) &&
+
+
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PC       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrtOp_PC) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_C      == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_C) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PC   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.bit0FractA_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PC       == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.fractB_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PC == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.roundingMode_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PC         == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sExp_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_result_s3 == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.reg_result_s3) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s2 == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.mul.val_s2) &&
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val            == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val           == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val               == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst          == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype     == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype) &&
+
+  1'b1
+  );
+endfunction
+
+
+function automatic FP_Fanout_Equality_6();
+  FP_Fanout_Equality_6 = (
+//    (U1.fp_pipeline.fpiu_unit.queue.ram_data              == U2.fp_pipeline.fpiu_unit.queue.ram_data) &&
+//    (U1.fp_pipeline.fpiu_unit.queue.ram_fflags_bits_flags == U2.fp_pipeline.fpiu_unit.queue.ram_fflags_bits_flags) && // Where does this go?
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_E == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.cycleNum_E) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt   == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigT_E == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigT_E) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.E_E_div == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.E_E_div) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNegRemT_E == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isNegRemT_E) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZeroRemT_E == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.isZeroRemT_E) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigX1_B == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sigX1_B) &&
+//    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrSigma1_C == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.sqrSigma1_C) &&
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val            == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val           == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val               == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst          == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype     == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype) &&
+
+    (U1.iregister_read.exe_reg_rs1_data_0 == U2.iregister_read.exe_reg_rs1_data_0) &&
+    (U1.iregister_read.exe_reg_rs1_data_1 == U2.iregister_read.exe_reg_rs1_data_1) &&
+    (U1.iregister_read.exe_reg_rs1_data_2 == U2.iregister_read.exe_reg_rs1_data_2) &&
+    (U1.iregister_read.exe_reg_rs2_data_0 == U2.iregister_read.exe_reg_rs2_data_0) &&
+    (U1.iregister_read.exe_reg_rs2_data_1 == U2.iregister_read.exe_reg_rs2_data_1) &&
+    (U1.iregister_read.exe_reg_rs2_data_2 == U2.iregister_read.exe_reg_rs2_data_2) &&
+
+  1'b1
+  );
+endfunction
+
+
+function automatic FP_Fanout_Equality_7();
+  FP_Fanout_Equality_7 = (
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC        == U2.fp_pipeline.fpiu_unit.fdivsqrt.divsqrt.ds.divSqrtRecF64ToRaw.valid_PC) &&
+
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val            == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_buffer_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_typeTagIn) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_killed) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_dst_rtype) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask   == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_fin_rm) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq  == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val           == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo    == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_divsqrt_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val               == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_fp_val) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst          == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_pdst) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_stq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq      == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_uses_ldq) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_rob_idx) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask       == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_br_mask) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo        == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_is_amo) &&
+    (U1.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype     == U2.fp_pipeline.fpiu_unit.fdivsqrt.r_out_uop_dst_rtype) &&
+
+    (U1.iregister_read.exe_reg_rs1_data_0 == U2.iregister_read.exe_reg_rs1_data_0) &&
+    (U1.iregister_read.exe_reg_rs1_data_1 == U2.iregister_read.exe_reg_rs1_data_1) &&
+    (U1.iregister_read.exe_reg_rs1_data_2 == U2.iregister_read.exe_reg_rs1_data_2) &&
+    (U1.iregister_read.exe_reg_rs2_data_0 == U2.iregister_read.exe_reg_rs2_data_0) &&
+    (U1.iregister_read.exe_reg_rs2_data_1 == U2.iregister_read.exe_reg_rs2_data_1) &&
+    (U1.iregister_read.exe_reg_rs2_data_2 == U2.iregister_read.exe_reg_rs2_data_2) &&
+
+  1'b1
+  );
+endfunction

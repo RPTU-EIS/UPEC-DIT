@@ -1,0 +1,181 @@
+// @lang=sva @ts=8
+
+/*
+Documentation of this functional unit:
+https://github.com/ucb-bar/berkeley-hardfloat/blob/master/doc/divSqrtRecodedFloat64_mulAddZ31.txt
+
+In above file, we can find information about the latency:
+"From the beginning of the starting clock cycle to the end of the final
+cycle, a single operation has the following latency:
+
+    division:     19 cycles or less;
+    square root:  27 cycles or less.
+
+Latencies shorter than the maximum occur only for special cases, such as
+when the argument of a square root is negative. The minimum special-case
+latency is 2 cycles, for either division or square root."
+
+UPEC-DIT shows these special cases as counterexamples, usually where one instance receives zero as an operand.
+*/
+
+module property_checker
+  (
+  input clock,
+  input reset
+  );
+
+  default clocking default_clk @(posedge clock); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 5;
+
+  function automatic State_Equivalence();
+  State_Equivalence = (
+    (U1.ds.divSqrtRecF64ToRaw.ER1_B_sqrt == U2.ds.divSqrtRecF64ToRaw.ER1_B_sqrt) &&
+    (U1.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt == U2.ds.divSqrtRecF64ToRaw.ESqrR1_B_sqrt) &&
+    (U1.ds.divSqrtRecF64ToRaw.E_E_div == U2.ds.divSqrtRecF64ToRaw.E_E_div) &&
+    (U1.ds.divSqrtRecF64ToRaw.bit0FractA_PB == U2.ds.divSqrtRecF64ToRaw.bit0FractA_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.bit0FractA_PC == U2.ds.divSqrtRecF64ToRaw.bit0FractA_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.cycleNum_A == U2.ds.divSqrtRecF64ToRaw.cycleNum_A) &&
+    (U1.ds.divSqrtRecF64ToRaw.cycleNum_B == U2.ds.divSqrtRecF64ToRaw.cycleNum_B) &&
+    (U1.ds.divSqrtRecF64ToRaw.cycleNum_C == U2.ds.divSqrtRecF64ToRaw.cycleNum_C) &&
+    (U1.ds.divSqrtRecF64ToRaw.cycleNum_E == U2.ds.divSqrtRecF64ToRaw.cycleNum_E) &&
+    (U1.ds.divSqrtRecF64ToRaw.fractA_PA == U2.ds.divSqrtRecF64ToRaw.fractA_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.fractB_PA == U2.ds.divSqrtRecF64ToRaw.fractB_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.fractB_PB == U2.ds.divSqrtRecF64ToRaw.fractB_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.fractB_PC == U2.ds.divSqrtRecF64ToRaw.fractB_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.fractR0_A == U2.ds.divSqrtRecF64ToRaw.fractR0_A) &&
+    (U1.ds.divSqrtRecF64ToRaw.hiSqrR0_A_sqrt == U2.ds.divSqrtRecF64ToRaw.hiSqrR0_A_sqrt) &&
+    (U1.ds.divSqrtRecF64ToRaw.isInf_PA == U2.ds.divSqrtRecF64ToRaw.isInf_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.isInf_PB == U2.ds.divSqrtRecF64ToRaw.isInf_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.isInf_PC == U2.ds.divSqrtRecF64ToRaw.isInf_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.isNaN_PA == U2.ds.divSqrtRecF64ToRaw.isNaN_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.isNaN_PB == U2.ds.divSqrtRecF64ToRaw.isNaN_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.isNaN_PC == U2.ds.divSqrtRecF64ToRaw.isNaN_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.isNegRemT_E == U2.ds.divSqrtRecF64ToRaw.isNegRemT_E) &&
+    (U1.ds.divSqrtRecF64ToRaw.isZeroRemT_E == U2.ds.divSqrtRecF64ToRaw.isZeroRemT_E) &&
+    (U1.ds.divSqrtRecF64ToRaw.isZero_PA == U2.ds.divSqrtRecF64ToRaw.isZero_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.isZero_PB == U2.ds.divSqrtRecF64ToRaw.isZero_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.isZero_PC == U2.ds.divSqrtRecF64ToRaw.isZero_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.majorExc_PA == U2.ds.divSqrtRecF64ToRaw.majorExc_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.majorExc_PB == U2.ds.divSqrtRecF64ToRaw.majorExc_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.majorExc_PC == U2.ds.divSqrtRecF64ToRaw.majorExc_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.nextMulAdd9A_A == U2.ds.divSqrtRecF64ToRaw.nextMulAdd9A_A) &&
+    (U1.ds.divSqrtRecF64ToRaw.nextMulAdd9B_A == U2.ds.divSqrtRecF64ToRaw.nextMulAdd9B_A) &&
+    (U1.ds.divSqrtRecF64ToRaw.partNegSigma0_A == U2.ds.divSqrtRecF64ToRaw.partNegSigma0_A) &&
+    (U1.ds.divSqrtRecF64ToRaw.roundingMode_PA == U2.ds.divSqrtRecF64ToRaw.roundingMode_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.roundingMode_PB == U2.ds.divSqrtRecF64ToRaw.roundingMode_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.roundingMode_PC == U2.ds.divSqrtRecF64ToRaw.roundingMode_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.sExp_PA == U2.ds.divSqrtRecF64ToRaw.sExp_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.sExp_PB == U2.ds.divSqrtRecF64ToRaw.sExp_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.sExp_PC == U2.ds.divSqrtRecF64ToRaw.sExp_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.sigT_E == U2.ds.divSqrtRecF64ToRaw.sigT_E) &&
+    (U1.ds.divSqrtRecF64ToRaw.sigX1_B == U2.ds.divSqrtRecF64ToRaw.sigX1_B) &&
+    (U1.ds.divSqrtRecF64ToRaw.sigXN_C == U2.ds.divSqrtRecF64ToRaw.sigXN_C) &&
+    (U1.ds.divSqrtRecF64ToRaw.sign_PA == U2.ds.divSqrtRecF64ToRaw.sign_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.sign_PB == U2.ds.divSqrtRecF64ToRaw.sign_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.sign_PC == U2.ds.divSqrtRecF64ToRaw.sign_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.sqrSigma1_C == U2.ds.divSqrtRecF64ToRaw.sqrSigma1_C) &&
+    (U1.ds.divSqrtRecF64ToRaw.sqrtOp_PA == U2.ds.divSqrtRecF64ToRaw.sqrtOp_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.sqrtOp_PB == U2.ds.divSqrtRecF64ToRaw.sqrtOp_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.sqrtOp_PC == U2.ds.divSqrtRecF64ToRaw.sqrtOp_PC) &&
+    (U1.ds.divSqrtRecF64ToRaw.u_C_sqrt == U2.ds.divSqrtRecF64ToRaw.u_C_sqrt) &&
+    (U1.ds.divSqrtRecF64ToRaw.valid_PA == U2.ds.divSqrtRecF64ToRaw.valid_PA) &&
+    (U1.ds.divSqrtRecF64ToRaw.valid_PB == U2.ds.divSqrtRecF64ToRaw.valid_PB) &&
+    (U1.ds.divSqrtRecF64ToRaw.valid_PC == U2.ds.divSqrtRecF64ToRaw.valid_PC) &&
+    (U1.mul.reg_a_s1 == U2.mul.reg_a_s1) &&
+    (U1.mul.reg_a_s2 == U2.mul.reg_a_s2) &&
+    (U1.mul.reg_b_s1 == U2.mul.reg_b_s1) &&
+    (U1.mul.reg_b_s2 == U2.mul.reg_b_s2) &&
+    (U1.mul.reg_result_s3 == U2.mul.reg_result_s3) &&
+    (U1.mul.val_s1 == U2.mul.val_s1) &&
+    (U1.mul.val_s2 == U2.mul.val_s2)
+  );
+  endfunction
+
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+    (U1.io_inReady_div    == U2.io_inReady_div   ) &&
+    (U1.io_inReady_sqrt   == U2.io_inReady_sqrt  ) &&
+    (U1.io_outValid_div   == U2.io_outValid_div  ) &&
+    (U1.io_outValid_sqrt  == U2.io_outValid_sqrt ) &&
+    (U1.io_exceptionFlags == U2.io_exceptionFlags)
+  );
+  endfunction
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (reset == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.cycleNum_A == 3'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.cycleNum_A == 3'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.cycleNum_B == 4'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.cycleNum_B == 4'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.cycleNum_C == 3'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.cycleNum_C == 3'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.cycleNum_E == 3'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.cycleNum_E == 3'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.valid_PA == 1'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.valid_PA == 1'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.valid_PB == 1'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.valid_PB == 1'h0) and
+    t ##0 (U1.ds.divSqrtRecF64ToRaw.valid_PC == 1'h0) and
+    t ##0 (U2.ds.divSqrtRecF64ToRaw.valid_PC == 1'h0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  property dit_io_a_p;
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_b == U2.io_b))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_io_a_p_a: assert property (disable iff (reset) dit_io_a_p);
+
+  property dit_io_b_p;
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_a == U2.io_a))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_io_b_p_a: assert property (disable iff (reset) dit_io_b_p);
+
+  property dit_io_a_sqrt_p;
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_b == U2.io_b)) and
+    during_o(t, 0, t, MAX_LATENCY-1, ((U1.io_sqrtOp == 1'b1) && (U2.io_sqrtOp == 1'b1)))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_io_a_sqrt_p_a: assert property (disable iff (reset) dit_io_a_sqrt_p);
+
+  property dit_io_b_sqrt_p;
+    t ##0 State_Equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (U1.io_a == U2.io_a)) and
+    during_o(t, 0, t, MAX_LATENCY-1, ((U1.io_sqrtOp == 1'b1) && (U2.io_sqrtOp == 1'b1)))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_io_b_sqrt_p_a: assert property (disable iff (reset) dit_io_b_sqrt_p);
+
+`end_tda
+
+endmodule
+
+bind DivSqrtRecF64_Miter property_checker checker_bind(.clock(clock), .reset(reset));

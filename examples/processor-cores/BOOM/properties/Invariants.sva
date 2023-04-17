@@ -1,0 +1,137 @@
+// @lang=sva @ts=8
+
+`include "consts.sva"
+
+function automatic BranchKillableQueue_Pointers_Valid_i();
+BranchKillableQueue_Pointers_Valid_i = (
+  (U1.jmp_unit.queue.value                 < 3'h5) && (U2.jmp_unit.queue.value                 < 3'h5) &&
+  (U1.jmp_unit.queue.value_1               < 3'h5) && (U2.jmp_unit.queue.value_1               < 3'h5) &&
+  (U1.fp_pipeline.fpiu_unit.queue.value    < 3'h7) && (U2.fp_pipeline.fpiu_unit.queue.value    < 3'h7) &&
+  (U1.fp_pipeline.fpiu_unit.queue.value_1  < 3'h7) && (U2.fp_pipeline.fpiu_unit.queue.value_1  < 3'h7) &&
+  (U1.fp_pipeline.fpiu_unit.fp_sdq.value   < 2'h3) && (U2.fp_pipeline.fpiu_unit.fp_sdq.value   < 2'h3) &&
+  (U1.fp_pipeline.fpiu_unit.fp_sdq.value_1 < 2'h3) && (U2.fp_pipeline.fpiu_unit.fp_sdq.value_1 < 2'h3)
+);
+endfunction
+
+/*
+TODO: Why can fu_code be 20? (FU_MEM + FU_DIV)
+      The CEX shows an funct3+opcode combination that should not be possible
+*/
+function automatic Rename_Stage_Consistent_i();
+Rename_Stage_Consistent_i = (
+  (!U1.rename_stage.r_valid || 
+  $onehot0({U1.rename_stage.r_uop_is_amo, 
+            U1.rename_stage.r_uop_is_br,
+            U1.rename_stage.r_uop_is_fence,
+            U1.rename_stage.r_uop_is_fencei,  
+            U1.rename_stage.r_uop_is_jal,  
+            U1.rename_stage.r_uop_is_jalr}) &&
+  !(U1.rename_stage.r_uop_uses_ldq && U1.rename_stage.r_uop_uses_stq) &&
+  !((U1.rename_stage.r_uop_uopc < uopREMUW ) && (U1.rename_stage.r_uop_is_amo   )) && // No idea why REMUW sets this bit
+  !((U1.rename_stage.r_uop_uopc < uopBEQ   ) && (U1.rename_stage.r_uop_is_br    )) &&
+  !((U1.rename_stage.r_uop_uopc < uopFENCE ) && (U1.rename_stage.r_uop_is_fence )) &&
+  !((U1.rename_stage.r_uop_uopc < uopJAL   ) && (U1.rename_stage.r_uop_is_jal   )) &&
+  !((U1.rename_stage.r_uop_uopc < uopJALR  ) && (U1.rename_stage.r_uop_is_jalr  ))// &&
+  //($onehot(U1.rename_stage.r_uop_fu_code) || (U1.rename_stage.r_uop_fu_code == 10'd20))
+  ) &&
+  (!U1.rename_stage.r_valid_1 || 
+  $onehot0({U1.rename_stage.r_uop_1_is_amo, 
+            U1.rename_stage.r_uop_1_is_br,
+            U1.rename_stage.r_uop_1_is_fence,
+            U1.rename_stage.r_uop_1_is_fencei,  
+            U1.rename_stage.r_uop_1_is_jal,  
+            U1.rename_stage.r_uop_1_is_jalr}) &&
+  !(U1.rename_stage.r_uop_1_uses_ldq && U1.rename_stage.r_uop_1_uses_stq) &&
+  !((U1.rename_stage.r_uop_1_uopc < uopREMUW ) && (U1.rename_stage.r_uop_1_is_amo   )) &&
+  !((U1.rename_stage.r_uop_1_uopc < uopBEQ   ) && (U1.rename_stage.r_uop_1_is_br    )) &&
+  !((U1.rename_stage.r_uop_1_uopc < uopFENCE ) && (U1.rename_stage.r_uop_1_is_fence )) &&
+  !((U1.rename_stage.r_uop_1_uopc < uopJAL   ) && (U1.rename_stage.r_uop_1_is_jal   )) &&
+  !((U1.rename_stage.r_uop_1_uopc < uopJALR  ) && (U1.rename_stage.r_uop_1_is_jalr  )) //&&
+  //($onehot(U1.rename_stage.r_uop_1_fu_code) || (U1.rename_stage.r_uop_1_fu_code == 10'd20))
+  ) &&
+  (!U2.rename_stage.r_valid || 
+  $onehot0({U2.rename_stage.r_uop_is_amo, 
+            U2.rename_stage.r_uop_is_br,
+            U2.rename_stage.r_uop_is_fence,
+            U2.rename_stage.r_uop_is_fencei,  
+            U2.rename_stage.r_uop_is_jal,  
+            U2.rename_stage.r_uop_is_jalr}) &&
+  !(U2.rename_stage.r_uop_uses_ldq && U2.rename_stage.r_uop_uses_stq) &&
+  !((U2.rename_stage.r_uop_uopc < uopREMUW ) && (U2.rename_stage.r_uop_is_amo   )) &&
+  !((U2.rename_stage.r_uop_uopc < uopBEQ   ) && (U2.rename_stage.r_uop_is_br    )) &&
+  !((U2.rename_stage.r_uop_uopc < uopFENCE ) && (U2.rename_stage.r_uop_is_fence )) &&
+  !((U2.rename_stage.r_uop_uopc < uopJAL   ) && (U2.rename_stage.r_uop_is_jal   )) &&
+  !((U2.rename_stage.r_uop_uopc < uopJALR  ) && (U2.rename_stage.r_uop_is_jalr  )) //&&
+  //($onehot(U2.rename_stage.r_uop_fu_code) || (U2.rename_stage.r_uop_fu_code == 10'd20))
+  ) &&
+  (!U2.rename_stage.r_valid_1 || 
+  $onehot0({U2.rename_stage.r_uop_1_is_amo, 
+            U2.rename_stage.r_uop_1_is_br,
+            U2.rename_stage.r_uop_1_is_fence,
+            U2.rename_stage.r_uop_1_is_fencei,  
+            U2.rename_stage.r_uop_1_is_jal,  
+            U2.rename_stage.r_uop_1_is_jalr}) &&
+  !(U2.rename_stage.r_uop_1_uses_ldq && U2.rename_stage.r_uop_1_uses_stq) &&
+  !((U2.rename_stage.r_uop_1_uopc < uopREMUW ) && (U2.rename_stage.r_uop_1_is_amo   )) &&
+  !((U2.rename_stage.r_uop_1_uopc < uopBEQ   ) && (U2.rename_stage.r_uop_1_is_br    )) &&
+  !((U2.rename_stage.r_uop_1_uopc < uopFENCE ) && (U2.rename_stage.r_uop_1_is_fence )) &&
+  !((U2.rename_stage.r_uop_1_uopc < uopJAL   ) && (U2.rename_stage.r_uop_1_is_jal   )) &&
+  !((U2.rename_stage.r_uop_1_uopc < uopJALR  ) && (U2.rename_stage.r_uop_1_is_jalr  )) //&&
+  //($onehot(U2.rename_stage.r_uop_1_fu_code) || (U2.rename_stage.r_uop_1_fu_code == 10'd20))
+  )
+);
+endfunction
+
+
+function automatic Issue_Stage_Consistent_i(int slot_nr);
+Issue_Stage_Consistent_i = (
+  (int_issue_slot_state[slot_nr] == 2'd0) || 
+  $onehot0({int_issue_slot_uop_is_amo[slot_nr], 
+            int_issue_slot_uop_is_br[slot_nr],
+            int_issue_slot_uop_is_fence[slot_nr],
+            int_issue_slot_uop_is_jal[slot_nr],  
+            int_issue_slot_uop_is_jalr[slot_nr]}) &&
+  !(int_issue_slot_uop_uses_ldq[slot_nr] && int_issue_slot_uop_uses_stq[slot_nr]) &&
+  (!(int_issue_slot_state[slot_nr] == 2'd2) || (int_issue_slot_uop_uopc[slot_nr] == uopSTA || int_issue_slot_uop_uopc[slot_nr] == uopAMO_AG)) &&
+
+  !((int_issue_slot_uop_uopc[slot_nr] >= uopADDI) && (int_issue_slot_uop_uopc[slot_nr] < uopREMUW) && int_issue_slot_uop_is_amo[slot_nr]  ) &&
+  !((int_issue_slot_uop_uopc[slot_nr] >= uopADDI) && (int_issue_slot_uop_uopc[slot_nr] < uopBEQ  ) && int_issue_slot_uop_is_br[slot_nr]   ) &&
+  !((int_issue_slot_uop_uopc[slot_nr] >= uopADDI) && (int_issue_slot_uop_uopc[slot_nr] < uopFENCE) && int_issue_slot_uop_is_fence[slot_nr]) &&
+  !((int_issue_slot_uop_uopc[slot_nr] >= uopADDI) && (int_issue_slot_uop_uopc[slot_nr] < uopJAL  ) && int_issue_slot_uop_is_jal[slot_nr]  ) &&
+  !((int_issue_slot_uop_uopc[slot_nr] >= uopADDI) && (int_issue_slot_uop_uopc[slot_nr] < uopJALR ) && int_issue_slot_uop_is_jalr[slot_nr] ) &&
+
+  // No opcodes of other queues
+  ((int_issue_slot_uop_uopc[slot_nr] >= uopLUI     ) && (int_issue_slot_uop_uopc[slot_nr] <= uopCSRRCI) ||
+   (int_issue_slot_uop_uopc[slot_nr] >= uopJAL     ) && (int_issue_slot_uop_uopc[slot_nr] <= uopAUIPC ) ||
+   (int_issue_slot_uop_uopc[slot_nr] >= uopFENCE   ) && (int_issue_slot_uop_uopc[slot_nr] <= uopFENCEI) ||
+   (int_issue_slot_uop_uopc[slot_nr] == uopFMV_S_X )                                                    || 
+   (int_issue_slot_uop_uopc[slot_nr] == uopFMV_D_X )                                                    || 
+   (int_issue_slot_uop_uopc[slot_nr] == uopFCVT_S_X)                                                    || 
+   (int_issue_slot_uop_uopc[slot_nr] == uopFCVT_D_X)                                                    || 
+   (int_issue_slot_uop_uopc[slot_nr] == uopWFI     )                                                    || 
+   (int_issue_slot_uop_uopc[slot_nr] == uopERET    )) &&
+
+  ($onehot(int_issue_slot_uop_fu_code[slot_nr]))
+
+);
+endfunction
+
+
+function automatic FP_Issue_Stage_Consistent_i(int slot_nr);
+FP_Issue_Stage_Consistent_i = (
+  (fp_issue_slot_state[slot_nr] == 2'd0) || 
+  ($onehot(fp_issue_slot_uop_fu_code[slot_nr]) || (fp_issue_slot_uop_fu_code[slot_nr] == 10'd516)) &&
+
+  // FPU FU -> FPU Instruction
+  ((fp_issue_slot_uop_fu_code[slot_nr][6] == 1'd0) || (fp_issue_slot_uop_uopc[slot_nr] >= uopFSGNJ_S) && (fp_issue_slot_uop_uopc[slot_nr] <= uopFCVT_D_S) || (fp_issue_slot_uop_uopc[slot_nr] >= uopFMINMAX_S) && (fp_issue_slot_uop_uopc[slot_nr] <= uopFNMSUB_D)) &&
+
+  // FDV FU -> FDIV or FSQRT Instruction
+  ((fp_issue_slot_uop_fu_code[slot_nr][7] == 1'd0) || (fp_issue_slot_uop_uopc[slot_nr] >= uopFDIV_S) && (fp_issue_slot_uop_uopc[slot_nr] <= uopFSQRT_D)) &&
+
+  // No opcodes of other queues
+  ((fp_issue_slot_uop_uopc[slot_nr] == uopSTA     )                                                     ||
+   (fp_issue_slot_uop_uopc[slot_nr] >= uopFMV_X_S ) && (fp_issue_slot_uop_uopc[slot_nr] <= uopFCVT_D_S) ||
+   (fp_issue_slot_uop_uopc[slot_nr] >= uopFCVT_X_S) && (fp_issue_slot_uop_uopc[slot_nr] <= uopFSQRT_D ))
+
+);
+endfunction

@@ -1,0 +1,115 @@
+// @lang=sva @ts=8
+
+/*
+The valid signal (and therefore also the timing) of the module is data-independent.
+
+However, the exception flags are data-dependent, which might still cause a side-effect.
+*/
+
+module property_checker
+  (
+  input clock,
+  input reset
+  );
+
+  default clocking default_clk @(posedge clock); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 50;
+
+  function automatic State_Equivalence();
+  State_Equivalence = (
+    (U1.io_validout_v == U2.io_validout_v) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CDom_CAlignDist) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_CIsDominant) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_bit0AlignedSigC) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_doSubMags) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_highAlignedSigC) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfA) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfB) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isInfC) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNAOrB) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isNaNC) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isSigNaNAny) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroA) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroB) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_isZeroC) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_sExpSum) &&
+    (U1.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd == U2.mulAddRecFNToRaw_postMul_io_fromPreMul_b_signProd) &&
+    (U1.mulAddRecFNToRaw_postMul_io_mulAddResult_b == U2.mulAddRecFNToRaw_postMul_io_mulAddResult_b) &&
+    (U1.mulAddRecFNToRaw_postMul_io_roundingMode_b == U2.mulAddRecFNToRaw_postMul_io_roundingMode_b) &&
+    (U1.roundRawFNToRecFN_io_in_b_isInf == U2.roundRawFNToRecFN_io_in_b_isInf) &&
+    (U1.roundRawFNToRecFN_io_in_b_isNaN == U2.roundRawFNToRecFN_io_in_b_isNaN) &&
+    (U1.roundRawFNToRecFN_io_in_b_isZero == U2.roundRawFNToRecFN_io_in_b_isZero) &&
+    (U1.roundRawFNToRecFN_io_in_b_sExp == U2.roundRawFNToRecFN_io_in_b_sExp) &&
+    (U1.roundRawFNToRecFN_io_in_b_sig == U2.roundRawFNToRecFN_io_in_b_sig) &&
+    (U1.roundRawFNToRecFN_io_in_b_sign == U2.roundRawFNToRecFN_io_in_b_sign) &&
+    (U1.roundRawFNToRecFN_io_invalidExc_b == U2.roundRawFNToRecFN_io_invalidExc_b) &&
+    (U1.roundRawFNToRecFN_io_roundingMode_b == U2.roundRawFNToRecFN_io_roundingMode_b) &&
+    (U1.roundingMode_stage0_b == U2.roundingMode_stage0_b) &&
+    (U1.valid_stage0_v == U2.valid_stage0_v)
+  );
+  endfunction
+
+  function automatic Control_Equivalence();
+  Control_Equivalence = (
+    (U1.io_validout_v == U2.io_validout_v) &&
+    (U1.mulAddRecFNToRaw_postMul_io_roundingMode_b == U2.mulAddRecFNToRaw_postMul_io_roundingMode_b) &&
+    (U1.roundRawFNToRecFN_io_roundingMode_b == U2.roundRawFNToRecFN_io_roundingMode_b) &&
+    (U1.roundingMode_stage0_b == U2.roundingMode_stage0_b) &&
+    (U1.valid_stage0_v == U2.valid_stage0_v)
+  );
+  endfunction
+
+
+  function automatic No_Control_Discrepancy();
+  No_Control_Discrepancy = (
+//    (U1.io_exceptionFlags == U2.io_exceptionFlags) &&
+    (U1.io_validout       == U2.io_validout )
+  );
+  endfunction
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (reset == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (U1.valid_stage0_v == 1'd0) and
+    t ##0 (U2.valid_stage0_v == 1'd0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+
+  // ------------------------------------
+  // - UPEC for Data-Independent Timing -
+  // ------------------------------------
+
+  property dit_p;
+    t ##0 State_Equivalence()
+    implies
+    during_o(t, 1, t, MAX_LATENCY, No_Control_Discrepancy());
+  endproperty
+  dit_p_a: assert property (disable iff (reset) dit_p);
+
+  property noninterference_p;
+    t ##0 Control_Equivalence()
+    implies
+    t ##1 Control_Equivalence() and
+    t ##1 (U1.io_validout == U2.io_validout);
+  endproperty
+  noninterference_p_a: assert property (disable iff (reset) noninterference_p);
+
+`end_tda
+
+endmodule
+
+bind MulAddRecFNPipe_Miter property_checker checker_bind(.clock(clock), .reset(reset));
