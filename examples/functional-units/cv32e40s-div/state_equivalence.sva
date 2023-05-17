@@ -1,0 +1,24 @@
+function automatic state_equivalence();
+state_equivalence = (
+  (U1.cnt_q       == U2.cnt_q      ) &&
+  (U1.comp_inv_q  == U2.comp_inv_q ) &&
+  (U1.div_rem_q   == U2.div_rem_q  ) &&
+  (U1.divisor_q   == U2.divisor_q  ) &&
+  (U1.quotient_q  == U2.quotient_q ) &&
+  (U1.remainder_q == U2.remainder_q) &&
+  (U1.res_inv_q   == U2.res_inv_q  ) &&
+  (U1.state       == U2.state      )
+);
+endfunction
+
+function automatic control_output_equivalence();
+control_output_equivalence = (
+//(U1.alu_clz_data_rev_o == U2.alu_clz_data_rev_o) &&
+  (U1.alu_clz_en_o       == U2.alu_clz_en_o      ) &&
+//(U1.alu_shift_amt_o    == U2.alu_shift_amt_o   ) &&
+  (U1.alu_shift_en_o     == U2.alu_shift_en_o    ) &&
+  (U1.ready_o            == U2.ready_o           ) &&
+//(U1.result_o           == U2.result_o          ) &&
+  (U1.valid_o            == U2.valid_o           )
+);
+endfunction

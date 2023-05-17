@@ -1,0 +1,155 @@
+module property_checker import cv32e40s_pkg::*;
+  (
+  input clk,
+  input rst
+  );
+
+default clocking default_clk @(posedge clk); endclocking
+
+`include "tidal.sv"
+
+`include "state_equivalence.sva"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 37;
+
+  property control_input_c;
+    (U1.div_en_i           == U2.div_en_i          ) &&
+    (U1.ready_i            == U2.ready_i           ) &&
+    (U1.valid_i            == U2.valid_i           ) &&
+    (U1.operator_i         == U2.operator_i        ) &&
+//  (U1.op_a_i             == U2.op_a_i            ) &&
+//  (U1.op_b_i             == U2.op_b_i            ) &&
+//  (U1.alu_op_b_shifted_i == U2.alu_op_b_shifted_i) &&
+//  (U1.alu_clz_result_i   == U2.alu_clz_result_i  ) &&
+    (U1.data_ind_timing_i  == U2.data_ind_timing_i );
+  endproperty
+  control_input_c_a: assume property (control_input_c);
+
+  property clz_c;
+  (
+    U1.alu_clz_data_rev_o[31] ? U1.alu_clz_result_i == 6'd00 :
+    U1.alu_clz_data_rev_o[30] ? U1.alu_clz_result_i == 6'd01 :
+    U1.alu_clz_data_rev_o[29] ? U1.alu_clz_result_i == 6'd02 :
+    U1.alu_clz_data_rev_o[28] ? U1.alu_clz_result_i == 6'd03 :
+    U1.alu_clz_data_rev_o[27] ? U1.alu_clz_result_i == 6'd04 :
+    U1.alu_clz_data_rev_o[26] ? U1.alu_clz_result_i == 6'd05 :
+    U1.alu_clz_data_rev_o[25] ? U1.alu_clz_result_i == 6'd06 :
+    U1.alu_clz_data_rev_o[24] ? U1.alu_clz_result_i == 6'd07 :
+    U1.alu_clz_data_rev_o[23] ? U1.alu_clz_result_i == 6'd08 :
+    U1.alu_clz_data_rev_o[22] ? U1.alu_clz_result_i == 6'd09 :
+    U1.alu_clz_data_rev_o[21] ? U1.alu_clz_result_i == 6'd10 :
+    U1.alu_clz_data_rev_o[20] ? U1.alu_clz_result_i == 6'd11 :
+    U1.alu_clz_data_rev_o[19] ? U1.alu_clz_result_i == 6'd12 :
+    U1.alu_clz_data_rev_o[18] ? U1.alu_clz_result_i == 6'd13 :
+    U1.alu_clz_data_rev_o[17] ? U1.alu_clz_result_i == 6'd14 :
+    U1.alu_clz_data_rev_o[16] ? U1.alu_clz_result_i == 6'd15 :
+    U1.alu_clz_data_rev_o[15] ? U1.alu_clz_result_i == 6'd16 :
+    U1.alu_clz_data_rev_o[14] ? U1.alu_clz_result_i == 6'd17 :
+    U1.alu_clz_data_rev_o[13] ? U1.alu_clz_result_i == 6'd18 :
+    U1.alu_clz_data_rev_o[12] ? U1.alu_clz_result_i == 6'd19 :
+    U1.alu_clz_data_rev_o[11] ? U1.alu_clz_result_i == 6'd20 :
+    U1.alu_clz_data_rev_o[10] ? U1.alu_clz_result_i == 6'd21 :
+    U1.alu_clz_data_rev_o[ 9] ? U1.alu_clz_result_i == 6'd22 :
+    U1.alu_clz_data_rev_o[ 8] ? U1.alu_clz_result_i == 6'd23 :
+    U1.alu_clz_data_rev_o[ 7] ? U1.alu_clz_result_i == 6'd24 :
+    U1.alu_clz_data_rev_o[ 6] ? U1.alu_clz_result_i == 6'd25 :
+    U1.alu_clz_data_rev_o[ 5] ? U1.alu_clz_result_i == 6'd26 :
+    U1.alu_clz_data_rev_o[ 4] ? U1.alu_clz_result_i == 6'd27 :
+    U1.alu_clz_data_rev_o[ 3] ? U1.alu_clz_result_i == 6'd28 :
+    U1.alu_clz_data_rev_o[ 2] ? U1.alu_clz_result_i == 6'd29 :
+    U1.alu_clz_data_rev_o[ 1] ? U1.alu_clz_result_i == 6'd30 :
+    U1.alu_clz_data_rev_o[ 0] ? U1.alu_clz_result_i == 6'd31 :
+    U1.alu_clz_result_i == 6'd32
+  ) && (
+    U2.alu_clz_data_rev_o[31] ? U2.alu_clz_result_i == 6'd00 :
+    U2.alu_clz_data_rev_o[30] ? U2.alu_clz_result_i == 6'd01 :
+    U2.alu_clz_data_rev_o[29] ? U2.alu_clz_result_i == 6'd02 :
+    U2.alu_clz_data_rev_o[28] ? U2.alu_clz_result_i == 6'd03 :
+    U2.alu_clz_data_rev_o[27] ? U2.alu_clz_result_i == 6'd04 :
+    U2.alu_clz_data_rev_o[26] ? U2.alu_clz_result_i == 6'd05 :
+    U2.alu_clz_data_rev_o[25] ? U2.alu_clz_result_i == 6'd06 :
+    U2.alu_clz_data_rev_o[24] ? U2.alu_clz_result_i == 6'd07 :
+    U2.alu_clz_data_rev_o[23] ? U2.alu_clz_result_i == 6'd08 :
+    U2.alu_clz_data_rev_o[22] ? U2.alu_clz_result_i == 6'd09 :
+    U2.alu_clz_data_rev_o[21] ? U2.alu_clz_result_i == 6'd10 :
+    U2.alu_clz_data_rev_o[20] ? U2.alu_clz_result_i == 6'd11 :
+    U2.alu_clz_data_rev_o[19] ? U2.alu_clz_result_i == 6'd12 :
+    U2.alu_clz_data_rev_o[18] ? U2.alu_clz_result_i == 6'd13 :
+    U2.alu_clz_data_rev_o[17] ? U2.alu_clz_result_i == 6'd14 :
+    U2.alu_clz_data_rev_o[16] ? U2.alu_clz_result_i == 6'd15 :
+    U2.alu_clz_data_rev_o[15] ? U2.alu_clz_result_i == 6'd16 :
+    U2.alu_clz_data_rev_o[14] ? U2.alu_clz_result_i == 6'd17 :
+    U2.alu_clz_data_rev_o[13] ? U2.alu_clz_result_i == 6'd18 :
+    U2.alu_clz_data_rev_o[12] ? U2.alu_clz_result_i == 6'd19 :
+    U2.alu_clz_data_rev_o[11] ? U2.alu_clz_result_i == 6'd20 :
+    U2.alu_clz_data_rev_o[10] ? U2.alu_clz_result_i == 6'd21 :
+    U2.alu_clz_data_rev_o[ 9] ? U2.alu_clz_result_i == 6'd22 :
+    U2.alu_clz_data_rev_o[ 8] ? U2.alu_clz_result_i == 6'd23 :
+    U2.alu_clz_data_rev_o[ 7] ? U2.alu_clz_result_i == 6'd24 :
+    U2.alu_clz_data_rev_o[ 6] ? U2.alu_clz_result_i == 6'd25 :
+    U2.alu_clz_data_rev_o[ 5] ? U2.alu_clz_result_i == 6'd26 :
+    U2.alu_clz_data_rev_o[ 4] ? U2.alu_clz_result_i == 6'd27 :
+    U2.alu_clz_data_rev_o[ 3] ? U2.alu_clz_result_i == 6'd28 :
+    U2.alu_clz_data_rev_o[ 2] ? U2.alu_clz_result_i == 6'd29 :
+    U2.alu_clz_data_rev_o[ 1] ? U2.alu_clz_result_i == 6'd30 :
+    U2.alu_clz_data_rev_o[ 0] ? U2.alu_clz_result_i == 6'd31 :
+    U2.alu_clz_result_i == 6'd32
+  );
+  endproperty
+  clz_c_a: assume property (clz_c);
+
+  property shift_c;
+    (U1.alu_op_b_shifted_i == U1.op_b_i << U1.alu_shift_amt_o) &&
+    (U2.alu_op_b_shifted_i == U2.op_b_i << U2.alu_shift_amt_o);
+  endproperty
+  shift_c_a: assume property (shift_c);
+
+  // DIT requires that op_b_i and operator_i do not change values during the respective operation
+  // Need to investigate the full pipeline to see if this is a valid assumption or not
+  property stable_operands_c;
+    (U1.state == DIV_IDLE || /*U1.op_a_i == $past(U1.op_a_i) &&*/ U1.op_b_i == $past(U1.op_b_i) && U1.operator_i == $past(U1.operator_i)) &&
+    (U2.state == DIV_IDLE || /*U2.op_a_i == $past(U2.op_a_i) &&*/ U2.op_b_i == $past(U2.op_b_i) && U2.operator_i == $past(U2.operator_i));
+  endproperty
+  stable_operands_c_a: assume property (stable_operands_c);
+  
+  // CEX are only occuring whenever b is negative (!)
+//property positive_inputs_c;
+//  (U1.op_a_i[31] == 1'b0) &&
+//  (U1.op_b_i[31] == 1'b0) &&
+//  (U2.op_a_i[31] == 1'b0) &&
+//  (U2.op_b_i[31] == 1'b0);
+//endproperty
+//positive_inputs_c_a: assume property (positive_inputs_c);
+
+  property data_ind_timing_c;
+    (U1.data_ind_timing_i == 1'b1) &&
+    (U2.data_ind_timing_i == 1'b1);
+  endproperty
+  data_ind_timing_c_a: assume property (data_ind_timing_c);
+
+  sequence reset_sequence;
+    (rst == 1'b0);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (U1.state == IDLE) and
+    t ##0 (U2.state == IDLE);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  property upec_dit_p;
+    t ##0 state_equivalence()
+    implies
+    during_o(t, 1, t, MAX_LATENCY, control_output_equivalence());
+  endproperty
+  upec_dit_p_a: assert property (disable iff (rst) upec_dit_p); 
+
+`end_tda
+
+endmodule
+
+bind miter_top property_checker checker_bind(.clk(clk), .rst(rst));
