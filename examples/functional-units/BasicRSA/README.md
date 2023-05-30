@@ -1,7 +1,7 @@
 # BasicRSA
 
-RSA module taken from:
-https://opencores.org/projects/basicrsa
+RSA module taken from: \
+https://opencores.org/projects/basicrsa \
 https://github.com/freecores/BasicRSA
 
 
