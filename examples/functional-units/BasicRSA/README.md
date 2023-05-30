@@ -1,7 +1,9 @@
-# BasicRSA-T100
+# BasicRSA
 
-(Trojan-infected) RSA module taken from:
-https://trust-hub.org/#/benchmarks/chip-level-trojan
+RSA module taken from:
+https://opencores.org/projects/basicrsa
+https://github.com/freecores/BasicRSA
+
 
 UPEC-DIT showed that the timing of the RSA algorithm strongly depends on all three data inputs:
  - The plain/cypher text
