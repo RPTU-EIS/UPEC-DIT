@@ -167,7 +167,7 @@ begin
 -- after first time
 			elsif count = 0 then
 				if bothrdy = '1' and multgo = '0' then
-					cypher <= inExp;
+					cypher <= tempout;		-- set output value
 					done <= '1';
 				end if;
 			elsif bothrdy = '1' then
