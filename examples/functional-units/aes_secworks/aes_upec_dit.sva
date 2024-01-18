@@ -1,0 +1,154 @@
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 100;
+
+  function automatic state_equivalence();
+  state_equivalence = (
+    (C1.aes_core_ctrl_reg == C2.aes_core_ctrl_reg) &&
+    (C1.ready_reg == C2.ready_reg) &&
+    (C1.result_valid_reg == C2.result_valid_reg) &&
+    (C1.dec_block.block_w0_reg == C2.dec_block.block_w0_reg) &&
+    (C1.dec_block.block_w1_reg == C2.dec_block.block_w1_reg) &&
+    (C1.dec_block.block_w2_reg == C2.dec_block.block_w2_reg) &&
+    (C1.dec_block.block_w3_reg == C2.dec_block.block_w3_reg) &&
+    (C1.dec_block.dec_ctrl_reg == C2.dec_block.dec_ctrl_reg) &&
+    (C1.dec_block.ready_reg == C2.dec_block.ready_reg) &&
+    (C1.dec_block.round_ctr_reg == C2.dec_block.round_ctr_reg) &&
+    (C1.dec_block.sword_ctr_reg == C2.dec_block.sword_ctr_reg) &&
+    (C1.enc_block.block_w0_reg == C2.enc_block.block_w0_reg) &&
+    (C1.enc_block.block_w1_reg == C2.enc_block.block_w1_reg) &&
+    (C1.enc_block.block_w2_reg == C2.enc_block.block_w2_reg) &&
+    (C1.enc_block.block_w3_reg == C2.enc_block.block_w3_reg) &&
+    (C1.enc_block.enc_ctrl_reg == C2.enc_block.enc_ctrl_reg) &&
+    (C1.enc_block.ready_reg == C2.enc_block.ready_reg) &&
+    (C1.enc_block.round_ctr_reg == C2.enc_block.round_ctr_reg) &&
+    (C1.enc_block.sword_ctr_reg == C2.enc_block.sword_ctr_reg) &&
+    (C1.keymem.key_mem == C2.keymem.key_mem) &&
+    (C1.keymem.key_mem_ctrl_reg == C2.keymem.key_mem_ctrl_reg) &&
+    (C1.keymem.prev_key0_reg == C2.keymem.prev_key0_reg) &&
+    (C1.keymem.prev_key1_reg == C2.keymem.prev_key1_reg) &&
+    (C1.keymem.rcon_reg == C2.keymem.rcon_reg) &&
+    (C1.keymem.ready_reg == C2.keymem.ready_reg) &&
+    (C1.keymem.round_ctr_reg == C2.keymem.round_ctr_reg)
+  );
+  endfunction
+
+  function automatic control_equivalence();
+  control_equivalence = (
+    (C1.aes_core_ctrl_reg == C2.aes_core_ctrl_reg) &&
+    (C1.ready_reg == C2.ready_reg) &&
+    (C1.result_valid_reg == C2.result_valid_reg) &&
+    (C1.dec_block.dec_ctrl_reg == C2.dec_block.dec_ctrl_reg) &&
+    (C1.dec_block.ready_reg == C2.dec_block.ready_reg) &&
+    (C1.dec_block.round_ctr_reg == C2.dec_block.round_ctr_reg) &&
+    (C1.dec_block.sword_ctr_reg == C2.dec_block.sword_ctr_reg) &&
+    (C1.enc_block.enc_ctrl_reg == C2.enc_block.enc_ctrl_reg) &&
+    (C1.enc_block.ready_reg == C2.enc_block.ready_reg) &&
+    (C1.enc_block.round_ctr_reg == C2.enc_block.round_ctr_reg) &&
+    (C1.enc_block.sword_ctr_reg == C2.enc_block.sword_ctr_reg) &&
+    (C1.keymem.key_mem_ctrl_reg == C2.keymem.key_mem_ctrl_reg) &&
+    (C1.keymem.rcon_reg == C2.keymem.rcon_reg) &&
+    (C1.keymem.ready_reg == C2.keymem.ready_reg) &&
+    (C1.keymem.round_ctr_reg == C2.keymem.round_ctr_reg)
+  );
+  endfunction
+
+  property input_c;
+    (C1.encdec == C2.encdec) &&
+    (C1.init   == C2.init) &&
+    (C1.next   == C2.next) &&
+    (C1.keylen == C2.keylen);
+  endproperty
+  input_c_a: assume property (input_c);
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (C1.result_valid_reg == 1'b0) and
+    t ##0 (C1.ready_reg == 1'b1) and
+    t ##0 (C1.aes_core_ctrl_reg == 2'h0); // CTRL_IDLE
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // ----------------------------
+  // - Constant-Time Properties -
+  // ----------------------------
+
+  property ct_block_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.key == C2.key))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.aes_core_ctrl_reg == C2.aes_core_ctrl_reg)) and 
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  ct_block_ready_p_a: assert property (disable iff (rst) ct_block_ready_p);
+
+  property ct_block_result_valid_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.key == C2.key))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.result_valid == C2.result_valid));
+  endproperty
+  ct_block_result_valid_p_a: assert property (disable iff (rst) ct_block_result_valid_p);
+
+  property ct_key_ready_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.block == C2.block))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.aes_core_ctrl_reg == C2.aes_core_ctrl_reg)) and 
+    during_o(t, 1, t, MAX_LATENCY, (C1.ready == C2.ready));
+  endproperty
+  ct_key_ready_p_a: assert property (disable iff (rst) ct_key_ready_p);
+
+  property ct_key_result_valid_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.block == C2.block))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.result_valid == C2.result_valid));
+  endproperty
+  ct_key_result_valid_p_a: assert property (disable iff (rst) ct_key_result_valid_p);
+
+
+
+  property upec_dit_step_p;
+    t ##0 control_equivalence()
+    implies
+    t ##1 control_equivalence() and
+    t ##1 (C1.ready == C2.ready) and
+    t ##1 (C1.result_valid == C2.result_valid);
+  endproperty
+  upec_dit_step_p_a: assert property (disable iff (rst) upec_dit_step_p);
+
+  property upec_dit_base_p;
+    t ##0 reset_sequence
+    implies
+    t ##1 control_equivalence() and
+    t ##1 (C1.ready == C2.ready) and
+    t ##1 (C1.result_valid == C2.result_valid);
+  endproperty
+  upec_dit_base_p_a: assert property (upec_dit_base_p);
+
+
+`end_tda
+
+endmodule
+
+bind aes_miter property_checker checker_bind(.clk(clk), .rst(rst));
