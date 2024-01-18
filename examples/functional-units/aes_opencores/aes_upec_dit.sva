@@ -1,0 +1,116 @@
+module property_checker
+  (
+  input clk,
+  input rst
+  );
+
+  default clocking default_clk @(posedge clk); endclocking
+
+  `include "tidal.sv"
+
+`begin_tda(ops)
+
+  localparam MAX_LATENCY = 100;
+
+  function automatic state_equivalence();
+  state_equivalence = (
+    (C1.dcnt == C2.dcnt) &&
+    (C1.ld_r == C2.ld_r) &&
+    (C1.sa00 == C2.sa00) &&
+    (C1.sa01 == C2.sa01) &&
+    (C1.sa02 == C2.sa02) &&
+    (C1.sa03 == C2.sa03) &&
+    (C1.sa10 == C2.sa10) &&
+    (C1.sa11 == C2.sa11) &&
+    (C1.sa12 == C2.sa12) &&
+    (C1.sa13 == C2.sa13) &&
+    (C1.sa20 == C2.sa20) &&
+    (C1.sa21 == C2.sa21) &&
+    (C1.sa22 == C2.sa22) &&
+    (C1.sa23 == C2.sa23) &&
+    (C1.sa30 == C2.sa30) &&
+    (C1.sa31 == C2.sa31) &&
+    (C1.sa32 == C2.sa32) &&
+    (C1.sa33 == C2.sa33) &&
+    (C1.text_in_r == C2.text_in_r) &&
+    (C1.done == C2.done) &&
+    (C1.text_out == C2.text_out) &&
+    (C1.u0.w == C2.u0.w) &&
+    (C1.u0.r0.rcnt == C2.u0.r0.rcnt) &&
+    (C1.u0.r0.out == C2.u0.r0.out)
+  );
+  endfunction
+
+  function automatic control_equivalence();
+  control_equivalence = (
+    (C1.dcnt == C2.dcnt) &&
+    (C1.ld_r == C2.ld_r) &&
+    (C1.done == C2.done) &&
+    (C1.u0.r0.rcnt == C2.u0.r0.rcnt) &&
+    (C1.u0.r0.out == C2.u0.r0.out)
+  );
+  endfunction
+  property input_c;
+    (C1.ld == C2.ld);
+  endproperty
+  input_c_a: assume property (input_c);
+
+  // ---------------------------------
+  // - Basic Functional Verification -
+  // ---------------------------------
+
+  sequence reset_sequence;
+    (rst == 1'b1);
+  endsequence
+
+  property reset_p;
+    reset_sequence
+    |=>
+    t ##0 (C1.dcnt == 4'd0);
+  endproperty
+  reset_p_a: assert property (reset_p);
+
+  // ----------------------------
+  // - Constant-Time Properties -
+  // ----------------------------
+
+  property ct_key_done_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.text_in == C2.text_in))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.done == C2.done));
+  endproperty
+  ct_key_done_p_a: assert property (disable iff (rst) ct_key_done_p);
+
+  property ct_text_in_done_p;
+    t ##0 state_equivalence() and
+    during_o(t, 0, t, MAX_LATENCY-1, (C1.key == C2.key))
+    implies
+    during_o(t, 1, t, MAX_LATENCY, (C1.done == C2.done));
+  endproperty
+  ct_text_in_done_p_a: assert property (disable iff (rst) ct_text_in_done_p);
+
+
+
+  property upec_dit_step_p;
+    t ##0 control_equivalence()
+    implies
+    t ##1 control_equivalence() and
+    t ##1 (C1.done == C2.done);
+  endproperty
+  upec_dit_step_p_a: assert property (disable iff (rst) upec_dit_step_p);
+
+  property upec_dit_base_p;
+    t ##0 reset_sequence
+    implies
+    t ##1 control_equivalence() and
+    t ##1 (C1.done == C2.done);
+  endproperty
+  upec_dit_base_p_a: assert property (upec_dit_base_p);
+
+
+`end_tda
+
+endmodule
+
+bind aes_miter property_checker checker_bind(.clk(clk), .rst(rst));
