@@ -108,6 +108,9 @@ module property_checker import ariane_pkg::*; (
 
 
 /*
+
+  // The following are legacy properties from the unrolled UPEC-DIT approach using cone-of-influence reduction
+
   property upec_dit_unrolled_p(k, signal_1, signal_2);
     t ##0 State_Equivalence()
   implies
