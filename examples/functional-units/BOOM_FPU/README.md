@@ -19,8 +19,6 @@ Onespin Result;
 From the FPU Rtl and from the BOOM src code rtl (3 files) generated same counterexample
 
 ![
-    
-    
 ](Screenshots/Counterexample.png)
 Design;
 
