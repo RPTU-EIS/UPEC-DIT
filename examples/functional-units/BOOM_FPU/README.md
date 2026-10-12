@@ -8,18 +8,20 @@ However, the exception flags are data-dependent, which might still cause a side-
 
 UPEC-TOOL
 Control behavior independent of data inputs!
-![alt text](image-1.png)
-{Violation of data-dependent timing found!}
-![alt text](image-2.png)
+![
+](Screenshots/dit_valid.png)
+Violation of data-dependent timing found!
+
+![alt text](Screenshots/dit_flags.png)
+
 
 Onespin Result;
-From the FPU Rtl
-![alt text](image.png)
+From the FPU Rtl and from the BOOM src code rtl (3 files) generated same counterexample
 
-From the BOOM src code rtl (3 files)
-![alt text](image.png)
-
-
+![
+    
+    
+](Screenshots/Counterexample.png)
 Design;
 
 Input Signals:
