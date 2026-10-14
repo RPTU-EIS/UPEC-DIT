@@ -12,12 +12,12 @@ Control behavior independent of data inputs with valid
 
 ![alt text](Screenshots/dit_valid_inttpfpu.png)
 
-Violation of data-dependent timing found with flags 
+Violation of data-dependent timing found with the exception flags
 
 ![alt text](Screenshots/dit_exec_inttofpu.png)
 
 **OneSpin Results**
-The original FPU RTL and the BOOM source RTL (consisting of three files) produced the same counterexample.
+The original IntToFP RTL and the BOOM source RTL (consisting of three files) produced the same counterexample.
 
 ![alt text](Screenshots/counterexample_intToFp.png)
 
