@@ -17,8 +17,9 @@ Latencies shorter than the maximum occur only for special cases, such as
 when the argument of a square root is negative. The minimum special-case
 latency is 2 cycles, for either division or square root."
 
-UPEC-DIT shows these special cases as counterexamples, usually where one instance receives zero as an operand." *
-*: https://github.com/Mustafa-Taleb18/UPEC-DIT/blob/master/examples/processor-cores/BOOM/functional-units/DivSqrtRecF64/DivSqrtRecF64_dit.sva
+UPEC-DIT shows these special cases as counterexamples, usually where one instance receives zero as an operand."[1]
+
+[1] https://github.com/RPTU-EIS/UPEC-DIT/blob/master/examples/processor-cores/BOOM/functional-units/DivSqrtRecF64/DivSqrtRecF64_dit.sva
 --------------
 
 
