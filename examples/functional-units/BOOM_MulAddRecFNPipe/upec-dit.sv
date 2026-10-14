@@ -60,9 +60,7 @@ module property_checker
   endfunction
 
 
-    // ========================== //
-   // Control Output Equivalence //
-  // ========================== //
+
   // ========================= //
  // Control State Equivalence //
 // ========================= //
@@ -101,6 +99,9 @@ control_state_equivalence = (
 );
 endfunction
 
+    // ========================== //
+   // Control Output Equivalence //
+  // ========================== //
   function automatic control_output_equivalence();
   control_output_equivalence = (
     (U1.io_exceptionFlags == U2.io_exceptionFlags)
