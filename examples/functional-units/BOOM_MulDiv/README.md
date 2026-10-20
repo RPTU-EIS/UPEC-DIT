@@ -9,4 +9,4 @@ A negative sign produces an increased latency, but also the counter value of the
 
 The multiplication instructions (MUL (0), MULH (1), MULHSU (2), MULHU (3)) are data-oblivious.
 
-The other fn values (8-15) should not occur during normal operation (see "Multiplier.scala" and "ALU.scala")." 
+The other fn values (8-15) should not occur during normal operation (see "Multiplier.scala" and "ALU.scala").
