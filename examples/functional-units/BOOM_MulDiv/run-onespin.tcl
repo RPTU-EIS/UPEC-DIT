@@ -73,10 +73,7 @@ proc analyze_cex {state_signals} {
 set script_path [file dirname [file normalize [info script]]]
 
 read_verilog -golden -version sv2012 {
-    #$script_path/rtl/MulDiv.v
-    $script_path/rtl/BoomConfig.top.v
-    $script_path/rtl/BoomConfig.top.mems.v
-    $script_path/rtl/BOOM_plusarg_reader.v
+    $script_path/rtl/MulDiv.v
 }
 
 read_verilog -golden -version sv2012 {$script_path/MulDiv_miter.sv}
